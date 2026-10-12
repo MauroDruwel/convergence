@@ -1,0 +1,32 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "convergence",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "REPO_BRAIN",
+        "class_name": "RepoBrain"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_classes": ["RepoBrain"]
+    }
+  ],
+  "ai": {
+    "binding": "AI"
+  },
+  "artifacts": [
+    {
+      "binding": "ARTIFACTS"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}

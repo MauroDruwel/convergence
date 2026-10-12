@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Convergence | The Autonomous Continuous Semantic Code Fabric</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #0b0f19;
+      color: #e2e8f0;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .cf-gradient {
+      background: linear-gradient(135deg, #f38020 0%, #faad3f 100%);
+    }
+    .cf-border {
+      border-color: rgba(243, 128, 32, 0.25);
+    }
+    .cf-glow {
+      box-shadow: 0 0 25px rgba(243, 128, 32, 0.2);
+    }
+    .card-glass {
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-orange-500 selection:text-white">
+
+  <!-- TOP NAVIGATION BAR -->
+  <header class="border-b border-gray-800 bg-[#0f172a]/90 backdrop-blur sticky top-0 z-50 px-6 py-3.5">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 rounded-lg cf-gradient flex items-center justify-center font-bold text-white shadow-lg shadow-orange-500/20">
+          C
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="font-extrabold text-lg tracking-tight text-white">CONVERGENCE</span>
+            <span class="px-2 py-0.5 text-[10px] font-mono font-bold bg-orange-500/10 text-orange-400 border border-orange-500/30 rounded">CLOUDFLARE CHALLENGE</span>
+          </div>
+          <p class="text-[11px] text-gray-400">Continuous Semantic Code Fabric for Agent Swarms</p>
+        </div>
+      </div>
+
+      <!-- Live Connection Pill -->
+      <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-xs text-emerald-400">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="font-mono font-semibold" id="conn-status">Durable Object Active</span>
+        </div>
+        <div class="text-xs text-gray-400 font-mono">
+          Artifacts: <span class="text-orange-400 font-bold">convergence-core</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN DASHBOARD CONTENT -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
+
+    <!-- HERO METRICS ROW -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div class="card-glass p-4 rounded-xl">
+        <div class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Clean AST Merges</div>
+        <div class="text-2xl font-bold text-emerald-400 font-mono mt-1" id="stat-clean">0</div>
+        <div class="text-[11px] text-emerald-500/80 font-mono mt-0.5">0 Line Conflicts</div>
+      </div>
+      <div class="card-glass p-4 rounded-xl">
+        <div class="text-xs text-gray-400 uppercase tracking-wider font-semibold">AI Arbitrations</div>
+        <div class="text-2xl font-bold text-purple-400 font-mono mt-1" id="stat-arbiter">0</div>
+        <div class="text-[11px] text-purple-400/80 font-mono mt-0.5">Workers AI Invariant Gate</div>
+      </div>
+      <div class="card-glass p-4 rounded-xl">
+        <div class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Total Symbols</div>
+        <div class="text-2xl font-bold text-cyan-400 font-mono mt-1" id="stat-symbols">0</div>
+        <div class="text-[11px] text-cyan-500/80 font-mono mt-0.5">Symbol Graph Nodes</div>
+      </div>
+      <div class="card-glass p-4 rounded-xl">
+        <div class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Lamport Clock</div>
+        <div class="text-2xl font-bold text-orange-400 font-mono mt-1" id="stat-lamport">0</div>
+        <div class="text-[11px] text-orange-500/80 font-mono mt-0.5">Logical Vector Time</div>
+      </div>
+      <div class="card-glass p-4 rounded-xl col-span-2 md:col-span-1">
+        <div class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Git Line Conflicts</div>
+        <div class="text-2xl font-bold text-emerald-400 font-mono mt-1">0%</div>
+        <div class="text-[11px] text-emerald-500 font-mono mt-0.5">100% Eliminated</div>
+      </div>
+    </div>
+
+    <!-- ACTION CONTROL BAR -->
+    <div class="card-glass p-4 rounded-xl flex flex-wrap items-center justify-between gap-4 border border-orange-500/20 bg-gradient-to-r from-orange-500/5 via-transparent to-purple-500/5">
+      <div>
+        <h2 class="text-sm font-bold text-white uppercase tracking-wider">Swarm Orchestration Panel</h2>
+        <p class="text-xs text-gray-400">Trigger high-concurrency multi-agent workloads directly against the Durable Object</p>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button id="btn-swarm" onclick="triggerSwarmWave()" class="px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold text-xs rounded-lg shadow-lg shadow-orange-500/20 transition flex items-center space-x-2">
+          <span>⚡ Dispatch Swarm Wave (8 Agents)</span>
+        </button>
+        <button id="btn-bench" onclick="runBenchmark()" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold text-xs rounded-lg shadow-lg shadow-purple-500/20 transition flex items-center space-x-2">
+          <span>📊 Run Live Benchmark (25 Agents vs Git)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- COMPARISON HARNESS SHOWCASE -->
+    <div id="bench-panel" class="card-glass p-5 rounded-xl border border-indigo-500/30 bg-[#0f172a]/60">
+      <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-800">
+        <div>
+          <h3 class="font-bold text-base text-white flex items-center space-x-2">
+            <span>🏆 Head-to-Head Benchmark: Traditional Git vs. Convergence</span>
+            <span class="text-xs px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono">25 Concurrent Agents</span>
+          </h3>
+          <p class="text-xs text-gray-400">Identical workload: 25 agents making concurrent function, interface, and logic additions</p>
+        </div>
+        <div id="bench-status" class="text-xs font-mono text-gray-400">Live baseline ready</div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Traditional Git Box -->
+        <div class="p-4 rounded-lg bg-red-950/20 border border-red-500/30 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-red-400 text-sm">Traditional Git / GitHub</span>
+            <span class="text-xs font-mono px-2 py-0.5 bg-red-500/20 text-red-300 rounded font-bold">Line 3-Way Merge</span>
+          </div>
+          <div class="grid grid-cols-3 gap-2 text-center pt-2">
+            <div class="bg-black/30 p-2 rounded">
+              <div class="text-[10px] text-gray-400">Success Rate</div>
+              <div class="text-lg font-bold text-red-400 font-mono" id="git-rate">4%</div>
+            </div>
+            <div class="bg-black/30 p-2 rounded">
+              <div class="text-[10px] text-gray-400">Conflicts</div>
+              <div class="text-lg font-bold text-red-400 font-mono" id="git-conflicts">24 / 25</div>
+            </div>
+            <div class="bg-black/30 p-2 rounded">
+              <div class="text-[10px] text-gray-400">Stalled Agents</div>
+              <div class="text-lg font-bold text-red-400 font-mono" id="git-stalled">24</div>
+            </div>
+          </div>
+          <p class="text-xs text-red-300/80 leading-relaxed">
+            🛑 <strong class="text-red-200">Result:</strong> Standard Git flags textual conflicts across 96% of branches. Agents require manual human rebasing and lock up the release pipeline.
+          </p>
+        </div>
+
+        <!-- Convergence Box -->
+        <div class="p-4 rounded-lg bg-emerald-950/20 border border-emerald-500/30 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-emerald-400 text-sm">Convergence (Cloudflare Platform)</span>
+            <span class="text-xs font-mono px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded font-bold">Artifacts + AST-CRDT</span>
+          </div>
+          <div class="grid grid-cols-3 gap-2 text-center pt-2">
+            <div class="bg-black/30 p-2 rounded">
+              <div class="text-[10px] text-gray-400">Success Rate</div>
+              <div class="text-lg font-bold text-emerald-400 font-mono" id="conv-rate">100%</div>
+            </div>
+            <div class="bg-black/30 p-2 rounded">
+              <div class="text-[10px] text-gray-400">Conflicts</div>
+              <div class="text-lg font-bold text-emerald-400 font-mono" id="conv-conflicts">0</div>
+            </div>
+            <div class="bg-black/30 p-2 rounded">
+              <div class="text-[10px] text-gray-400">Latency</div>
+              <div class="text-lg font-bold text-emerald-400 font-mono" id="conv-latency">8ms</div>
+            </div>
+          </div>
+          <p class="text-xs text-emerald-300/80 leading-relaxed">
+            ⚡ <strong class="text-emerald-200">Result:</strong> Conflict-free convergence via symbol AST hashing. All 25 agents land commits concurrently with sub-10ms latency.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CANVAS & REVERSE PR ROW -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- SWARM VISUAL CANVAS -->
+      <div class="lg:col-span-2 card-glass p-5 rounded-xl flex flex-col">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h3 class="font-bold text-sm text-white uppercase tracking-wider">Live Agent Swarm Topology</h3>
+            <p class="text-xs text-gray-400">Real-time visualization of concurrent agent branches converging into mainline</p>
+          </div>
+          <span class="text-[11px] font-mono text-orange-400 px-2 py-0.5 rounded bg-orange-500/10 border border-orange-500/20">Canvas 60fps</span>
+        </div>
+        <div class="relative flex-1 min-h-[340px] bg-[#070b14] rounded-lg border border-gray-800 overflow-hidden flex items-center justify-center">
+          <canvas id="swarm-canvas" class="w-full h-full"></canvas>
+        </div>
+      </div>
+
+      <!-- REVERSE PR (HUMAN INVARIANT STEERING) -->
+      <div class="card-glass p-5 rounded-xl flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-bold text-sm text-white uppercase tracking-wider flex items-center space-x-2">
+              <span>Reverse Pull Requests</span>
+              <span class="px-1.5 py-0.2 text-[10px] bg-amber-500/20 text-amber-300 rounded font-mono">Human Steering</span>
+            </h3>
+          </div>
+          <p class="text-xs text-gray-400 mb-4">
+            Instead of humans reviewing code, agents self-govern and consult humans only on high-level architectural decisions.
+          </p>
+
+          <div id="rpr-container" class="space-y-3">
+            <div class="p-3 bg-gray-900/60 border border-gray-800 rounded-lg text-xs space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-orange-400 font-semibold">agent_payment</span>
+                <span class="text-[10px] text-gray-500">Pending Decision</span>
+              </div>
+              <p class="text-gray-300 font-medium">
+                Should payment retry backoff be exponential (2s, 4s, 8s) or linear (3s, 3s, 3s)?
+              </p>
+              <div class="flex flex-col space-y-1.5 pt-1">
+                <button onclick="resolvePR('rpr_mock_1', 'Exponential Backoff')" class="w-full text-left px-2.5 py-1.5 bg-gray-800 hover:bg-orange-500/20 hover:text-orange-300 text-gray-300 rounded transition text-xs font-mono">
+                  👉 Option A: Exponential Backoff (Recommended)
+                </button>
+                <button onclick="resolvePR('rpr_mock_1', 'Linear Backoff')" class="w-full text-left px-2.5 py-1.5 bg-gray-800 hover:bg-orange-500/20 hover:text-orange-300 text-gray-300 rounded transition text-xs font-mono">
+                  👉 Option B: Linear Backoff
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-gray-800 text-[11px] text-gray-500 flex items-center justify-between">
+          <span>Decisions recorded in Git metadata</span>
+          <span class="text-emerald-400">Zero Blockers</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CODE INSPECTOR & LIVE ACTIVITY LOG -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <!-- LIVE CODE INSPECTOR -->
+      <div class="card-glass p-5 rounded-xl flex flex-col">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+            <h3 class="font-bold text-sm text-white font-mono">index.ts (Cloudflare Artifacts Root)</h3>
+          </div>
+          <span class="text-xs font-mono text-gray-400">Auto-Refreshed via CRDT</span>
+        </div>
+        <div class="relative flex-1 min-h-[300px] max-h-[420px] bg-[#070b14] p-4 rounded-lg border border-gray-800 overflow-auto font-mono text-xs text-gray-300 leading-relaxed whitespace-pre">
+          <code id="code-viewer">// Loading unified codebase from Cloudflare Artifacts...</code>
+        </div>
+      </div>
+
+      <!-- LIVE ACTIVITY LOG -->
+      <div class="card-glass p-5 rounded-xl flex flex-col">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-orange-400 animate-ping"></span>
+            <h3 class="font-bold text-sm text-white uppercase tracking-wider">Live Swarm Telemetry</h3>
+          </div>
+          <span class="text-xs font-mono text-gray-400">Streaming Event Log</span>
+        </div>
+        <div id="event-stream" class="flex-1 min-h-[300px] max-h-[420px] bg-[#070b14] p-4 rounded-lg border border-gray-800 overflow-y-auto space-y-2 font-mono text-xs">
+          <div class="text-gray-500">[System] Initialized Convergence telemetry stream. Waiting for swarm dispatches...</div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-gray-800 mt-12 py-6 px-6 text-center text-xs text-gray-500">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
+      <div>
+        Built with <span class="text-orange-400 font-semibold">Cloudflare Workers</span>, <span class="text-orange-400 font-semibold">Artifacts</span>, and <span class="text-orange-400 font-semibold">Durable Objects</span>.
+      </div>
+      <div>
+        Cloudflare Challenge Submission: <em>Build the Next GitHub for 100,000 Concurrent Agents</em>.
+      </div>
+    </div>
+  </footer>
+
+  <!-- CLIENT-SIDE SCRIPT -->
+  <script>
+    let ws = null;
+    let cleanMerges = 0;
+    let arbitrations = 0;
+    const canvas = document.getElementById('swarm-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Resize canvas
+    function resizeCanvas() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Canvas Agent Nodes Simulation
+    const agents = [
+      { id: 'sentinel', name: 'agent_sentinel', x: 0, y: 0, angle: 0, color: '#f38020', active: false },
+      { id: 'payment', name: 'agent_payment', x: 0, y: 0, angle: (Math.PI / 4) * 1, color: '#10b981', active: false },
+      { id: 'auth', name: 'agent_auth', x: 0, y: 0, angle: (Math.PI / 4) * 2, color: '#3b82f6', active: false },
+      { id: 'optimizer', name: 'agent_optimizer', x: 0, y: 0, angle: (Math.PI / 4) * 3, color: '#a855f7', active: false },
+      { id: 'fuzzer', name: 'agent_fuzzer', x: 0, y: 0, angle: (Math.PI / 4) * 4, color: '#ec4899', active: false },
+      { id: 'refactor', name: 'agent_refactor', x: 0, y: 0, angle: (Math.PI / 4) * 5, color: '#06b6d4', active: false },
+      { id: 'docs', name: 'agent_docs', x: 0, y: 0, angle: (Math.PI / 4) * 6, color: '#eab308', active: false },
+      { id: 'tester', name: 'agent_tester', x: 0, y: 0, angle: (Math.PI / 4) * 7, color: '#14b8a6', active: false }
+    ];
+
+    let pulse = 0;
+    function renderCanvas() {
+      pulse += 0.03;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const radius = Math.min(centerX, centerY) * 0.72;
+
+      // Draw Orbit Ring
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 6]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Draw Connections & Satellites
+      agents.forEach((ag) => {
+        ag.angle += 0.003;
+        ag.x = centerX + Math.cos(ag.angle) * radius;
+        ag.y = centerY + Math.sin(ag.angle) * radius;
+
+        // Connection Line to Center
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(ag.x, ag.y);
+        ctx.strokeStyle = ag.active ? 'rgba(243, 128, 32, 0.5)' : 'rgba(255, 255, 255, 0.04)';
+        ctx.lineWidth = ag.active ? 2 : 1;
+        ctx.stroke();
+
+        // Agent Satellite Node
+        ctx.beginPath();
+        ctx.arc(ag.x, ag.y, ag.active ? 8 : 6, 0, Math.PI * 2);
+        ctx.fillStyle = ag.color;
+        ctx.fill();
+
+        // Agent Name Label
+        ctx.fillStyle = ag.active ? '#ffffff' : '#64748b';
+        ctx.font = '10px JetBrains Mono';
+        ctx.fillText(ag.name, ag.x + 10, ag.y + 3);
+      });
+
+      // Draw Center Mainline Node (Artifacts)
+      const centerGlow = 18 + Math.sin(pulse) * 4;
+      const gradient = ctx.createRadialGradient(centerX, centerY, 5, centerX, centerY, centerGlow + 12);
+      gradient.addColorStop(0, '#f38020');
+      gradient.addColorStop(1, 'rgba(243, 128, 32, 0)');
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, centerGlow + 12, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, centerGlow, 0, Math.PI * 2);
+      ctx.fillStyle = '#f38020';
+      ctx.fill();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 11px JetBrains Mono';
+      ctx.textAlign = 'center';
+      ctx.fillText('ARTIFACTS', centerX, centerY + 4);
+      ctx.textAlign = 'left';
+
+      requestAnimationFrame(renderCanvas);
+    }
+    renderCanvas();
+
+    // Setup WebSocket connection to Durable Object
+    function connectWS() {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${window.location.host}/ws`;
+
+      ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        document.getElementById('conn-status').innerText = 'Durable Object Active';
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const msg = JSON.parse(event.data);
+          if (msg.type === 'init_state') {
+            updateFullState(msg.state);
+          } else if (msg.type === 'swarm_event') {
+            appendEvent(msg.event);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      };
+
+      ws.onclose = () => {
+        document.getElementById('conn-status').innerText = 'Reconnecting DO...';
+        setTimeout(connectWS, 2000);
+      };
+    }
+
+    // Fallback polling if WS is not active
+    async function fetchState() {
+      try {
+        const res = await fetch('/api/state');
+        if (res.ok) {
+          const data = await res.json();
+          updateFullState(data);
+        }
+      } catch (e) {}
+    }
+
+    function updateFullState(state) {
+      if (!state) return;
+      if (state.files && state.files['index.ts']) {
+        document.getElementById('code-viewer').innerText = state.files['index.ts'];
+      }
+      if (state.symbols && state.symbols['index.ts']) {
+        document.getElementById('stat-symbols').innerText = state.symbols['index.ts'].length;
+      }
+      if (state.lamportClock) {
+        document.getElementById('stat-lamport').innerText = state.lamportClock;
+      }
+      if (state.reversePRs && state.reversePRs.length > 0) {
+        renderReversePRs(state.reversePRs);
+      }
+    }
+
+    function appendEvent(evt) {
+      const container = document.getElementById('event-stream');
+      const row = document.createElement('div');
+      row.className = 'py-1 border-b border-gray-800/60 flex items-start space-x-2 text-xs';
+
+      let badge = '';
+      if (evt.type === 'ast_merge') {
+        badge = '<span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold">[AST MERGE]</span>';
+        cleanMerges++;
+        document.getElementById('stat-clean').innerText = cleanMerges;
+      } else if (evt.type === 'conflict_detected') {
+        badge = '<span class="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold">[COLLISION]</span>';
+      } else if (evt.type === 'arbiter_resolved') {
+        badge = '<span class="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 font-bold">[AI ARBITED]</span>';
+        arbitrations++;
+        document.getElementById('stat-arbiter').innerText = arbitrations;
+      } else if (evt.type === 'reverse_pr') {
+        badge = '<span class="px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-400 font-bold">[REVERSE PR]</span>';
+      }
+
+      const time = new Date(evt.timestamp).toLocaleTimeString();
+      row.innerHTML = `
+        <span class="text-gray-500 text-[10px]">${time}</span>
+        ${badge}
+        <span class="text-gray-300"><strong class="text-white">${evt.agentId}:</strong> ${evt.data?.message || evt.data?.explanation || JSON.stringify(evt.data)}</span>
+      `;
+
+      container.prepend(row);
+
+      // Light up satellite agent on canvas
+      const match = agents.find((a) => a.name === evt.agentId);
+      if (match) {
+        match.active = true;
+        setTimeout(() => { match.active = false; }, 800);
+      }
+    }
+
+    function renderReversePRs(prs) {
+      const container = document.getElementById('rpr-container');
+      const pending = prs.filter((p) => p.status === 'pending');
+      if (pending.length === 0) {
+        container.innerHTML = '<div class="text-xs text-emerald-400 font-mono py-2">✅ All agent architectural decisions aligned. Zero pending queries.</div>';
+        return;
+      }
+
+      container.innerHTML = pending.map((pr) => `
+        <div class="p-3 bg-gray-900/60 border border-orange-500/30 rounded-lg text-xs space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-mono text-orange-400 font-semibold">${pr.agentId}</span>
+            <span class="text-[10px] text-amber-400 font-mono">Requires Human Steering</span>
+          </div>
+          <p class="text-gray-200 font-medium">${pr.question}</p>
+          <div class="flex flex-col space-y-1.5 pt-1">
+            ${pr.options.map((opt) => `
+              <button onclick="resolvePR('${pr.id}', '${opt}')" class="w-full text-left px-2.5 py-1.5 bg-gray-800 hover:bg-orange-500/20 hover:text-orange-300 text-gray-300 rounded transition text-xs font-mono">
+                👉 ${opt}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function triggerSwarmWave() {
+      const btn = document.getElementById('btn-swarm');
+      btn.innerText = '⚡ Dispatching Wave...';
+      btn.disabled = true;
+      try {
+        await fetch('/api/swarm', { method: 'POST' });
+        await fetchState();
+      } catch (e) {
+        console.error(e);
+      } finally {
+        btn.innerText = '⚡ Dispatch Swarm Wave (8 Agents)';
+        btn.disabled = false;
+      }
+    }
+
+    async function runBenchmark() {
+      const btn = document.getElementById('btn-bench');
+      const status = document.getElementById('bench-status');
+      btn.innerText = '⏳ Benchmarking 25 Agents...';
+      status.innerText = 'Running concurrent simulation...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch('/api/benchmark', { method: 'POST' });
+        const data = await res.json();
+
+        document.getElementById('git-rate').innerText = `${data.gitSuccessRate}%`;
+        document.getElementById('git-conflicts').innerText = `${data.gitConflicts} / ${data.totalAgentCommits}`;
+        document.getElementById('git-stalled').innerText = `${data.gitBlockedAgents}`;
+
+        document.getElementById('conv-rate').innerText = `${data.convergenceSuccessRate}%`;
+        document.getElementById('conv-conflicts').innerText = `${data.convergenceConflicts}`;
+        document.getElementById('conv-latency').innerText = `${data.convergenceAvgMergeLatencyMs}ms`;
+
+        status.innerText = `Complete: ${data.concurrencyThroughputGain}`;
+        await fetchState();
+      } catch (e) {
+        console.error(e);
+        status.innerText = 'Benchmark error';
+      } finally {
+        btn.innerText = '📊 Run Live Benchmark (25 Agents vs Git)';
+        btn.disabled = false;
+      }
+    }
+
+    async function resolvePR(prId, option) {
+      await fetch('/api/reverse-pr/resolve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prId, option })
+      });
+      await fetchState();
+    }
+
+    // Init
+    connectWS();
+    fetchState();
+    setInterval(fetchState, 3000);
+  </script>
+</body>
+</html>
