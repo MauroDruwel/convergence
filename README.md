@@ -15,11 +15,11 @@
 
 ## 📸 Real Cloudflare Infrastructure Console (Retina Screenshots)
 
-I implemented an authentic, high-density Cloudflare Console conforming strictly to the Cloudflare Infrastructure Design System (deep slate `#0F1117`, 1px borders `#2D333B`, `#F6821F` safety orange accent, tabular typography, and 100% inline SVG iconography).
+I implemented an authentic, developer-first Cloudflare Console conforming to Cloudflare's modern light theme (`#FFFFFF`, `#F8FAFC`, `#E2E8F0` borders, `#F6821F` Cloudflare safety orange accent, soft rounded cards, tabular typography, and 100% inline SVG iconography). It features an **interactive step-by-step architectural tour** that allows judges and engineers to walk through every breakthrough live.
 
 ![Convergence Console](assets/dashboard-console.png)
 
-*Full-height dashboard inspection including live unified codebase viewer and WebSocket event stream:*
+*Full-height dashboard inspection including live unified codebase viewer, active leases, Git Notes provenance, and WebSocket event stream:*
 ![Convergence Full Console](assets/dashboard-full.png)
 
 ---
