@@ -157,8 +157,13 @@
               <span id="quest-completed-count">0</span> / 5 Solved
             </span>
           </div>
-          <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden mb-3">
-            <div id="quest-progress-bar" class="bg-[#F6821F] h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+          <div class="grid grid-cols-5 gap-1.5 mb-3">
+            <div id="quest-seg-1" class="h-2 rounded-full bg-slate-200 transition-all"></div>
+            <div id="quest-seg-2" class="h-2 rounded-full bg-slate-200 transition-all"></div>
+            <div id="quest-seg-3" class="h-2 rounded-full bg-slate-200 transition-all"></div>
+            <div id="quest-seg-4" class="h-2 rounded-full bg-slate-200 transition-all"></div>
+            <div id="quest-seg-5" class="h-2 rounded-full bg-slate-200 transition-all"></div>
+            <div id="quest-progress-bar" class="hidden"></div>
           </div>
           <div class="text-xs text-[#64748B] flex items-center justify-between">
             <span id="quest-next-hint">👉 Click Level 1 to break Git</span>
@@ -304,6 +309,51 @@
       </div>
     </div>
 
+    <!-- INTERACTIVE CONTROL TOOLBAR -->
+    <div class="p-4 bg-white border border-[#E2E8F0] rounded-xl shadow-xs flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center space-x-2.5">
+        <div class="w-8 h-8 rounded-lg bg-[#F6821F]/10 flex items-center justify-center text-[#F6821F]">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div>
+          <div class="text-xs font-bold text-[#0F172A]">Live Swarm Controls</div>
+          <div class="text-[11px] text-[#64748B]">Trigger autonomous workloads against the Cloudflare Durable Object engine</div>
+        </div>
+      </div>
+
+      <div class="flex items-center flex-wrap gap-2.5">
+        <!-- Swarm Wave Button -->
+        <button id="btn-swarm" onclick="triggerSwarmWave()" class="h-9 px-4 bg-[#F6821F] hover:bg-[#FA8C16] text-white text-xs font-semibold rounded-lg transition shadow-sm flex items-center space-x-2 focus:ring-2 focus:ring-[#F6821F]/30">
+          <svg id="icon-swarm" class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          <span id="btn-swarm-text">Dispatch Swarm Wave (8 Agents)</span>
+        </button>
+
+        <!-- Benchmark Button -->
+        <button id="btn-bench" onclick="runBenchmark()" class="h-9 px-3.5 bg-white hover:bg-slate-50 border border-[#CBD5E1] text-[#0F172A] text-xs font-semibold rounded-lg transition shadow-xs flex items-center space-x-1.5">
+          <svg id="icon-bench" class="w-3.5 h-3.5 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span id="btn-bench-text">Run diff3 Benchmark (25 Agents vs Git)</span>
+        </button>
+
+        <!-- Lease Button -->
+        <button id="btn-lease" onclick="testLeaseAcquire()" class="h-9 px-3.5 bg-white hover:bg-sky-50 border border-sky-200 text-sky-700 text-xs font-semibold rounded-lg transition shadow-xs flex items-center space-x-1.5">
+          <svg id="icon-lease" class="w-3.5 h-3.5 text-sky-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3M18.5 4.5l3 3"/></svg>
+          <span id="btn-lease-text">Acquire Symbol Lease</span>
+        </button>
+
+        <!-- Immune Attack Button -->
+        <button id="btn-immune" onclick="testImmuneAttack()" class="h-9 px-3.5 bg-white hover:bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold rounded-lg transition shadow-xs flex items-center space-x-1.5">
+          <svg id="icon-immune" class="w-3.5 h-3.5 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span id="btn-immune-text">Adversarial AST Probe</span>
+        </button>
+
+        <!-- Reverse PR Simulation Button -->
+        <button id="btn-trigger-rpr" onclick="triggerTestRPR()" class="h-9 px-3.5 bg-white hover:bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold rounded-lg transition shadow-xs flex items-center space-x-1.5">
+          <svg class="w-3.5 h-3.5 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></svg>
+          <span id="btn-rpr-text">Simulate Reverse PR</span>
+        </button>
+      </div>
+    </div>
+
     <!-- LEVEL 1: THE GIT MELTDOWN (diff3 BENCHMARK) -->
     <div id="section-benchmark" class="border border-[#E2E8F0] bg-white rounded-2xl shadow-xs overflow-hidden level-card">
       <div class="p-6 border-b border-[#E2E8F0] bg-gradient-to-r from-orange-50/50 via-white to-white">
@@ -319,9 +369,9 @@
             </p>
           </div>
           <div class="flex items-center space-x-3">
-            <button id="btn-bench" onclick="runBenchmark()" class="h-10 px-5 bg-[#F6821F] hover:bg-[#FA8C16] text-white text-xs font-bold rounded-xl transition shadow-sm flex items-center space-x-2">
-              <svg id="icon-bench" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-              <span id="btn-bench-text">Run diff3 Benchmark (25 Agents vs Git)</span>
+            <button onclick="runBenchmark()" class="h-10 px-5 bg-orange-50 hover:bg-orange-100 text-[#F6821F] border border-orange-200 text-xs font-bold rounded-xl transition shadow-2xs flex items-center space-x-2">
+              <svg class="w-4 h-4 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              <span>Trigger Benchmark (Level 1)</span>
             </button>
             <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-[#64748B]" id="bench-status">Ready</span>
           </div>
@@ -397,15 +447,15 @@
               <span class="px-2.5 py-0.5 rounded-full bg-sky-600 text-white text-xs font-bold uppercase tracking-wider">Level 2</span>
               <span class="text-xs font-bold text-sky-600">The Edge Radar</span>
             </div>
-            <h2 class="text-lg font-bold text-[#0F172A]">Code isn't text — code is a live semantic tree</h2>
+            <h2 class="text-lg font-bold text-[#0F172A]">Code isn't text: code is a live semantic tree</h2>
             <p class="text-xs text-[#475569] leading-relaxed">
               <strong>Mauro's Log:</strong> "Below is the real-time edge topology. Cloudflare Artifacts (backed by a Durable Object SQLite actor) sits at the center. Autonomous agents orbit around it. Dispatch an 8-agent swarm wave to watch them commit in parallel at 60 FPS."
             </p>
           </div>
           <div>
-            <button id="btn-swarm" onclick="triggerSwarmWave()" class="h-10 px-5 bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold rounded-xl transition shadow-sm flex items-center space-x-2">
-              <svg id="icon-swarm" class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-              <span id="btn-swarm-text">Dispatch Swarm Wave (8 Agents)</span>
+            <button onclick="triggerSwarmWave()" class="h-10 px-5 bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 text-xs font-bold rounded-xl transition shadow-2xs flex items-center space-x-2">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              <span>Dispatch Swarm (Level 2)</span>
             </button>
           </div>
         </div>
@@ -452,9 +502,9 @@
               <strong>Mauro's Log:</strong> "AST merges handle separate functions cleanly. But what if two agents decide to refactor <code>processOrder</code> at the exact same millisecond? In Git, both agents write hundreds of lines, and one gets rejected at merge time. In Convergence, agents acquire short TTL leases from the Durable Object before writing code."
             </p>
             <div class="mt-4">
-              <button id="btn-lease" onclick="testLeaseAcquire()" class="h-9 px-4 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg transition shadow-xs flex items-center space-x-1.5">
-                <svg id="icon-lease" class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3M18.5 4.5l3 3"/></svg>
-                <span id="btn-lease-text">Acquire Symbol Lease</span>
+              <button onclick="testLeaseAcquire()" class="h-9 px-4 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold rounded-lg transition shadow-2xs flex items-center space-x-1.5">
+                <svg class="w-3.5 h-3.5 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3M18.5 4.5l3 3"/></svg>
+                <span>Acquire Lease (Level 3)</span>
               </button>
             </div>
           </div>
@@ -505,9 +555,9 @@
               <strong>Mauro's Log:</strong> "AI agents frequently write code that compiles cleanly but misses boundary checks (e.g. allowing negative withdrawals or buffer overflows). I wanted to know: <em>Can the repository itself defend the code?</em> Click below to launch an adversarial probe that tries to commit an unvalidated negative input."
             </p>
             <div class="mt-4">
-              <button id="btn-immune" onclick="testImmuneAttack()" class="h-9 px-4 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg transition shadow-xs flex items-center space-x-1.5">
-                <svg id="icon-immune" class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                <span id="btn-immune-text">Adversarial AST Probe</span>
+              <button onclick="testImmuneAttack()" class="h-9 px-4 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold rounded-lg transition shadow-2xs flex items-center space-x-1.5">
+                <svg class="w-3.5 h-3.5 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span>Adversarial Probe (Level 4)</span>
               </button>
             </div>
           </div>
@@ -553,9 +603,9 @@ if (amount &lt;= 0) throw new RangeError('Security: Invalid amount');</pre>
               <strong>Mauro's Log:</strong> "Humans can't review 5,000 PRs per hour. But AI agents shouldn't make unilateral architecture decisions either. In Convergence, agents review code themselves and open a <strong>Reverse PR</strong> to ask YOU for steering when a high-level trade-off is required."
             </p>
             <div class="mt-4">
-              <button id="btn-trigger-rpr" onclick="triggerTestRPR()" class="h-9 px-4 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-lg transition shadow-xs flex items-center space-x-1.5">
-                <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></svg>
-                <span id="btn-rpr-text">Simulate Reverse PR</span>
+              <button onclick="triggerTestRPR()" class="h-9 px-4 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 text-xs font-bold rounded-lg transition shadow-2xs flex items-center space-x-1.5">
+                <svg class="w-3.5 h-3.5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></svg>
+                <span>Trigger Reverse PR (Level 5)</span>
               </button>
             </div>
           </div>
@@ -683,8 +733,13 @@ if (amount &lt;= 0) throw new RangeError('Security: Invalid amount');</pre>
           <span class="font-medium text-[#0F172A]">Durable Objects (Transactional SQLite)</span>
         </span>
       </div>
-      <div>
-        Cloudflare Challenge: <em>Build the Next Git Platform</em> — Built by <strong>Mauro Druwel</strong>
+      <div class="text-center md:text-right space-y-1">
+        <div>
+          Cloudflare Challenge: <em>Build the Next Git Platform</em> • Concept &amp; Architecture by <strong>Mauro Druwel</strong>
+        </div>
+        <div class="text-[11px] text-[#94A3B8]">
+          🤖 Interactive UI &amp; simulator created with AI assistance to prove the concept &amp; edge architecture.
+        </div>
       </div>
     </div>
   </footer>
@@ -785,7 +840,13 @@ if (amount &lt;= 0) throw new RangeError('Security: Invalid amount');</pre>
       completedLevels.add(levelNum);
       const count = completedLevels.size;
       document.getElementById('quest-completed-count').innerText = count;
-      document.getElementById('quest-progress-bar').style.width = `${(count / 5) * 100}%`;
+      const pbar = document.getElementById('quest-progress-bar');
+      if (pbar) pbar.style.width = `${(count / 5) * 100}%`;
+
+      const seg = document.getElementById(`quest-seg-${levelNum}`);
+      if (seg) {
+        seg.className = 'h-2 rounded-full bg-[#F6821F] transition-all shadow-xs';
+      }
 
       const badge = document.getElementById(`badge-level-${levelNum}`);
       if (badge) {
