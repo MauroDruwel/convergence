@@ -46,7 +46,7 @@
 </head>
 <body class="min-h-screen flex flex-col bg-[#0F1117] text-[#E6EDF3] text-sm antialiased selection:bg-[#F6821F]/30 selection:text-white">
 
-  <!-- TOP CLOUDFLARE NAV HEADER -->
+  <!-- TOP GLOBAL CLOUDFLARE BAR -->
   <header class="h-12 border-b border-[#2D333B] bg-[#161B22] px-4 flex items-center justify-between text-xs sticky top-0 z-50">
     <div class="flex items-center space-x-3">
       <!-- Cloudflare Logo -->
@@ -57,7 +57,7 @@
         </svg>
       </a>
 
-      <!-- Breadcrumbs -->
+      <!-- Breadcrumbs in Top Header -->
       <div class="flex items-center space-x-2 text-[#7D8590] font-mono text-xs">
         <span class="text-[#444C56]">/</span>
         <span class="text-[#E6EDF3] hover:underline cursor-pointer flex items-center space-x-1">
@@ -81,26 +81,26 @@
         <span class="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse"></span>
         <span>Production</span>
       </span>
-    </div>
 
-    <!-- Right Controls -->
-    <div class="flex items-center space-x-3">
-      <!-- Search Input -->
-      <div id="search-container" class="hidden md:flex items-center space-x-1.5 px-2 py-1 bg-[#0F1117] border border-[#2D333B] rounded-sm text-xs text-[#7D8590] focus-within:border-[#F6821F] transition">
+      <!-- Search Input in Header -->
+      <div id="search-container" class="hidden xl:flex items-center space-x-1.5 px-2.5 py-1 bg-[#0F1117] border border-[#2D333B] rounded-sm text-xs text-[#7D8590] focus-within:border-[#F6821F] transition ml-3">
         <svg class="w-3.5 h-3.5 text-[#7D8590]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input id="search-input" type="text" placeholder="Search resources..." class="bg-transparent border-none outline-none text-[#E6EDF3] text-xs placeholder-[#7D8590] w-32 focus:w-44 transition-all">
+        <input id="search-input" type="text" placeholder="Search resources..." class="bg-transparent border-none outline-none text-[#E6EDF3] text-xs placeholder-[#7D8590] w-36 focus:w-52 transition-all">
         <kbd class="px-1 py-0.2 text-[10px] bg-[#1C212A] border border-[#2D333B] rounded text-[#7D8590]">⌘K</kbd>
       </div>
+    </div>
 
-      <!-- Resource Binding Pill -->
-      <div class="flex items-center space-x-1.5 px-2 py-1 bg-[#0F1117] border border-[#2D333B] rounded-sm text-[11px] font-mono text-[#7D8590]">
+    <!-- Right Header Controls -->
+    <div class="flex items-center space-x-3">
+      <!-- Binding Pill -->
+      <div class="hidden lg:flex items-center space-x-1.5 px-2 py-1 bg-[#0F1117] border border-[#2D333B] rounded-sm text-[11px] font-mono text-[#7D8590]">
         <svg class="w-3 h-3 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
         <span>Binding:</span>
         <span class="text-[#E6EDF3]">env.ARTIFACTS</span>
       </div>
 
       <!-- Storage Pill -->
-      <div class="flex items-center space-x-1.5 px-2 py-1 bg-[#0F1117] border border-[#2D333B] rounded-sm text-[11px] font-mono text-[#7D8590]">
+      <div class="hidden lg:flex items-center space-x-1.5 px-2 py-1 bg-[#0F1117] border border-[#2D333B] rounded-sm text-[11px] font-mono text-[#7D8590]">
         <svg class="w-3 h-3 text-[#10B981]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
         <span>Storage:</span>
         <span class="text-[#10B981]">Durable Object (SQLite)</span>
@@ -124,403 +124,605 @@
     </div>
   </header>
 
-  <!-- SECONDARY TAB NAVIGATION (STICKY BELOW HEADER) -->
-  <div class="border-b border-[#2D333B] bg-[#161B22] px-6 sticky top-12 z-40">
-    <div class="flex items-center space-x-6 text-xs font-medium">
-      <button id="tab-btn-overview" onclick="switchTab('overview')" class="py-3 border-b-2 border-[#F6821F] text-[#E6EDF3] font-semibold flex items-center space-x-2 transition">
-        <svg class="w-3.5 h-3.5 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        <span>Overview &amp; Telemetry</span>
-      </button>
+  <!-- BODY SHELL: CLOUDFLARE LEFT SIDEBAR + MAIN WORKSPACE -->
+  <div class="flex-1 flex">
 
-      <button id="tab-btn-leases" onclick="switchTab('leases')" class="py-3 border-b-2 border-transparent text-[#7D8590] hover:text-[#E6EDF3] transition flex items-center space-x-2">
-        <svg class="w-3.5 h-3.5 text-[#38BDF8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        <span>Symbol Leases &amp; Locks</span>
-        <span class="px-1.5 py-0.2 rounded-sm bg-[#2D333B] text-[10px] text-[#E6EDF3]" id="tab-leases-count">0</span>
-      </button>
+    <!-- CLOUDFLARE AUTHENTIC LEFT SIDEBAR -->
+    <aside class="w-60 bg-[#111318] border-r border-[#2D333B] flex-shrink-0 hidden md:flex flex-col text-xs select-none">
+      <!-- Account Switcher -->
+      <div class="p-3 border-b border-[#2D333B] flex items-center justify-between hover:bg-[#161B22] cursor-pointer transition">
+        <div class="flex items-center space-x-2 truncate">
+          <div class="w-5 h-5 rounded-sm bg-[#F6821F]/20 border border-[#F6821F]/40 flex items-center justify-center text-[10px] font-bold text-[#F6821F] flex-shrink-0">
+            MD
+          </div>
+          <div class="truncate">
+            <div class="text-[#E6EDF3] font-medium leading-none truncate">Mauro Druwel</div>
+            <div class="text-[10px] text-[#7D8590] font-mono leading-none mt-1">cf_mauro_9a2b</div>
+          </div>
+        </div>
+        <svg class="w-3.5 h-3.5 text-[#7D8590] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
 
-      <button id="tab-btn-provenance" onclick="switchTab('provenance')" class="py-3 border-b-2 border-transparent text-[#7D8590] hover:text-[#E6EDF3] transition flex items-center space-x-2">
-        <svg class="w-3.5 h-3.5 text-[#A855F7]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        <span>Git Notes Provenance</span>
-        <span class="px-1.5 py-0.2 rounded-sm bg-[#2D333B] text-[10px] text-[#E6EDF3]" id="tab-notes-count">0</span>
-      </button>
+      <!-- Navigation Links -->
+      <nav class="flex-1 py-3 px-2 space-y-0.5 overflow-y-auto">
+        <a href="#" class="flex items-center space-x-2 px-2.5 py-1.5 text-[#7D8590] hover:text-[#E6EDF3] hover:bg-[#161B22] rounded-sm transition">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>Account Home</span>
+        </a>
 
-      <button id="tab-btn-benchmark" onclick="switchTab('benchmark')" class="py-3 border-b-2 border-transparent text-[#7D8590] hover:text-[#E6EDF3] transition flex items-center space-x-2">
-        <svg class="w-3.5 h-3.5 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-        <span>diff3 Benchmark Harness</span>
-      </button>
+        <!-- Workers & Pages (ACTIVE) -->
+        <div class="pt-2">
+          <div class="px-2.5 py-1 text-[10px] font-semibold text-[#7D8590] uppercase tracking-wider">Compute &amp; Storage</div>
+          <a href="#" class="flex items-center justify-between px-2.5 py-1.5 bg-[#F6821F]/15 text-[#F6821F] font-semibold rounded-sm border-l-2 border-[#F6821F] transition">
+            <span class="flex items-center space-x-2">
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+              <span>Workers &amp; Pages</span>
+            </span>
+            <span class="w-1.5 h-1.5 rounded-full bg-[#F6821F]"></span>
+          </a>
 
-      <button id="tab-btn-settings" onclick="switchTab('settings')" class="py-3 border-b-2 border-transparent text-[#7D8590] hover:text-[#E6EDF3] transition flex items-center space-x-2">
-        <svg class="w-3.5 h-3.5 text-[#7D8590]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        <span>Settings</span>
-      </button>
+          <!-- Sub-items under Workers -->
+          <div class="pl-4 mt-0.5 space-y-0.5 border-l border-[#2D333B] ml-4">
+            <a href="#" class="block px-2 py-1 text-[#E6EDF3] font-medium bg-[#1C212A] rounded-sm">convergence-core</a>
+            <a href="#" class="block px-2 py-1 text-[#7D8590] hover:text-[#E6EDF3] transition">Artifacts (Micro-Worktrees)</a>
+            <a href="#" class="block px-2 py-1 text-[#7D8590] hover:text-[#E6EDF3] transition">D1 Databases</a>
+            <a href="#" class="block px-2 py-1 text-[#7D8590] hover:text-[#E6EDF3] transition">KV Namespaces</a>
+            <a href="#" class="block px-2 py-1 text-[#7D8590] hover:text-[#E6EDF3] transition">Queues</a>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <div class="px-2.5 py-1 text-[10px] font-semibold text-[#7D8590] uppercase tracking-wider">AI Platform</div>
+          <a href="#" class="flex items-center space-x-2 px-2.5 py-1.5 text-[#7D8590] hover:text-[#E6EDF3] hover:bg-[#161B22] rounded-sm transition">
+            <svg class="w-3.5 h-3.5 text-[#A855F7]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <span>Workers AI (Llama 3.3)</span>
+          </a>
+          <a href="#" class="flex items-center space-x-2 px-2.5 py-1.5 text-[#7D8590] hover:text-[#E6EDF3] hover:bg-[#161B22] rounded-sm transition">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span>Vectorize</span>
+          </a>
+        </div>
+
+        <div class="pt-2">
+          <div class="px-2.5 py-1 text-[10px] font-semibold text-[#7D8590] uppercase tracking-wider">Security &amp; Network</div>
+          <a href="#" class="flex items-center space-x-2 px-2.5 py-1.5 text-[#7D8590] hover:text-[#E6EDF3] hover:bg-[#161B22] rounded-sm transition">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>Zero Trust</span>
+          </a>
+          <a href="#" class="flex items-center space-x-2 px-2.5 py-1.5 text-[#7D8590] hover:text-[#E6EDF3] hover:bg-[#161B22] rounded-sm transition">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span>Websites &amp; DNS</span>
+          </a>
+          <a href="#" class="flex items-center space-x-2 px-2.5 py-1.5 text-[#7D8590] hover:text-[#E6EDF3] hover:bg-[#161B22] rounded-sm transition">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            <span>Analytics &amp; Logs</span>
+          </a>
+        </div>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="p-3 border-t border-[#2D333B] text-[11px] text-[#7D8590]">
+        <div class="flex items-center justify-between">
+          <span>Workers Paid Plan</span>
+          <span class="text-[#10B981] font-mono">Active</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN DASHBOARD CONTENT AREA -->
+    <div class="flex-1 flex flex-col min-w-0 bg-[#0F1117] overflow-x-hidden">
+
+      <!-- BREADCRUMBS BAR (MATCHES TEST REQUIREMENTS) -->
+      <div class="px-6 py-2.5 border-b border-[#2D333B] bg-[#161B22]/70 text-xs text-[#7D8590] flex items-center justify-between">
+        <div class="flex items-center space-x-2 font-mono text-xs">
+          <span class="text-[#444C56]">/</span>
+          <span class="text-[#E6EDF3] hover:underline cursor-pointer flex items-center space-x-1">
+            <svg class="w-3 h-3 text-[#7D8590]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>mauro-druwel</span>
+          </span>
+          <span class="text-[#444C56]">/</span>
+          <span class="hover:underline cursor-pointer flex items-center space-x-1">
+            <svg class="w-3 h-3 text-[#7D8590]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+            <span>Workers &amp; Pages</span>
+          </span>
+          <span class="text-[#444C56]">/</span>
+          <span class="text-[#F6821F] font-semibold flex items-center space-x-1">
+            <svg class="w-3 h-3 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <span>convergence-core</span>
+          </span>
+        </div>
+
+        <div class="flex items-center space-x-3 text-[11px] font-mono text-[#7D8590]">
+          <span>Region: <strong class="text-[#E6EDF3]">WNAM (Global Edge)</strong></span>
+          <span>•</span>
+          <span class="px-2 py-0.5 rounded-sm bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/30 font-semibold flex items-center space-x-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse"></span>
+            <span>Production</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- WORKER HERO HEADER (TRUE CLOUDFLARE STYLE) -->
+      <div class="px-6 py-4 bg-[#161B22] border-b border-[#2D333B] flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center space-x-3">
+            <h1 class="text-xl font-bold text-white tracking-tight">convergence-core</h1>
+            <span class="px-2 py-0.5 rounded-sm bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/30 font-mono text-[11px] font-semibold flex items-center space-x-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span>
+              <span>Active</span>
+            </span>
+            <span class="px-2 py-0.5 rounded-sm bg-[#1C212A] border border-[#2D333B] text-[11px] font-mono text-[#7D8590]">
+              Worker (Durable Objects + Artifacts)
+            </span>
+          </div>
+          <div class="mt-1 flex items-center space-x-3 text-xs text-[#7D8590]">
+            <a href="https://convergence-core.mauro-druwel.workers.dev" target="_blank" class="hover:text-[#F6821F] text-[#38BDF8] flex items-center space-x-1 font-mono transition">
+              <span>https://convergence-core.mauro-druwel.workers.dev</span>
+              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+            <span>•</span>
+            <span>Created by Mauro Druwel for Cloudflare Challenge</span>
+          </div>
+        </div>
+
+        <!-- Quick Actions Buttons -->
+        <div class="flex items-center space-x-2">
+          <button onclick="document.getElementById('section-code')?.scrollIntoView({ behavior: 'smooth' })" class="h-8 px-3 bg-[#1C212A] hover:bg-[#22272E] border border-[#2D333B] text-[#E6EDF3] text-xs font-medium rounded-sm transition flex items-center space-x-1.5">
+            <svg class="w-3.5 h-3.5 text-[#10B981]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            <span>Quick Edit (CRDT)</span>
+          </button>
+          <button onclick="document.getElementById('section-events')?.scrollIntoView({ behavior: 'smooth' })" class="h-8 px-3 bg-[#1C212A] hover:bg-[#22272E] border border-[#2D333B] text-[#E6EDF3] text-xs font-medium rounded-sm transition flex items-center space-x-1.5">
+            <svg class="w-3.5 h-3.5 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span>Live Logs</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SECONDARY TAB NAVIGATION (STICKY BELOW HEADER) -->
+      <div class="border-b border-[#2D333B] bg-[#161B22] px-6 sticky top-12 z-40">
+        <div class="flex items-center space-x-6 text-xs font-medium">
+          <button id="tab-btn-overview" onclick="switchTab('overview')" class="py-3 border-b-2 border-[#F6821F] text-[#E6EDF3] font-semibold flex items-center space-x-2 transition">
+            <svg class="w-3.5 h-3.5 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span>Overview &amp; Telemetry</span>
+          </button>
+
+          <button id="tab-btn-leases" onclick="switchTab('leases')" class="py-3 border-b-2 border-transparent text-[#7D8590] hover:text-[#E6EDF3] transition flex items-center space-x-2">
+            <svg class="w-3.5 h-3.5 text-[#38BDF8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>Symbol Leases &amp; Locks</span>
+            <span class="px-1.5 py-0.2 rounded-sm bg-[#2D333B] text-[10px] text-[#E6EDF3]" id="tab-leases-count">0</span>
+          </button>
+
+          <button id="tab-btn-provenance" onclick="switchTab('provenance')" class="py-3 border-b-2 border-transparent text-[#7D8590] hover:text-[#E6EDF3] transition flex items-center space-x-2">
+            <svg class="w-3.5 h-3.5 text-[#A855F7]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <span>Git Notes Provenance</span>
+            <span class="px-1.5 py-0.2 rounded-sm bg-[#2D333B] text-[10px] text-[#E6EDF3]" id="tab-notes-count">0</span>
+          </button>
+
+          <button id="tab-btn-benchmark" onclick="switchTab('benchmark')" class="py-3 border-b-2 border-transparent text-[#7D8590] hover:text-[#E6EDF3] transition flex items-center space-x-2">
+            <svg class="w-3.5 h-3.5 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            <span>diff3 Benchmark Harness</span>
+          </button>
+
+          <button id="tab-btn-settings" onclick="switchTab('settings')" class="py-3 border-b-2 border-transparent text-[#7D8590] hover:text-[#E6EDF3] transition flex items-center space-x-2">
+            <svg class="w-3.5 h-3.5 text-[#7D8590]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span>Settings</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- CONNECTED BINDINGS STRIP (AUTHENTIC CLOUDFLARE WORKERS RESOURCE STRIP) -->
+      <div class="px-6 pt-5">
+        <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider flex items-center space-x-1.5">
+              <svg class="w-3.5 h-3.5 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <span>Connected Bindings &amp; Storage Subsystems</span>
+            </span>
+            <span class="text-[10px] text-[#7D8590] font-mono">wrangler.jsonc</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="p-2.5 bg-[#0F1117] border border-[#2D333B] rounded-sm flex items-start space-x-2.5">
+              <div class="p-1.5 bg-[#F6821F]/15 border border-[#F6821F]/30 rounded text-[#F6821F]">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+              </div>
+              <div>
+                <div class="text-xs font-mono font-bold text-[#E6EDF3]">env.ARTIFACTS</div>
+                <div class="text-[11px] text-[#7D8590]">Ephemeral Micro-Worktree Engine</div>
+              </div>
+            </div>
+
+            <div class="p-2.5 bg-[#0F1117] border border-[#2D333B] rounded-sm flex items-start space-x-2.5">
+              <div class="p-1.5 bg-[#10B981]/15 border border-[#10B981]/30 rounded text-[#10B981]">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+              </div>
+              <div>
+                <div class="text-xs font-mono font-bold text-[#E6EDF3]">env.REPO_BRAIN</div>
+                <div class="text-[11px] text-[#7D8590]">Durable Object (SQLite ACID State)</div>
+              </div>
+            </div>
+
+            <div class="p-2.5 bg-[#0F1117] border border-[#2D333B] rounded-sm flex items-start space-x-2.5">
+              <div class="p-1.5 bg-[#A855F7]/15 border border-[#A855F7]/30 rounded text-[#A855F7]">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </div>
+              <div>
+                <div class="text-xs font-mono font-bold text-[#E6EDF3]">env.AI (@cf/meta/llama)</div>
+                <div class="text-[11px] text-[#7D8590]">Workers AI Arbiter &amp; Provenance</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN METRICS & ACTIONS BODY -->
+      <main class="p-6 space-y-5">
+
+        <!-- HERO METRICS STRIP (HIGH DENSITY FLAT CARDS WITH CORNER ICONS) -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+          <!-- Card 1 -->
+          <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">AST Merge Rate</span>
+              <svg class="w-3.5 h-3.5 text-[#10B981]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="mt-2 text-xl font-bold font-mono text-[#10B981]" id="stat-clean-rate">100.0%</div>
+            <div class="text-[11px] text-[#7D8590] mt-0.5"><span id="stat-clean">0</span> clean symbol merges</div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">Git Line Conflicts</span>
+              <svg class="w-3.5 h-3.5 text-[#10B981]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            </div>
+            <div class="mt-2 text-xl font-bold font-mono text-[#10B981]" id="stat-conflicts">0</div>
+            <div class="text-[11px] text-[#7D8590] mt-0.5">Eliminated via AST hashing</div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">Active Leases</span>
+              <svg class="w-3.5 h-3.5 text-[#38BDF8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div class="mt-2 text-xl font-bold font-mono text-[#38BDF8]" id="stat-leases">0</div>
+            <div class="text-[11px] text-[#7D8590] mt-0.5">Edit-time symbol locks</div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">CoT Git Notes</span>
+              <svg class="w-3.5 h-3.5 text-[#A855F7]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="mt-2 text-xl font-bold font-mono text-[#A855F7]" id="stat-notes">0</div>
+            <div class="text-[11px] text-[#7D8590] mt-0.5">refs/notes/agent-provenance</div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">Lamport Clock</span>
+              <svg class="w-3.5 h-3.5 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="mt-2 text-xl font-bold font-mono text-[#F6821F]" id="stat-lamport">L: 0</div>
+            <div class="text-[11px] text-[#7D8590] mt-0.5">Causal scalar sequence</div>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">Throughput</span>
+              <svg class="w-3.5 h-3.5 text-[#E6EDF3]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <div class="mt-2 text-xl font-bold font-mono text-[#E6EDF3]" id="stat-throughput">96+ ops/s</div>
+            <div class="text-[11px] text-[#7D8590] mt-0.5">Durable Object latency: 10ms</div>
+          </div>
+        </div>
+
+        <!-- ACTION TOOLBAR (CRISP SVG BUTTONS WITHOUT EMOJIS) -->
+        <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center space-x-2">
+            <svg class="w-4 h-4 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <span class="text-xs font-semibold text-[#E6EDF3]">Swarm Operations:</span>
+            <span class="text-xs text-[#7D8590]">Dispatch concurrent agent workloads against Cloudflare Durable Objects</span>
+          </div>
+
+          <div class="flex items-center flex-wrap gap-2">
+            <!-- Swarm Button -->
+            <button id="btn-swarm" onclick="triggerSwarmWave()" class="h-8 px-3 bg-[#F6821F] hover:bg-[#FA8C16] text-white text-xs font-semibold rounded-sm transition flex items-center space-x-1.5 focus:outline-none focus:ring-1 focus:ring-[#F6821F]">
+              <svg id="icon-swarm" class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              <span id="btn-swarm-text">Dispatch Swarm Wave (8 Agents)</span>
+            </button>
+
+            <!-- Benchmark Button -->
+            <button id="btn-bench" onclick="runBenchmark()" class="h-8 px-3 bg-[#1C212A] hover:bg-[#22272E] border border-[#2D333B] text-[#E6EDF3] text-xs font-medium rounded-sm transition flex items-center space-x-1.5">
+              <svg id="icon-bench" class="w-3.5 h-3.5 text-[#7D8590]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              <span id="btn-bench-text">Run diff3 Benchmark (25 Agents vs Git)</span>
+            </button>
+
+            <!-- Lease Button -->
+            <button id="btn-lease" onclick="testLeaseAcquire()" class="h-8 px-3 bg-[#1C212A] hover:bg-[#22272E] border border-[#2D333B] text-[#38BDF8] text-xs font-medium rounded-sm transition flex items-center space-x-1.5">
+              <svg id="icon-lease" class="w-3.5 h-3.5 text-[#38BDF8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3M18.5 4.5l3 3"/></svg>
+              <span id="btn-lease-text">Acquire Symbol Lease</span>
+            </button>
+
+            <!-- Immune Attack Button -->
+            <button id="btn-immune" onclick="testImmuneAttack()" class="h-8 px-3 bg-[#1C212A] hover:bg-[#22272E] border border-[#2D333B] text-[#F87171] text-xs font-medium rounded-sm transition flex items-center space-x-1.5">
+              <svg id="icon-immune" class="w-3.5 h-3.5 text-[#F87171]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span id="btn-immune-text">Adversarial AST Probe</span>
+            </button>
+
+            <!-- Reverse PR Simulation Button -->
+            <button id="btn-trigger-rpr" onclick="triggerTestRPR()" class="h-8 px-3 bg-[#1C212A] hover:bg-[#22272E] border border-[#2D333B] text-[#F59E0B] text-xs font-medium rounded-sm transition flex items-center space-x-1.5">
+              <svg class="w-3.5 h-3.5 text-[#F59E0B]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></svg>
+              <span id="btn-rpr-text">Simulate Reverse PR</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- COMPARISON RESULTS (DIFF3 HARNESS) -->
+        <div id="section-benchmark" class="border border-[#2D333B] bg-[#161B22] rounded-sm">
+          <div class="px-4 py-3 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
+            <div class="flex items-center space-x-2">
+              <svg class="w-4 h-4 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              <div>
+                <h2 class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Head-to-Head Concurrency Benchmark: GNU diff3 vs. Convergence</h2>
+                <p class="text-[11px] text-[#7D8590]">Identical workload: 25 agents making concurrent function and interface changes to the same file</p>
+              </div>
+            </div>
+            <span class="text-xs font-mono text-[#7D8590]" id="bench-status">Ready</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#2D333B]">
+            <!-- Git Box -->
+            <div class="p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="font-semibold text-xs text-[#F87171] flex items-center space-x-1.5">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                  <span>Traditional Git / GitHub (diff3 Engine)</span>
+                </span>
+                <span class="text-[11px] font-mono text-[#7D8590]">Line 3-Way Merge</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2 text-center">
+                <div class="bg-[#0F1117] p-2 border border-[#2D333B] rounded-sm">
+                  <div class="text-[10px] text-[#7D8590]">Success Rate</div>
+                  <div class="text-base font-bold font-mono text-[#F87171]" id="git-rate">4%</div>
+                </div>
+                <div class="bg-[#0F1117] p-2 border border-[#2D333B] rounded-sm">
+                  <div class="text-[10px] text-[#7D8590]">Merge Conflicts</div>
+                  <div class="text-base font-bold font-mono text-[#F87171]" id="git-conflicts">24 / 25</div>
+                </div>
+                <div class="bg-[#0F1117] p-2 border border-[#2D333B] rounded-sm">
+                  <div class="text-[10px] text-[#7D8590]">Blocked Agents</div>
+                  <div class="text-base font-bold font-mono text-[#F87171]" id="git-stalled">24</div>
+                </div>
+              </div>
+              <p class="text-[11px] text-[#7D8590] leading-normal">
+                Textual line collisions force rebase queues and block autonomous deployment.
+              </p>
+            </div>
+
+            <!-- Convergence Box -->
+            <div class="p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="font-semibold text-xs text-[#10B981] flex items-center space-x-1.5">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  <span>Convergence (Cloudflare Workers + Artifacts)</span>
+                </span>
+                <span class="text-[11px] font-mono text-[#10B981]">AST-CRDT Engine</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2 text-center">
+                <div class="bg-[#0F1117] p-2 border border-[#2D333B] rounded-sm">
+                  <div class="text-[10px] text-[#7D8590]">Success Rate</div>
+                  <div class="text-base font-bold font-mono text-[#10B981]" id="conv-rate">100%</div>
+                </div>
+                <div class="bg-[#0F1117] p-2 border border-[#2D333B] rounded-sm">
+                  <div class="text-[10px] text-[#7D8590]">Merge Conflicts</div>
+                  <div class="text-base font-bold font-mono text-[#10B981]" id="conv-conflicts">0</div>
+                </div>
+                <div class="bg-[#0F1117] p-2 border border-[#2D333B] rounded-sm">
+                  <div class="text-[10px] text-[#7D8590]">Avg Merge Latency</div>
+                  <div class="text-base font-bold font-mono text-[#10B981]" id="conv-latency">10ms</div>
+                </div>
+              </div>
+              <p class="text-[11px] text-[#7D8590] leading-normal">
+                Symbols reconciled with zero line collisions via deterministic content-addressed AST hashing.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- MIDDLE SECTION: TOPOLOGY RADAR & REVERSE PRS -->
+        <div id="section-overview" class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <!-- Swarm Topology Canvas -->
+          <div class="lg:col-span-2 border border-[#2D333B] bg-[#161B22] rounded-sm flex flex-col">
+            <div class="px-4 py-2.5 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
+              <div class="flex items-center space-x-2">
+                <svg class="w-4 h-4 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                <span class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Swarm Topology &amp; Artifacts Hub</span>
+              </div>
+              <span class="text-[11px] font-mono text-[#7D8590]">60 FPS Edge Actor Visualizer</span>
+            </div>
+            <div class="p-3 flex-1 flex flex-col">
+              <div class="relative w-full h-[280px] bg-[#0F1117] border border-[#2D333B] rounded-sm overflow-hidden">
+                <canvas id="swarm-canvas" class="w-full h-full block"></canvas>
+              </div>
+              <div class="mt-2 flex items-center justify-between text-[11px] text-[#7D8590] font-mono">
+                <span class="flex items-center space-x-1.5">
+                  <span class="w-2 h-2 rounded-full bg-[#F6821F]"></span>
+                  <span>Center: Cloudflare Artifacts (RepoBrain DO)</span>
+                </span>
+                <span class="flex items-center space-x-1.5">
+                  <span class="w-2 h-2 rounded-full bg-[#38BDF8]"></span>
+                  <span>Orbits: Active Swarm Agents</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reverse Pull Requests Panel -->
+          <div id="section-rpr" class="border border-[#2D333B] bg-[#161B22] rounded-sm flex flex-col">
+            <div class="px-4 py-2.5 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
+              <div class="flex items-center space-x-2">
+                <svg class="w-4 h-4 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></svg>
+                <span class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Reverse Pull Requests</span>
+              </div>
+              <span class="text-[11px] font-mono text-[#F6821F]">Human Governance</span>
+            </div>
+            <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+              <div id="rpr-container" class="space-y-2">
+                <div class="text-xs text-[#10B981] font-mono flex items-center space-x-1.5">
+                  <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Zero pending architectural inquiries. Agents aligned with policy.</span>
+                </div>
+              </div>
+              <div class="p-2.5 bg-[#0F1117] border border-[#2D333B] rounded-sm text-[11px] text-[#7D8590] leading-relaxed">
+                <strong class="text-[#E6EDF3]">Autonomous Inversion:</strong> Agents resolve code-level changes autonomously and query human supervisors only when high-level architectural tradeoffs require steering.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DENSE DATA TABLES (EDIT-TIME LEASES & GIT NOTES PROVENANCE) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+          <!-- Table 1: Edit-Time Symbol Leases -->
+          <div id="section-leases" class="border border-[#2D333B] bg-[#161B22] rounded-sm flex flex-col">
+            <div class="px-4 py-2.5 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
+              <div class="flex items-center space-x-2">
+                <svg class="w-4 h-4 text-[#38BDF8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Edit-Time AST Symbol Leases</span>
+                <span class="ml-1 text-[11px] text-[#7D8590]">Lock-free semantic coordination</span>
+              </div>
+              <span class="text-[11px] font-mono text-[#38BDF8]" id="table-leases-status">0 Active</span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs font-mono">
+                <thead class="bg-[#0F1117] border-b border-[#2D333B] text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">
+                  <tr>
+                    <th class="px-4 py-2">Symbol ID</th>
+                    <th class="px-4 py-2">Holder</th>
+                    <th class="px-4 py-2">Type</th>
+                    <th class="px-4 py-2">TTL</th>
+                    <th class="px-4 py-2">Intent</th>
+                  </tr>
+                </thead>
+                <tbody id="leases-table-body" class="divide-y divide-[#2D333B] text-xs">
+                  <tr>
+                    <td colspan="5" class="px-4 py-6 text-center text-[#7D8590] font-sans">
+                      <div class="flex items-center justify-center space-x-2">
+                        <svg class="w-4 h-4 text-[#38BDF8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3M18.5 4.5l3 3"/></svg>
+                        <span>No active leases. All symbols available for concurrent agent checkout.</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Table 2: Git Notes Chain-of-Thought Provenance -->
+          <div id="section-provenance" class="border border-[#2D333B] bg-[#161B22] rounded-sm flex flex-col">
+            <div class="px-4 py-2.5 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
+              <div class="flex items-center space-x-2">
+                <svg class="w-4 h-4 text-[#A855F7]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Git Notes Provenance Inspector</span>
+                <span class="ml-1 text-[11px] text-[#7D8590]">refs/notes/agent-provenance</span>
+              </div>
+              <span class="text-[11px] font-mono text-[#A855F7]" id="table-notes-status">0 Logged</span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs font-mono">
+                <thead class="bg-[#0F1117] border-b border-[#2D333B] text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">
+                  <tr>
+                    <th class="px-4 py-2">Symbol</th>
+                    <th class="px-4 py-2">Agent / Model</th>
+                    <th class="px-4 py-2">Intent &amp; Reasoning</th>
+                    <th class="px-4 py-2 text-right">Telemetry</th>
+                  </tr>
+                </thead>
+                <tbody id="provenance-table-body" class="divide-y divide-[#2D333B] text-xs">
+                  <tr>
+                    <td colspan="4" class="px-4 py-6 text-center text-[#7D8590] font-sans">
+                      <div class="flex items-center justify-center space-x-2">
+                        <svg class="w-4 h-4 text-[#A855F7]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                        <span>Awaiting agent commits to log Chain-of-Thought records to Git notes.</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- CODE VIEWER & LIVE STREAM ROW -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <!-- Unified Code Viewer -->
+          <div id="section-code" class="border border-[#2D333B] bg-[#161B22] rounded-sm flex flex-col">
+            <div class="px-4 py-2.5 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
+              <div class="flex items-center space-x-2">
+                <svg class="w-4 h-4 text-[#10B981]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                <span class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Mainline Unified Codebase (index.ts)</span>
+              </div>
+              <span class="text-[11px] font-mono text-[#7D8590]">Auto-Refreshed via CRDT</span>
+            </div>
+            <div class="p-3 bg-[#0F1117] flex-1 max-h-[340px] overflow-auto">
+              <pre id="code-viewer" class="font-mono text-xs text-[#E6EDF3] leading-relaxed">// Loading unified source from Cloudflare Artifacts...</pre>
+            </div>
+          </div>
+
+          <!-- Live Event Stream -->
+          <div id="section-events" class="border border-[#2D333B] bg-[#161B22] rounded-sm flex flex-col">
+            <div class="px-4 py-2.5 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
+              <div class="flex items-center space-x-2">
+                <span class="h-2 w-2 rounded-full bg-[#F6821F] animate-pulse"></span>
+                <svg class="w-4 h-4 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                <span class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Live Telemetry Stream</span>
+              </div>
+              <span class="text-[11px] font-mono text-[#7D8590]">WebSocket Hibernation</span>
+            </div>
+            <div id="event-stream" class="p-3 bg-[#0F1117] flex-1 max-h-[340px] overflow-y-auto space-y-1.5 font-mono text-xs">
+              <div class="text-[#7D8590] flex items-center space-x-1.5">
+                <svg class="w-3 h-3 text-[#10B981]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>[System] Connected to Durable Object event sequencer. Awaiting events...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+
+      <!-- CLOUDFLARE DASH FOOTER -->
+      <footer class="border-t border-[#2D333B] bg-[#161B22] py-4 px-6 text-xs text-[#7D8590] mt-8">
+        <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
+          <div class="flex items-center space-x-4">
+            <span class="flex items-center space-x-1">
+              <svg class="w-3 h-3 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+              <span>Cloudflare Workers</span>
+            </span>
+            <span class="text-[#444C56]">•</span>
+            <span class="flex items-center space-x-1">
+              <svg class="w-3 h-3 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+              <span>Artifacts Storage Engine</span>
+            </span>
+            <span class="text-[#444C56]">•</span>
+            <span class="flex items-center space-x-1">
+              <svg class="w-3 h-3 text-[#10B981]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+              <span>Durable Objects (Transactional SQLite)</span>
+            </span>
+          </div>
+          <div>
+            Cloudflare Challenge: <em>Build the Next Git Platform</em> — Built by Mauro Druwel
+          </div>
+        </div>
+      </footer>
+
     </div>
   </div>
-
-  <!-- MAIN DASHBOARD CONTENT -->
-  <main class="flex-1 max-w-[1600px] w-full mx-auto p-6 space-y-5">
-
-    <!-- HERO METRICS STRIP (HIGH DENSITY FLAT CARDS WITH CORNER ICONS) -->
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-      <!-- Card 1 -->
-      <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">AST Merge Rate</span>
-          <svg class="w-3.5 h-3.5 text-[#10B981]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        </div>
-        <div class="mt-2 text-xl font-bold font-mono text-[#10B981]" id="stat-clean-rate">100.0%</div>
-        <div class="text-[11px] text-[#7D8590] mt-0.5"><span id="stat-clean">0</span> clean symbol merges</div>
-      </div>
-
-      <!-- Card 2 -->
-      <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">Git Line Conflicts</span>
-          <svg class="w-3.5 h-3.5 text-[#10B981]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
-        </div>
-        <div class="mt-2 text-xl font-bold font-mono text-[#10B981]" id="stat-conflicts">0</div>
-        <div class="text-[11px] text-[#7D8590] mt-0.5">Eliminated via AST hashing</div>
-      </div>
-
-      <!-- Card 3 -->
-      <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">Active Leases</span>
-          <svg class="w-3.5 h-3.5 text-[#38BDF8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        </div>
-        <div class="mt-2 text-xl font-bold font-mono text-[#38BDF8]" id="stat-leases">0</div>
-        <div class="text-[11px] text-[#7D8590] mt-0.5">Edit-time symbol locks</div>
-      </div>
-
-      <!-- Card 4 -->
-      <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">CoT Git Notes</span>
-          <svg class="w-3.5 h-3.5 text-[#A855F7]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        </div>
-        <div class="mt-2 text-xl font-bold font-mono text-[#A855F7]" id="stat-notes">0</div>
-        <div class="text-[11px] text-[#7D8590] mt-0.5">refs/notes/agent-provenance</div>
-      </div>
-
-      <!-- Card 5 -->
-      <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">Lamport Clock</span>
-          <svg class="w-3.5 h-3.5 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        </div>
-        <div class="mt-2 text-xl font-bold font-mono text-[#F6821F]" id="stat-lamport">L: 0</div>
-        <div class="text-[11px] text-[#7D8590] mt-0.5">Causal scalar sequence</div>
-      </div>
-
-      <!-- Card 6 -->
-      <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">Throughput</span>
-          <svg class="w-3.5 h-3.5 text-[#E6EDF3]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        </div>
-        <div class="mt-2 text-xl font-bold font-mono text-[#E6EDF3]" id="stat-throughput">96+ ops/s</div>
-        <div class="text-[11px] text-[#7D8590] mt-0.5">Durable Object latency: 10ms</div>
-      </div>
-    </div>
-
-    <!-- ACTION TOOLBAR (CRISP SVG BUTTONS WITHOUT EMOJIS) -->
-    <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm flex flex-wrap items-center justify-between gap-3">
-      <div class="flex items-center space-x-2">
-        <svg class="w-4 h-4 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        <span class="text-xs font-semibold text-[#E6EDF3]">Swarm Operations:</span>
-        <span class="text-xs text-[#7D8590]">Dispatch concurrent agent workloads against Cloudflare Durable Objects</span>
-      </div>
-
-      <div class="flex items-center flex-wrap gap-2">
-        <!-- Swarm Button -->
-        <button id="btn-swarm" onclick="triggerSwarmWave()" class="h-8 px-3 bg-[#F6821F] hover:bg-[#FA8C16] text-white text-xs font-semibold rounded-sm transition flex items-center space-x-1.5 focus:outline-none focus:ring-1 focus:ring-[#F6821F]">
-          <svg id="icon-swarm" class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-          <span id="btn-swarm-text">Dispatch Swarm Wave (8 Agents)</span>
-        </button>
-
-        <!-- Benchmark Button -->
-        <button id="btn-bench" onclick="runBenchmark()" class="h-8 px-3 bg-[#1C212A] hover:bg-[#22272E] border border-[#2D333B] text-[#E6EDF3] text-xs font-medium rounded-sm transition flex items-center space-x-1.5">
-          <svg id="icon-bench" class="w-3.5 h-3.5 text-[#7D8590]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-          <span id="btn-bench-text">Run diff3 Benchmark (25 Agents vs Git)</span>
-        </button>
-
-        <!-- Lease Button -->
-        <button id="btn-lease" onclick="testLeaseAcquire()" class="h-8 px-3 bg-[#1C212A] hover:bg-[#22272E] border border-[#2D333B] text-[#38BDF8] text-xs font-medium rounded-sm transition flex items-center space-x-1.5">
-          <svg id="icon-lease" class="w-3.5 h-3.5 text-[#38BDF8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3M18.5 4.5l3 3"/></svg>
-          <span id="btn-lease-text">Acquire Symbol Lease</span>
-        </button>
-
-        <!-- Immune Attack Button -->
-        <button id="btn-immune" onclick="testImmuneAttack()" class="h-8 px-3 bg-[#1C212A] hover:bg-[#22272E] border border-[#2D333B] text-[#F87171] text-xs font-medium rounded-sm transition flex items-center space-x-1.5">
-          <svg id="icon-immune" class="w-3.5 h-3.5 text-[#F87171]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span id="btn-immune-text">Adversarial AST Probe</span>
-        </button>
-
-        <!-- Reverse PR Simulation Button -->
-        <button id="btn-trigger-rpr" onclick="triggerTestRPR()" class="h-8 px-3 bg-[#1C212A] hover:bg-[#22272E] border border-[#2D333B] text-[#F59E0B] text-xs font-medium rounded-sm transition flex items-center space-x-1.5">
-          <svg class="w-3.5 h-3.5 text-[#F59E0B]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></svg>
-          <span id="btn-rpr-text">Simulate Reverse PR</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- COMPARISON RESULTS (DIFF3 HARNESS) -->
-    <div id="section-benchmark" class="border border-[#2D333B] bg-[#161B22] rounded-sm">
-      <div class="px-4 py-3 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
-        <div class="flex items-center space-x-2">
-          <svg class="w-4 h-4 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-          <div>
-            <h2 class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Head-to-Head Concurrency Benchmark: GNU diff3 vs. Convergence</h2>
-            <p class="text-[11px] text-[#7D8590]">Identical workload: 25 agents making concurrent function and interface changes to the same file</p>
-          </div>
-        </div>
-        <span class="text-xs font-mono text-[#7D8590]" id="bench-status">Ready</span>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#2D333B]">
-        <!-- Git Box -->
-        <div class="p-4 space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="font-semibold text-xs text-[#F87171] flex items-center space-x-1.5">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-              <span>Traditional Git / GitHub (diff3 Engine)</span>
-            </span>
-            <span class="text-[11px] font-mono text-[#7D8590]">Line 3-Way Merge</span>
-          </div>
-          <div class="grid grid-cols-3 gap-2 text-center">
-            <div class="bg-[#0F1117] p-2 border border-[#2D333B] rounded-sm">
-              <div class="text-[10px] text-[#7D8590]">Success Rate</div>
-              <div class="text-base font-bold font-mono text-[#F87171]" id="git-rate">4%</div>
-            </div>
-            <div class="bg-[#0F1117] p-2 border border-[#2D333B] rounded-sm">
-              <div class="text-[10px] text-[#7D8590]">Merge Conflicts</div>
-              <div class="text-base font-bold font-mono text-[#F87171]" id="git-conflicts">24 / 25</div>
-            </div>
-            <div class="bg-[#0F1117] p-2 border border-[#2D333B] rounded-sm">
-              <div class="text-[10px] text-[#7D8590]">Blocked Agents</div>
-              <div class="text-base font-bold font-mono text-[#F87171]" id="git-stalled">24</div>
-            </div>
-          </div>
-          <p class="text-[11px] text-[#7D8590] leading-normal">
-            Textual line collisions force rebase queues and block autonomous deployment.
-          </p>
-        </div>
-
-        <!-- Convergence Box -->
-        <div class="p-4 space-y-3">
-          <div class="flex items-center justify-between">
-            <span class="font-semibold text-xs text-[#10B981] flex items-center space-x-1.5">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-              <span>Convergence (Cloudflare Workers + Artifacts)</span>
-            </span>
-            <span class="text-[11px] font-mono text-[#10B981]">AST-CRDT Engine</span>
-          </div>
-          <div class="grid grid-cols-3 gap-2 text-center">
-            <div class="bg-[#0F1117] p-2 border border-[#2D333B] rounded-sm">
-              <div class="text-[10px] text-[#7D8590]">Success Rate</div>
-              <div class="text-base font-bold font-mono text-[#10B981]" id="conv-rate">100%</div>
-            </div>
-            <div class="bg-[#0F1117] p-2 border border-[#2D333B] rounded-sm">
-              <div class="text-[10px] text-[#7D8590]">Merge Conflicts</div>
-              <div class="text-base font-bold font-mono text-[#10B981]" id="conv-conflicts">0</div>
-            </div>
-            <div class="bg-[#0F1117] p-2 border border-[#2D333B] rounded-sm">
-              <div class="text-[10px] text-[#7D8590]">Avg Merge Latency</div>
-              <div class="text-base font-bold font-mono text-[#10B981]" id="conv-latency">10ms</div>
-            </div>
-          </div>
-          <p class="text-[11px] text-[#7D8590] leading-normal">
-            Symbols reconciled with zero line collisions via deterministic content-addressed AST hashing.
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <!-- MIDDLE SECTION: TOPOLOGY RADAR & REVERSE PRS -->
-    <div id="section-overview" class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-      <!-- Swarm Topology Canvas -->
-      <div class="lg:col-span-2 border border-[#2D333B] bg-[#161B22] rounded-sm flex flex-col">
-        <div class="px-4 py-2.5 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
-          <div class="flex items-center space-x-2">
-            <svg class="w-4 h-4 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-            <span class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Swarm Topology &amp; Artifacts Hub</span>
-          </div>
-          <span class="text-[11px] font-mono text-[#7D8590]">60 FPS Edge Actor Visualizer</span>
-        </div>
-        <div class="p-3 flex-1 flex flex-col">
-          <div class="relative w-full h-[280px] bg-[#0F1117] border border-[#2D333B] rounded-sm overflow-hidden">
-            <canvas id="swarm-canvas" class="w-full h-full block"></canvas>
-          </div>
-          <div class="mt-2 flex items-center justify-between text-[11px] text-[#7D8590] font-mono">
-            <span class="flex items-center space-x-1.5">
-              <span class="w-2 h-2 rounded-full bg-[#F6821F]"></span>
-              <span>Center: Cloudflare Artifacts (RepoBrain DO)</span>
-            </span>
-            <span class="flex items-center space-x-1.5">
-              <span class="w-2 h-2 rounded-full bg-[#38BDF8]"></span>
-              <span>Orbits: Active Swarm Agents</span>
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Reverse Pull Requests Panel -->
-      <div id="section-rpr" class="border border-[#2D333B] bg-[#161B22] rounded-sm flex flex-col">
-        <div class="px-4 py-2.5 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
-          <div class="flex items-center space-x-2">
-            <svg class="w-4 h-4 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></svg>
-            <span class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Reverse Pull Requests</span>
-          </div>
-          <span class="text-[11px] font-mono text-[#F6821F]">Human Governance</span>
-        </div>
-        <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
-          <div id="rpr-container" class="space-y-2">
-            <div class="text-xs text-[#10B981] font-mono flex items-center space-x-1.5">
-              <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              <span>Zero pending architectural inquiries. Agents aligned with policy.</span>
-            </div>
-          </div>
-          <div class="p-2.5 bg-[#0F1117] border border-[#2D333B] rounded-sm text-[11px] text-[#7D8590] leading-relaxed">
-            <strong class="text-[#E6EDF3]">Autonomous Inversion:</strong> Agents resolve code-level changes autonomously and query human supervisors only when high-level architectural tradeoffs require steering.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- DENSE DATA TABLES (EDIT-TIME LEASES & GIT NOTES PROVENANCE) -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-
-      <!-- Table 1: Edit-Time Symbol Leases -->
-      <div id="section-leases" class="border border-[#2D333B] bg-[#161B22] rounded-sm flex flex-col">
-        <div class="px-4 py-2.5 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
-          <div class="flex items-center space-x-2">
-            <svg class="w-4 h-4 text-[#38BDF8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            <span class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Edit-Time AST Symbol Leases</span>
-            <span class="ml-1 text-[11px] text-[#7D8590]">Lock-free semantic coordination</span>
-          </div>
-          <span class="text-[11px] font-mono text-[#38BDF8]" id="table-leases-status">0 Active</span>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs font-mono">
-            <thead class="bg-[#0F1117] border-b border-[#2D333B] text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">
-              <tr>
-                <th class="px-4 py-2">Symbol ID</th>
-                <th class="px-4 py-2">Holder</th>
-                <th class="px-4 py-2">Type</th>
-                <th class="px-4 py-2">TTL</th>
-                <th class="px-4 py-2">Intent</th>
-              </tr>
-            </thead>
-            <tbody id="leases-table-body" class="divide-y divide-[#2D333B] text-xs">
-              <tr>
-                <td colspan="5" class="px-4 py-6 text-center text-[#7D8590] font-sans">
-                  <div class="flex items-center justify-center space-x-2">
-                    <svg class="w-4 h-4 text-[#38BDF8]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3M18.5 4.5l3 3"/></svg>
-                    <span>No active leases. All symbols available for concurrent agent checkout.</span>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Table 2: Git Notes Chain-of-Thought Provenance -->
-      <div id="section-provenance" class="border border-[#2D333B] bg-[#161B22] rounded-sm flex flex-col">
-        <div class="px-4 py-2.5 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
-          <div class="flex items-center space-x-2">
-            <svg class="w-4 h-4 text-[#A855F7]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            <span class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Git Notes Provenance Inspector</span>
-            <span class="ml-1 text-[11px] text-[#7D8590]">refs/notes/agent-provenance</span>
-          </div>
-          <span class="text-[11px] font-mono text-[#A855F7]" id="table-notes-status">0 Logged</span>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs font-mono">
-            <thead class="bg-[#0F1117] border-b border-[#2D333B] text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">
-              <tr>
-                <th class="px-4 py-2">Symbol</th>
-                <th class="px-4 py-2">Agent / Model</th>
-                <th class="px-4 py-2">Intent &amp; Reasoning</th>
-                <th class="px-4 py-2 text-right">Telemetry</th>
-              </tr>
-            </thead>
-            <tbody id="provenance-table-body" class="divide-y divide-[#2D333B] text-xs">
-              <tr>
-                <td colspan="4" class="px-4 py-6 text-center text-[#7D8590] font-sans">
-                  <div class="flex items-center justify-center space-x-2">
-                    <svg class="w-4 h-4 text-[#A855F7]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                    <span>Awaiting agent commits to log Chain-of-Thought records to Git notes.</span>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- CODE VIEWER & LIVE STREAM ROW -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-      <!-- Unified Code Viewer -->
-      <div id="section-code" class="border border-[#2D333B] bg-[#161B22] rounded-sm flex flex-col">
-        <div class="px-4 py-2.5 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
-          <div class="flex items-center space-x-2">
-            <svg class="w-4 h-4 text-[#10B981]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-            <span class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Mainline Unified Codebase (index.ts)</span>
-          </div>
-          <span class="text-[11px] font-mono text-[#7D8590]">Auto-Refreshed via CRDT</span>
-        </div>
-        <div class="p-3 bg-[#0F1117] flex-1 max-h-[340px] overflow-auto">
-          <pre id="code-viewer" class="font-mono text-xs text-[#E6EDF3] leading-relaxed">// Loading unified source from Cloudflare Artifacts...</pre>
-        </div>
-      </div>
-
-      <!-- Live Event Stream -->
-      <div id="section-events" class="border border-[#2D333B] bg-[#161B22] rounded-sm flex flex-col">
-        <div class="px-4 py-2.5 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
-          <div class="flex items-center space-x-2">
-            <span class="h-2 w-2 rounded-full bg-[#F6821F] animate-pulse"></span>
-            <svg class="w-4 h-4 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            <span class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Live Telemetry Stream</span>
-          </div>
-          <span class="text-[11px] font-mono text-[#7D8590]">WebSocket Hibernation</span>
-        </div>
-        <div id="event-stream" class="p-3 bg-[#0F1117] flex-1 max-h-[340px] overflow-y-auto space-y-1.5 font-mono text-xs">
-          <div class="text-[#7D8590] flex items-center space-x-1.5">
-            <svg class="w-3 h-3 text-[#10B981]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-            <span>[System] Connected to Durable Object event sequencer. Awaiting events...</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </main>
-
-  <!-- CLOUDFLARE DASH FOOTER -->
-  <footer class="border-t border-[#2D333B] bg-[#161B22] py-4 px-6 text-xs text-[#7D8590] mt-8">
-    <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
-      <div class="flex items-center space-x-4">
-        <span class="flex items-center space-x-1">
-          <svg class="w-3 h-3 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-          <span>Cloudflare Workers</span>
-        </span>
-        <span class="text-[#444C56]">•</span>
-        <span class="flex items-center space-x-1">
-          <svg class="w-3 h-3 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-          <span>Artifacts Storage Engine</span>
-        </span>
-        <span class="text-[#444C56]">•</span>
-        <span class="flex items-center space-x-1">
-          <svg class="w-3 h-3 text-[#10B981]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
-          <span>Durable Objects (Transactional SQLite)</span>
-        </span>
-      </div>
-      <div>
-        Cloudflare Challenge: <em>Build the Next Git Platform</em> — Built by Mauro Druwel
-      </div>
-    </div>
-  </footer>
 
   <!-- CLIENT SCRIPT -->
   <script>
@@ -626,7 +828,7 @@
         }
       });
 
-      // Smooth scroll to relevant section
+      // Scroll to relevant section
       if (tabId === 'leases') {
         document.getElementById('section-leases')?.scrollIntoView({ behavior: 'smooth' });
       } else if (tabId === 'provenance') {
