@@ -30,7 +30,7 @@ function getDashboardHtml(): string {
 
 // In-memory fallback brain for local Node server execution
 let localBrain: RepoBrain | null = null;
-function getLocalBrain(env?: Env): RepoBrain {
+export function getLocalBrain(env?: Env): RepoBrain {
   if (!localBrain) {
     localBrain = new RepoBrain(undefined, env);
   }
@@ -131,6 +131,22 @@ app.post('/api/reverse-pr/resolve', async (c) => {
 
   const ok = await brain.resolveReversePR(prId, option);
   return c.json({ success: ok });
+});
+
+/**
+ * Triggers a test Reverse PR to simulate architectural steering
+ */
+app.post('/api/reverse-pr/trigger', async (c) => {
+  const brain = c.env?.REPO_BRAIN
+    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
+    : getLocalBrain(c.env);
+
+  const pr = brain.createReversePR(
+    'agent_architect',
+    'Database schema tradeoff: migrate to distributed SQLite (D1) or keep in-memory Durable Object state?',
+    ['Migrate to D1 SQLite', 'Keep DO memory with write-ahead log', 'Hybrid cache tier']
+  );
+  return c.json({ success: true, pr });
 });
 
 /**

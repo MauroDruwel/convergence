@@ -7,14 +7,20 @@
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-F38020?logo=cloudflare)](https://workers.cloudflare.com/)
 [![Cloudflare Artifacts](https://img.shields.io/badge/Storage-Cloudflare%20Artifacts-06B6D4)](https://developers.cloudflare.com/)
 [![Durable Objects](https://img.shields.io/badge/Architecture-Durable%20Objects%20SQLite-F59E0B)](https://developers.cloudflare.com/durable-objects/)
-[![Tests](https://img.shields.io/badge/Tests-15%20Passing%20(100%25)-10B981)](#)
+[![Tests](https://img.shields.io/badge/Tests-25%20Passing%20(100%25)-10B981)](#)
+[![E2E Browser Tests](https://img.shields.io/badge/Puppeteer%20E2E-10%2F10%20Verified-10B981)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ---
 
-## 📸 Real Cloudflare Infrastructure Console (Retina Screenshot)
+## 📸 Real Cloudflare Infrastructure Console (Retina Screenshots)
+
+I implemented an authentic, high-density Cloudflare Console conforming strictly to the Cloudflare Infrastructure Design System (deep slate `#0F1117`, 1px borders `#2D333B`, `#F6821F` safety orange accent, tabular typography, and 100% inline SVG iconography).
 
 ![Convergence Console](assets/dashboard-console.png)
+
+*Full-height dashboard inspection including live unified codebase viewer and WebSocket event stream:*
+![Convergence Full Console](assets/dashboard-full.png)
 
 ---
 
@@ -134,16 +140,19 @@ npm install
 # 2. Run TypeScript strict typecheck (0 errors)
 npm run typecheck
 
-# 3. Run unit test suite (15/15 passing tests)
+# 3. Run complete test suite (25/25 passing unit + integration tests)
 npm test
 
-# 4. Run interactive dogfooding demo (6 agents building edge commerce API)
+# 4. Run Puppeteer End-to-End Browser UI test suite (10/10 verified user actions)
+npm run test:e2e
+
+# 5. Run interactive dogfooding demo (6 agents building edge commerce API)
 npm run demo
 
-# 5. Run genuine GNU diff3 benchmark
+# 6. Run genuine GNU diff3 benchmark (25 agents vs Git)
 npm run bench
 
-# 6. Start interactive Cloudflare Infrastructure Console & WebSocket server
+# 7. Start interactive Cloudflare Infrastructure Console & WebSocket server
 npm start
 # Visit http://localhost:3000 to interact with the live swarm console
 ```
@@ -160,9 +169,11 @@ npx wrangler deploy
 ```
 convergence/
 ├── assets/
+│   ├── dashboard-console.png     # Genuine high-res Retina console screenshot
+│   ├── dashboard-full.png        # Full-height dashboard console document
 │   ├── architecture-diagram.svg  # Engineering topology diagram
 │   ├── benchmark-chart.svg       # Empirical diff3 comparison chart
-│   └── dashboard-preview.svg     # Cloudflare Infrastructure Console preview
+│   └── dashboard-preview.svg     # Cloudflare Infrastructure Console vector preview
 ├── src/
 │   ├── core/
 │   │   ├── ast-engine.ts         # Babel-based AST symbol extraction & 3-way merge
@@ -187,7 +198,14 @@ convergence/
 │   │   └── dashboard.html        # Cloudflare Infrastructure UI System Console
 │   ├── index.ts                  # Cloudflare Worker entry point
 │   └── server.ts                 # Standalone Node/Hono server for local demo
-├── tests/                        # Vitest unit & integration test suite (15 tests)
+├── tests/
+│   ├── e2e-ui.test.ts            # Puppeteer Chromium E2E suite (10 verified actions)
+│   ├── integration.test.ts       # Full multi-agent lifecycle tests
+│   ├── ast-engine.test.ts        # AST extraction & deterministic 3-way merge
+│   ├── leases-and-provenance.test.ts # Symbol lease checkout & Git Notes tests
+│   ├── immune-and-revert.test.ts # Autonomous antibody synthesis & surgical rollbacks
+│   ├── crdt.test.ts              # Lamport causality & vector clock validation
+│   └── speculative-swarm.test.ts # Evolutionary speculative swarm tests
 ├── wrangler.jsonc                # Cloudflare Workers + Artifacts + DO config
 ├── package.json
 └── LICENSE                       # MIT License

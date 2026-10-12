@@ -6,6 +6,7 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "vitest run tests/e2e-ui.test.ts",
     "typecheck": "tsc --noEmit",
     "demo": "tsx src/demo/run-live-demo.ts",
     "bench": "tsx src/benchmarks/run.ts",

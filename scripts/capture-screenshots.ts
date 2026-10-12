@@ -37,11 +37,12 @@ async function main() {
     }
   }
 
-  // Pre-seed some swarm activity and benchmark data so the UI is rich
+  // Pre-seed some swarm activity, reverse PR, leases, and benchmark data so the UI is rich
   try {
-    console.log('Pre-seeding live swarm wave & benchmark data...');
+    console.log('Pre-seeding live swarm wave, benchmark, leases & reverse PR...');
     await fetch(`http://localhost:${port}/api/swarm`, { method: 'POST' });
     await fetch(`http://localhost:${port}/api/benchmark`, { method: 'POST' });
+    await fetch(`http://localhost:${port}/api/reverse-pr/trigger`, { method: 'POST' });
     await fetch(`http://localhost:${port}/api/leases/request`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -49,7 +50,7 @@ async function main() {
         symbolId: 'func:processOrder',
         agentId: 'agent_payment',
         leaseType: 'exclusive_write',
-        ttlMs: 20000,
+        ttlMs: 25000,
         intent: 'Add idempotency key validation',
       }),
     });
@@ -63,7 +64,7 @@ async function main() {
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
     defaultViewport: {
       width: 1600,
-      height: 1080,
+      height: 1100,
       deviceScaleFactor: 2, // 2x Retina resolution
     },
   });
@@ -72,7 +73,7 @@ async function main() {
   console.log(`Navigating to http://localhost:${port}...`);
   await page.goto(`http://localhost:${port}`, { waitUntil: 'networkidle2' });
 
-  // Wait a couple seconds for canvas and tables to populate
+  // Wait a couple seconds for canvas, tables, and reverse PR to populate
   await wait(2500);
 
   const assetsDir = path.resolve(process.cwd(), 'assets');
@@ -81,6 +82,11 @@ async function main() {
   const fullScreenshotPath = path.join(assetsDir, 'dashboard-console.png');
   await page.screenshot({ path: fullScreenshotPath, fullPage: false });
   console.log(`✓ Real high-res screenshot saved: ${fullScreenshotPath}`);
+
+  // 2. Capture Full Page Document
+  const fullPagePath = path.join(assetsDir, 'dashboard-full.png');
+  await page.screenshot({ path: fullPagePath, fullPage: true });
+  console.log(`✓ Full-page document screenshot saved: ${fullPagePath}`);
 
   await browser.close();
 

@@ -1,7 +1,6 @@
 import { serve } from '@hono/node-server';
 import { WebSocketServer } from 'ws';
-import app from './index.js';
-import { RepoBrain } from './durable-objects/RepoBrain.js';
+import app, { getLocalBrain } from './index.js';
 
 const PORT = Number(process.env.PORT) || 3000;
 
@@ -21,7 +20,7 @@ const server = serve(
 
 // Attach WebSocket server for real-time telemetry
 const wss = new WebSocketServer({ server: server as any, path: '/ws' });
-const sharedBrain = new RepoBrain();
+const sharedBrain = getLocalBrain();
 
 wss.on('connection', (ws) => {
   sharedBrain.registerSocket(ws);
