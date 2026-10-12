@@ -100,12 +100,15 @@
         <h2 class="text-sm font-bold text-white uppercase tracking-wider">Swarm Orchestration Panel</h2>
         <p class="text-xs text-gray-400">Trigger high-concurrency multi-agent workloads directly against the Durable Object</p>
       </div>
-      <div class="flex items-center space-x-3">
-        <button id="btn-swarm" onclick="triggerSwarmWave()" class="px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold text-xs rounded-lg shadow-lg shadow-orange-500/20 transition flex items-center space-x-2">
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="btn-swarm" onclick="triggerSwarmWave()" class="px-3.5 py-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold text-xs rounded-lg shadow-lg shadow-orange-500/20 transition flex items-center space-x-1.5">
           <span>⚡ Dispatch Swarm Wave (8 Agents)</span>
         </button>
-        <button id="btn-bench" onclick="runBenchmark()" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold text-xs rounded-lg shadow-lg shadow-purple-500/20 transition flex items-center space-x-2">
-          <span>📊 Run Live Benchmark (25 Agents vs Git)</span>
+        <button id="btn-bench" onclick="runBenchmark()" class="px-3.5 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold text-xs rounded-lg shadow-lg shadow-purple-500/20 transition flex items-center space-x-1.5">
+          <span>📊 Live Benchmark (25 Agents)</span>
+        </button>
+        <button id="btn-immune" onclick="testImmuneAttack()" class="px-3.5 py-2 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white font-semibold text-xs rounded-lg shadow-lg shadow-rose-500/20 transition flex items-center space-x-1.5">
+          <span>🛡️ Test Immune System (Red-Team Fuzz)</span>
         </button>
       </div>
     </div>
@@ -453,13 +456,17 @@
         document.getElementById('stat-arbiter').innerText = arbitrations;
       } else if (evt.type === 'reverse_pr') {
         badge = '<span class="px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-400 font-bold">[REVERSE PR]</span>';
+      } else if (evt.type === 'immune_defense') {
+        badge = '<span class="px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-400 font-bold">[IMMUNE GUARD]</span>';
+      } else if (evt.type === 'chrono_revert') {
+        badge = '<span class="px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400 font-bold">[CHRONO REVERT]</span>';
       }
 
       const time = new Date(evt.timestamp).toLocaleTimeString();
       row.innerHTML = `
         <span class="text-gray-500 text-[10px]">${time}</span>
         ${badge}
-        <span class="text-gray-300"><strong class="text-white">${evt.agentId}:</strong> ${evt.data?.message || evt.data?.explanation || JSON.stringify(evt.data)}</span>
+        <span class="text-gray-300"><strong class="text-white">${evt.agentId}:</strong> ${evt.data?.message || evt.data?.guard || evt.data?.explanation || JSON.stringify(evt.data)}</span>
       `;
 
       container.prepend(row);
@@ -550,6 +557,21 @@
         body: JSON.stringify({ prId, option })
       });
       await fetchState();
+    }
+
+    async function testImmuneAttack() {
+      const btn = document.getElementById('btn-immune');
+      btn.innerText = '🛡️ Probing AST...';
+      btn.disabled = true;
+      try {
+        await fetch('/api/immune-attack', { method: 'POST' });
+        await fetchState();
+      } catch (e) {
+        console.error(e);
+      } finally {
+        btn.innerText = '🛡️ Test Immune System (Red-Team Fuzz)';
+        btn.disabled = false;
+      }
     }
 
     // Init

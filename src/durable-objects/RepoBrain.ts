@@ -2,6 +2,8 @@ import { CodeCRDT, SymbolOperation } from '../core/crdt.js';
 import { parseSourceToSymbols, mergeSymbolMaps, SymbolConflict, SymbolNode } from '../core/ast-engine.js';
 import { ArtifactsAdapter } from '../core/artifacts-adapter.js';
 import { SemanticArbiter } from '../core/arbiter.js';
+import { CodeImmuneSystem, ImmuneDefenseAction } from '../core/immune-system.js';
+import { ChronoRevertEngine } from '../core/chrono-revert.js';
 
 export interface AgentCommitRequest {
   agentId: string;
@@ -23,7 +25,15 @@ export interface ReversePullRequest {
 
 export interface SwarmEvent {
   id: string;
-  type: 'commit' | 'ast_merge' | 'conflict_detected' | 'arbiter_resolved' | 'reverse_pr' | 'swarm_start';
+  type:
+    | 'commit'
+    | 'ast_merge'
+    | 'conflict_detected'
+    | 'arbiter_resolved'
+    | 'reverse_pr'
+    | 'swarm_start'
+    | 'immune_defense'
+    | 'chrono_revert';
   agentId: string;
   timestamp: number;
   data: any;
@@ -179,8 +189,27 @@ export function processOrder(orderId: string, amount: number): boolean {
     ]);
 
     for (const symId of changedSymbolIds) {
-      const symNode = resolvedSymbols.get(symId);
+      let symNode = resolvedSymbols.get(symId);
       if (symNode) {
+        // Autonomous Code Immune System: Proactively probe AST and synthesize antibody guards
+        const defense = CodeImmuneSystem.analyzeAndDefend(symNode);
+        if (defense) {
+          symNode = defense.antibodySymbol;
+          this.broadcast({
+            id: `evt_immune_${Date.now()}_${symId}`,
+            type: 'immune_defense',
+            agentId: 'immune_sentinel',
+            timestamp: Date.now(),
+            data: {
+              symbolId: symId,
+              threat: defense.threat.threatType,
+              severity: defense.threat.severity,
+              guard: defense.synthesizedGuard,
+              latencyMs: defense.latencyMs,
+            },
+          });
+        }
+
         this.crdt.applyOperation({
           id: `op_${Date.now()}_${symId}`,
           type: 'upsert',
@@ -295,6 +324,21 @@ export function processOrder(orderId: string, amount: number): boolean {
   /**
    * WebSocket client registration.
    */
+  /**
+   * Chrono-Revert: Surgical single-symbol time-travel rollback
+   */
+  public chronoRevertSymbol(filename: string, symbolId: string): any {
+    const res = ChronoRevertEngine.revertSymbol(this.crdt, filename, symbolId);
+    this.broadcast({
+      id: `evt_revert_${Date.now()}`,
+      type: 'chrono_revert',
+      agentId: 'chrono_guardian',
+      timestamp: Date.now(),
+      data: res,
+    });
+    return res;
+  }
+
   public registerSocket(ws: any) {
     this.sockets.add(ws);
     ws.send(JSON.stringify({ type: 'init_state', state: this.getState() }));

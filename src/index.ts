@@ -133,4 +133,41 @@ app.post('/api/reverse-pr/resolve', async (c) => {
   return c.json({ success: ok });
 });
 
+/**
+ * Chrono-Revert: Surgical rollback of a single symbol
+ */
+app.post('/api/revert', async (c) => {
+  const { filename, symbolId } = await c.req.json();
+  const brain = c.env?.REPO_BRAIN
+    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
+    : getLocalBrain(c.env);
+
+  const res = await brain.chronoRevertSymbol(filename || 'index.ts', symbolId);
+  return c.json(res);
+});
+
+/**
+ * Simulates an adversarial red-team injection to showcase the Immune System
+ */
+app.post('/api/immune-attack', async (c) => {
+  const brain = c.env?.REPO_BRAIN
+    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
+    : getLocalBrain(c.env);
+
+  // Commits a flawed function with missing boundary check to test the autonomous immune defense
+  const res = await brain.handleAgentCommit({
+    agentId: 'adversarial_fuzzer',
+    filename: 'index.ts',
+    sourceCode: `
+export function transferFunds(amount: number): boolean {
+  console.log("Transferring amount: " + amount);
+  return true;
+}
+`,
+    message: 'Adversarial probe: commit unvalidated financial transfer',
+  });
+
+  return c.json({ success: true, result: res });
+});
+
 export default app;
