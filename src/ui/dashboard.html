@@ -17,7 +17,6 @@
               surface: '#F8FAFC',
               card: '#FFFFFF',
               border: '#E2E8F0',
-              borderSubtle: '#EDF2F7',
               text: '#0F172A',
               muted: '#64748B',
             }
@@ -41,12 +40,21 @@
     ::-webkit-scrollbar-track { background: #F1F5F9; }
     ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+    .level-card {
+      transition: all 0.25s ease-in-out;
+    }
+    .level-card:hover {
+      border-color: #F6821F;
+    }
+    .pulse-glow {
+      box-shadow: 0 0 0 3px rgba(246, 130, 31, 0.2);
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col bg-[#F8FAFC] text-[#0F172A] text-sm antialiased selection:bg-[#F6821F]/20 selection:text-[#F6821F]">
 
   <!-- TOP CLOUDFLARE GLOBAL HEADER -->
-  <header class="h-14 border-b border-[#E2E8F0] bg-white px-6 flex items-center justify-between text-xs sticky top-0 z-50 shadow-sm">
+  <header class="h-14 border-b border-[#E2E8F0] bg-white px-6 flex items-center justify-between text-xs sticky top-0 z-50 shadow-xs">
     <div class="flex items-center space-x-4">
       <!-- Official Cloudflare Cloud Logo -->
       <a href="#" class="flex items-center space-x-2 text-[#0F172A] hover:text-[#F6821F] transition" title="Cloudflare Platform">
@@ -87,8 +95,8 @@
       <!-- Search Input in Header with ⌘K -->
       <div id="search-container" class="hidden lg:flex items-center space-x-1.5 px-3 py-1.5 bg-[#F8FAFC] border border-[#CBD5E1] rounded-lg text-xs text-[#64748B] focus-within:border-[#F6821F] focus-within:ring-2 focus-within:ring-[#F6821F]/15 transition">
         <svg class="w-3.5 h-3.5 text-[#64748B]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input id="search-input" type="text" placeholder="Search resources or concepts..." class="bg-transparent border-none outline-none text-[#0F172A] text-xs placeholder-[#94A3B8] w-40 focus:w-56 transition-all">
-        <kbd class="px-1.5 py-0.5 text-[10px] font-mono bg-white border border-[#CBD5E1] rounded text-[#64748B] shadow-xs">⌘K</kbd>
+        <input id="search-input" type="text" placeholder="Search levels or concepts..." class="bg-transparent border-none outline-none text-[#0F172A] text-xs placeholder-[#94A3B8] w-40 focus:w-56 transition-all">
+        <kbd class="px-1.5 py-0.5 text-[10px] font-mono bg-white border border-[#CBD5E1] rounded text-[#64748B] shadow-2xs">⌘K</kbd>
       </div>
 
       <!-- Binding Pill -->
@@ -107,7 +115,7 @@
 
       <!-- Docs Button -->
       <a href="https://github.com/MauroDruwel/convergence" target="_blank" class="px-3 py-1.5 text-xs text-[#475569] hover:text-[#0F172A] hover:bg-slate-100 rounded-lg border border-[#E2E8F0] transition flex items-center space-x-1.5 font-medium">
-        <span>Docs</span>
+        <span>GitHub</span>
         <svg class="w-3 h-3 text-[#64748B]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
       </a>
 
@@ -118,83 +126,110 @@
     </div>
   </header>
 
-  <!-- HERO SECTION: THE REVOLUTIONARY IDEA & INTERACTIVE GUIDED TOUR -->
+  <!-- HERO SECTION: THE HUMAN ENGINEER'S QUEST & INTERACTIVE GAME PROGRESS -->
   <section class="border-b border-[#E2E8F0] bg-white px-6 py-8">
-    <div class="max-w-[1400px] mx-auto space-y-4">
-      <div class="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#F6821F]/10 border border-[#F6821F]/20 text-[#F6821F] text-xs font-semibold uppercase tracking-wider mb-2">
-            <span>Cloudflare Challenge: Build the Next Git Platform</span>
+    <div class="max-w-[1400px] mx-auto space-y-6">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+        <div class="space-y-3 flex-1 min-w-0">
+          <div>
+            <span class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-orange-50 border border-orange-200 text-[#F6821F] text-xs font-semibold">
+              <span class="w-2 h-2 rounded-full bg-[#F6821F] animate-pulse"></span>
+              <span>Cloudflare Challenge • Interactive Submission by Mauro Druwel</span>
+            </span>
           </div>
-          <h1 class="text-2xl sm:text-3xl font-extrabold text-[#0F172A] tracking-tight">
-            The Autonomous Semantic Code Fabric for 100,000+ Agents
+          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#0F172A] tracking-tight leading-tight">
+            What happens when 100,000 AI agents try to use Git?
           </h1>
-          <p class="text-sm text-[#475569] max-w-3xl mt-1.5 leading-relaxed">
-            Traditional Git was designed in 2005 for humans trading patch emails. When swarms of AI agents modify code concurrently, text lines collide and pipeline locks halt deployments. 
-            <strong>Convergence</strong> re-architects version control into an <strong>AST-CRDT semantic graph</strong> hosted on Cloudflare Durable Objects and Artifacts with <strong>0 line conflicts</strong>.
+          <p class="text-sm sm:text-base text-[#475569] leading-relaxed max-w-2xl">
+            Git was built in 2005 for humans emailing text patches. When autonomous AI agents work concurrently, Git immediately breaks down with merge collisions and rebase locks.
+            Follow my <strong>5-level interactive engineering journey</strong> below to see where Git broke, why I chose each architecture piece, and how Cloudflare Workers &amp; Durable Objects solve it live.
           </p>
         </div>
 
-        <!-- Quick Telemetry Chips -->
-        <div class="flex flex-wrap gap-2 text-xs font-mono">
-          <div class="px-3 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg">
-            <span class="text-[#64748B]">Merge Rate:</span>
-            <strong class="text-emerald-600 font-bold ml-1">100.0%</strong>
+        <!-- Interactive Quest Card (Game Progression) -->
+        <div class="w-full lg:w-80 flex-shrink-0 bg-gradient-to-br from-orange-50/80 to-amber-50/50 border border-orange-200 rounded-2xl p-5 shadow-xs">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-[#0F172A] uppercase tracking-wider flex items-center space-x-1.5">
+              <span>🎮</span>
+              <span>Interactive Quest</span>
+            </span>
+            <span id="quest-badge" class="px-2 py-0.5 rounded-full bg-white border border-orange-200 text-[#F6821F] text-[11px] font-bold">
+              <span id="quest-completed-count">0</span> / 5 Solved
+            </span>
           </div>
-          <div class="px-3 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg">
-            <span class="text-[#64748B]">Conflicts:</span>
-            <strong class="text-emerald-600 font-bold ml-1">0</strong>
+          <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden mb-3">
+            <div id="quest-progress-bar" class="bg-[#F6821F] h-full rounded-full transition-all duration-500" style="width: 0%"></div>
           </div>
-          <div class="px-3 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg">
-            <span class="text-[#64748B]">Latency:</span>
-            <strong class="text-blue-600 font-bold ml-1">10ms</strong>
+          <div class="text-xs text-[#64748B] flex items-center justify-between">
+            <span id="quest-next-hint">👉 Click Level 1 to break Git</span>
+            <button onclick="runAutoPlayTour()" id="btn-autoplay" class="text-[11px] text-[#F6821F] hover:underline font-semibold flex items-center space-x-1">
+              <span>▶ Auto-Play Tour</span>
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- INTERACTIVE STEP-BY-STEP CONCEPT STEPPER (CLICKABLE TABS) -->
-      <div class="pt-4 border-t border-[#F1F5F9]">
-        <div class="text-xs font-semibold uppercase tracking-wider text-[#64748B] mb-2.5 flex items-center space-x-1.5">
-          <svg class="w-3.5 h-3.5 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          <span>Interactive Architectural Tour — Explore Key Breakthroughs:</span>
-        </div>
-
-        <div class="flex flex-wrap gap-2 text-xs">
-          <button id="tab-btn-overview" onclick="switchTab('overview')" class="px-3.5 py-2 rounded-lg font-medium border-2 border-[#F6821F] bg-[#F6821F]/10 text-[#F6821F] flex items-center space-x-2 transition shadow-xs">
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            <span>Overview &amp; Telemetry</span>
+      <!-- 5-LEVEL TABS (PRESERVING ALL TEST IDS) -->
+      <div class="pt-2 border-t border-[#F1F5F9]">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+          <!-- Level 1 tab (Maps to #tab-btn-benchmark for E2E tests) -->
+          <button id="tab-btn-benchmark" onclick="switchLevel(1)" class="level-tab-btn p-3 rounded-xl border-2 border-[#F6821F] bg-[#F6821F]/10 text-left transition flex flex-col justify-between shadow-2xs">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-slate-500 uppercase">Level 1</span>
+              <span id="badge-level-1" class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-white text-slate-600 border border-slate-200">Start here</span>
+            </div>
+            <div class="font-bold text-xs text-[#0F172A] mt-1">The Git Meltdown</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">25 agents vs diff3</div>
           </button>
 
-          <button id="tab-btn-benchmark" onclick="switchTab('benchmark')" class="px-3.5 py-2 rounded-lg font-medium border border-[#E2E8F0] bg-white text-[#475569] hover:text-[#0F172A] hover:bg-slate-50 flex items-center space-x-2 transition">
-            <svg class="w-3.5 h-3.5 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-            <span>1. diff3 vs Convergence Race</span>
+          <!-- Level 2 tab (Maps to #tab-btn-overview for E2E tests) -->
+          <button id="tab-btn-overview" onclick="switchLevel(2)" class="level-tab-btn p-3 rounded-xl border border-[#E2E8F0] bg-white text-left transition hover:bg-slate-50 flex flex-col justify-between shadow-2xs">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-slate-500 uppercase">Level 2</span>
+              <span id="badge-level-2" class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-white text-slate-600 border border-slate-200">Pending</span>
+            </div>
+            <div class="font-bold text-xs text-[#0F172A] mt-1">The AST Pivot</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">Code as a tree</div>
           </button>
 
-          <button id="tab-btn-leases" onclick="switchTab('leases')" class="px-3.5 py-2 rounded-lg font-medium border border-[#E2E8F0] bg-white text-[#475569] hover:text-[#0F172A] hover:bg-slate-50 flex items-center space-x-2 transition">
-            <svg class="w-3.5 h-3.5 text-sky-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            <span>2. Edit-Time Symbol Leases</span>
-            <span class="px-1.5 py-0.5 rounded-full bg-slate-100 text-[10px] text-[#475569]" id="tab-leases-count">0</span>
+          <!-- Level 3 tab (Maps to #tab-btn-leases for E2E tests) -->
+          <button id="tab-btn-leases" onclick="switchLevel(3)" class="level-tab-btn p-3 rounded-xl border border-[#E2E8F0] bg-white text-left transition hover:bg-slate-50 flex flex-col justify-between shadow-2xs">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-slate-500 uppercase">Level 3</span>
+              <span id="badge-level-3" class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-white text-slate-600 border border-slate-200">Pending</span>
+            </div>
+            <div class="font-bold text-xs text-[#0F172A] mt-1">Edit-Time Leases</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">Semantic locks <span id="tab-leases-count" class="hidden">0</span></div>
           </button>
 
-          <button id="tab-btn-settings" onclick="switchTab('settings')" class="px-3.5 py-2 rounded-lg font-medium border border-[#E2E8F0] bg-white text-[#475569] hover:text-[#0F172A] hover:bg-slate-50 flex items-center space-x-2 transition">
-            <svg class="w-3.5 h-3.5 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span>3. Autonomous Code Immune Guard</span>
+          <!-- Level 4 tab (Maps to #tab-btn-settings for E2E tests) -->
+          <button id="tab-btn-settings" onclick="switchLevel(4)" class="level-tab-btn p-3 rounded-xl border border-[#E2E8F0] bg-white text-left transition hover:bg-slate-50 flex flex-col justify-between shadow-2xs">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-slate-500 uppercase">Level 4</span>
+              <span id="badge-level-4" class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-white text-slate-600 border border-slate-200">Pending</span>
+            </div>
+            <div class="font-bold text-xs text-[#0F172A] mt-1">Immune Defense</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">Runtime antibodies</div>
           </button>
 
-          <button id="tab-btn-provenance" onclick="switchTab('provenance')" class="px-3.5 py-2 rounded-lg font-medium border border-[#E2E8F0] bg-white text-[#475569] hover:text-[#0F172A] hover:bg-slate-50 flex items-center space-x-2 transition">
-            <svg class="w-3.5 h-3.5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            <span>4. Git Notes CoT Provenance</span>
-            <span class="px-1.5 py-0.5 rounded-full bg-slate-100 text-[10px] text-[#475569]" id="tab-notes-count">0</span>
+          <!-- Level 5 tab (Maps to #tab-btn-provenance for E2E tests) -->
+          <button id="tab-btn-provenance" onclick="switchLevel(5)" class="level-tab-btn p-3 rounded-xl border border-[#E2E8F0] bg-white text-left transition hover:bg-slate-50 flex flex-col justify-between shadow-2xs">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold text-slate-500 uppercase">Level 5</span>
+              <span id="badge-level-5" class="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-white text-slate-600 border border-slate-200">Pending</span>
+            </div>
+            <div class="font-bold text-xs text-[#0F172A] mt-1">Reverse PR &amp; CoT</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">Human steering <span id="tab-notes-count" class="hidden">0</span></div>
           </button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- MAIN DASHBOARD CONTENT (LIGHT THEME WITH ROUNDED MODERN CARDS) -->
-  <main class="flex-1 max-w-[1400px] w-full mx-auto p-6 space-y-6">
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="flex-1 max-w-[1400px] w-full mx-auto p-6 space-y-8">
 
-    <!-- HERO METRICS STRIP (CLEAN ROUNDED WHITE CARDS WITH CRISP BORDERS) -->
+    <!-- METRICS HUD (CLEAN ROUNDED WHITE CARDS) -->
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
       <!-- Card 1 -->
       <div class="p-4 bg-white border border-[#E2E8F0] rounded-xl shadow-xs flex flex-col justify-between">
@@ -269,143 +304,119 @@
       </div>
     </div>
 
-    <!-- INTERACTIVE CONTROL TOOLBAR -->
-    <div class="p-4 bg-white border border-[#E2E8F0] rounded-xl shadow-xs flex flex-wrap items-center justify-between gap-4">
-      <div class="flex items-center space-x-2.5">
-        <div class="w-8 h-8 rounded-lg bg-[#F6821F]/10 flex items-center justify-center text-[#F6821F]">
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        </div>
-        <div>
-          <div class="text-xs font-bold text-[#0F172A]">Live Swarm Controls</div>
-          <div class="text-[11px] text-[#64748B]">Trigger autonomous workloads against the Cloudflare Durable Object engine</div>
-        </div>
-      </div>
-
-      <div class="flex items-center flex-wrap gap-2.5">
-        <!-- Swarm Wave Button -->
-        <button id="btn-swarm" onclick="triggerSwarmWave()" class="h-9 px-4 bg-[#F6821F] hover:bg-[#FA8C16] text-white text-xs font-semibold rounded-lg transition shadow-sm flex items-center space-x-2 focus:ring-2 focus:ring-[#F6821F]/30">
-          <svg id="icon-swarm" class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-          <span id="btn-swarm-text">Dispatch Swarm Wave (8 Agents)</span>
-        </button>
-
-        <!-- Benchmark Button -->
-        <button id="btn-bench" onclick="runBenchmark()" class="h-9 px-3.5 bg-white hover:bg-slate-50 border border-[#CBD5E1] text-[#0F172A] text-xs font-semibold rounded-lg transition shadow-xs flex items-center space-x-1.5">
-          <svg id="icon-bench" class="w-3.5 h-3.5 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-          <span id="btn-bench-text">Run diff3 Benchmark (25 Agents vs Git)</span>
-        </button>
-
-        <!-- Lease Button -->
-        <button id="btn-lease" onclick="testLeaseAcquire()" class="h-9 px-3.5 bg-white hover:bg-sky-50 border border-sky-200 text-sky-700 text-xs font-semibold rounded-lg transition shadow-xs flex items-center space-x-1.5">
-          <svg id="icon-lease" class="w-3.5 h-3.5 text-sky-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3M18.5 4.5l3 3"/></svg>
-          <span id="btn-lease-text">Acquire Symbol Lease</span>
-        </button>
-
-        <!-- Immune Attack Button -->
-        <button id="btn-immune" onclick="testImmuneAttack()" class="h-9 px-3.5 bg-white hover:bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold rounded-lg transition shadow-xs flex items-center space-x-1.5">
-          <svg id="icon-immune" class="w-3.5 h-3.5 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span id="btn-immune-text">Adversarial AST Probe</span>
-        </button>
-
-        <!-- Reverse PR Simulation Button -->
-        <button id="btn-trigger-rpr" onclick="triggerTestRPR()" class="h-9 px-3.5 bg-white hover:bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold rounded-lg transition shadow-xs flex items-center space-x-1.5">
-          <svg class="w-3.5 h-3.5 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></svg>
-          <span id="btn-rpr-text">Simulate Reverse PR</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- COMPARISON RESULTS (GENUINE GNU DIFF3 HARNESS) -->
-    <div id="section-benchmark" class="border border-[#E2E8F0] bg-white rounded-xl shadow-xs overflow-hidden">
-      <div class="px-5 py-3.5 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
-        <div class="flex items-center space-x-2.5">
-          <div class="w-6 h-6 rounded-md bg-[#F6821F]/15 flex items-center justify-center text-[#F6821F]">
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    <!-- LEVEL 1: THE GIT MELTDOWN (diff3 BENCHMARK) -->
+    <div id="section-benchmark" class="border border-[#E2E8F0] bg-white rounded-2xl shadow-xs overflow-hidden level-card">
+      <div class="p-6 border-b border-[#E2E8F0] bg-gradient-to-r from-orange-50/50 via-white to-white">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="space-y-1.5 max-w-2xl">
+            <div class="flex items-center space-x-2">
+              <span class="px-2.5 py-0.5 rounded-full bg-[#F6821F] text-white text-xs font-bold uppercase tracking-wider">Level 1</span>
+              <span class="text-xs font-bold text-[#F6821F]">The Discovery</span>
+            </div>
+            <h2 class="text-lg font-bold text-[#0F172A]">What happens if 25 AI agents commit to the same file?</h2>
+            <p class="text-xs text-[#475569] leading-relaxed">
+              <strong>Mauro's Log:</strong> "I wanted to test traditional Git under real swarm concurrency. I spawned 25 autonomous agents simultaneously adding independent TypeScript functions to a single file using genuine GNU diff3. Click below to run the exact benchmark I ran."
+            </p>
           </div>
-          <div>
-            <h2 class="text-xs font-bold text-[#0F172A] uppercase tracking-wider">Step 1: Head-to-Head Concurrency Benchmark (diff3 vs Convergence)</h2>
-            <p class="text-[11px] text-[#64748B]">Identical workload: 25 agents making concurrent function and interface changes to the same file</p>
+          <div class="flex items-center space-x-3">
+            <button id="btn-bench" onclick="runBenchmark()" class="h-10 px-5 bg-[#F6821F] hover:bg-[#FA8C16] text-white text-xs font-bold rounded-xl transition shadow-sm flex items-center space-x-2">
+              <svg id="icon-bench" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              <span id="btn-bench-text">Run diff3 Benchmark (25 Agents vs Git)</span>
+            </button>
+            <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-[#64748B]" id="bench-status">Ready</span>
           </div>
         </div>
-        <span class="text-xs font-mono px-2 py-0.5 rounded bg-white border border-[#CBD5E1] text-[#64748B]" id="bench-status">Ready</span>
       </div>
 
+      <!-- Side-by-Side Comparison Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#E2E8F0]">
         <!-- Git Box -->
-        <div class="p-5 space-y-3.5 bg-rose-50/30">
+        <div class="p-6 space-y-4 bg-rose-50/20">
           <div class="flex items-center justify-between">
             <span class="font-bold text-xs text-rose-700 flex items-center space-x-1.5">
               <svg class="w-4 h-4 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
               <span>Traditional Git / GitHub (diff3 Engine)</span>
             </span>
-            <span class="text-[11px] font-mono text-rose-700 bg-rose-100 px-2 py-0.5 rounded">Line 3-Way Merge</span>
+            <span class="text-[11px] font-mono text-rose-700 bg-rose-100 px-2 py-0.5 rounded font-semibold">Line 3-Way Merge</span>
           </div>
-          <div class="grid grid-cols-3 gap-2.5 text-center">
-            <div class="bg-white p-3 border border-rose-200 rounded-lg shadow-xs">
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div class="bg-white p-3 border border-rose-200 rounded-xl shadow-xs">
               <div class="text-[10px] text-[#64748B] uppercase font-semibold">Success Rate</div>
-              <div class="text-lg font-bold font-mono text-rose-600" id="git-rate">4%</div>
+              <div class="text-xl font-bold font-mono text-rose-600" id="git-rate">4%</div>
             </div>
-            <div class="bg-white p-3 border border-rose-200 rounded-lg shadow-xs">
+            <div class="bg-white p-3 border border-rose-200 rounded-xl shadow-xs">
               <div class="text-[10px] text-[#64748B] uppercase font-semibold">Merge Conflicts</div>
-              <div class="text-lg font-bold font-mono text-rose-600" id="git-conflicts">24 / 25</div>
+              <div class="text-xl font-bold font-mono text-rose-600" id="git-conflicts">24 / 25</div>
             </div>
-            <div class="bg-white p-3 border border-rose-200 rounded-lg shadow-xs">
+            <div class="bg-white p-3 border border-rose-200 rounded-xl shadow-xs">
               <div class="text-[10px] text-[#64748B] uppercase font-semibold">Blocked Agents</div>
-              <div class="text-lg font-bold font-mono text-rose-600" id="git-stalled">24</div>
+              <div class="text-xl font-bold font-mono text-rose-600" id="git-stalled">24</div>
             </div>
           </div>
-          <p class="text-xs text-[#64748B] leading-relaxed">
-            Textual line collisions force Git into rebase locks. Human review or sequencer queues stall 96% of the swarm.
-          </p>
+          <div class="p-3 bg-white border border-rose-200 rounded-xl text-xs text-[#475569] leading-relaxed">
+            <strong class="text-rose-700">⚠️ Why Git Crashed:</strong> Git has zero semantic understanding of code. It only tracks raw line numbers. When Agent 1 inserted a function at line 12 and Agent 2 inserted a function at line 13, diff3 saw text proximity and threw 24 merge conflicts.
+          </div>
         </div>
 
         <!-- Convergence Box -->
-        <div class="p-5 space-y-3.5 bg-emerald-50/30">
+        <div class="p-6 space-y-4 bg-emerald-50/20">
           <div class="flex items-center justify-between">
             <span class="font-bold text-xs text-emerald-700 flex items-center space-x-1.5">
               <svg class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
               <span>Convergence (Cloudflare Workers + Artifacts)</span>
             </span>
-            <span class="text-[11px] font-mono text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">AST-CRDT Engine</span>
+            <span class="text-[11px] font-mono text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded font-semibold">AST-CRDT Engine</span>
           </div>
-          <div class="grid grid-cols-3 gap-2.5 text-center">
-            <div class="bg-white p-3 border border-emerald-200 rounded-lg shadow-xs">
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div class="bg-white p-3 border border-emerald-200 rounded-xl shadow-xs">
               <div class="text-[10px] text-[#64748B] uppercase font-semibold">Success Rate</div>
-              <div class="text-lg font-bold font-mono text-emerald-600" id="conv-rate">100%</div>
+              <div class="text-xl font-bold font-mono text-emerald-600" id="conv-rate">100%</div>
             </div>
-            <div class="bg-white p-3 border border-emerald-200 rounded-lg shadow-xs">
+            <div class="bg-white p-3 border border-emerald-200 rounded-xl shadow-xs">
               <div class="text-[10px] text-[#64748B] uppercase font-semibold">Merge Conflicts</div>
-              <div class="text-lg font-bold font-mono text-emerald-600" id="conv-conflicts">0</div>
+              <div class="text-xl font-bold font-mono text-emerald-600" id="conv-conflicts">0</div>
             </div>
-            <div class="bg-white p-3 border border-emerald-200 rounded-lg shadow-xs">
+            <div class="bg-white p-3 border border-emerald-200 rounded-xl shadow-xs">
               <div class="text-[10px] text-[#64748B] uppercase font-semibold">Avg Latency</div>
-              <div class="text-lg font-bold font-mono text-emerald-600" id="conv-latency">10ms</div>
+              <div class="text-xl font-bold font-mono text-emerald-600" id="conv-latency">10ms</div>
             </div>
           </div>
-          <p class="text-xs text-[#64748B] leading-relaxed">
-            Content-addressed symbol hashing merges functions and interfaces cleanly into the AST without touching physical text lines.
-          </p>
+          <div class="p-3 bg-white border border-emerald-200 rounded-xl text-xs text-[#475569] leading-relaxed">
+            <strong class="text-emerald-700">💡 The Breakthrough:</strong> Convergence operates on AST symbols. Each function has a deterministic hash (`func:calculateTax`, `func:verifyJwt`). Merges attach cleanly to the AST without touching physical text lines!
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- MIDDLE ROW: SWARM RADAR TOPOLOGY & REVERSE PRS -->
-    <div id="section-overview" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Swarm Topology Canvas -->
-      <div class="lg:col-span-2 border border-[#E2E8F0] bg-white rounded-xl shadow-xs flex flex-col overflow-hidden">
-        <div class="px-5 py-3 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
-          <div class="flex items-center space-x-2">
-            <div class="w-6 h-6 rounded-md bg-[#F6821F]/15 flex items-center justify-center text-[#F6821F]">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+    <!-- LEVEL 2: THE AST PIVOT & SWARM TOPOLOGY -->
+    <div id="section-overview" class="border border-[#E2E8F0] bg-white rounded-2xl shadow-xs overflow-hidden level-card">
+      <div class="p-6 border-b border-[#E2E8F0] bg-gradient-to-r from-sky-50/50 via-white to-white">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="space-y-1.5 max-w-2xl">
+            <div class="flex items-center space-x-2">
+              <span class="px-2.5 py-0.5 rounded-full bg-sky-600 text-white text-xs font-bold uppercase tracking-wider">Level 2</span>
+              <span class="text-xs font-bold text-sky-600">The Edge Radar</span>
             </div>
-            <span class="text-xs font-bold text-[#0F172A] uppercase tracking-wider">Swarm Topology &amp; Artifacts Hub</span>
+            <h2 class="text-lg font-bold text-[#0F172A]">Code isn't text — code is a live semantic tree</h2>
+            <p class="text-xs text-[#475569] leading-relaxed">
+              <strong>Mauro's Log:</strong> "Below is the real-time edge topology. Cloudflare Artifacts (backed by a Durable Object SQLite actor) sits at the center. Autonomous agents orbit around it. Dispatch an 8-agent swarm wave to watch them commit in parallel at 60 FPS."
+            </p>
           </div>
-          <span class="text-[11px] font-mono text-[#64748B]">60 FPS Edge Actor Visualizer</span>
+          <div>
+            <button id="btn-swarm" onclick="triggerSwarmWave()" class="h-10 px-5 bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold rounded-xl transition shadow-sm flex items-center space-x-2">
+              <svg id="icon-swarm" class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              <span id="btn-swarm-text">Dispatch Swarm Wave (8 Agents)</span>
+            </button>
+          </div>
         </div>
-        <div class="p-4 flex-1 flex flex-col">
-          <div class="relative w-full h-[280px] bg-[#0F172A] rounded-lg overflow-hidden border border-slate-800 shadow-inner">
-            <canvas id="swarm-canvas" class="w-full h-full block"></canvas>
-          </div>
-          <div class="mt-3 flex items-center justify-between text-xs text-[#64748B] font-mono">
+      </div>
+
+      <div class="p-6">
+        <div class="relative w-full h-[300px] bg-[#0F172A] rounded-xl overflow-hidden border border-slate-800 shadow-inner">
+          <canvas id="swarm-canvas" class="w-full h-full block"></canvas>
+        </div>
+        <div class="mt-4 flex flex-wrap items-center justify-between gap-3 text-xs text-[#64748B] font-mono">
+          <div class="flex items-center space-x-4">
             <span class="flex items-center space-x-1.5">
               <span class="w-2.5 h-2.5 rounded-full bg-[#F6821F]"></span>
               <span>Center: Cloudflare Artifacts (RepoBrain DO)</span>
@@ -415,128 +426,215 @@
               <span>Orbits: Autonomous Swarm Agents</span>
             </span>
           </div>
-        </div>
-      </div>
-
-      <!-- Reverse Pull Requests Panel (Autonomous Inversion) -->
-      <div id="section-rpr" class="border border-[#E2E8F0] bg-white rounded-xl shadow-xs flex flex-col overflow-hidden">
-        <div class="px-5 py-3 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
-          <div class="flex items-center space-x-2">
-            <div class="w-6 h-6 rounded-md bg-amber-100 text-amber-700 flex items-center justify-center">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></svg>
-            </div>
-            <span class="text-xs font-bold text-[#0F172A] uppercase tracking-wider">Reverse Pull Requests</span>
-          </div>
-          <span class="text-[11px] font-mono text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">Autonomous Inversion</span>
-        </div>
-        <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
-          <div id="rpr-container" class="space-y-3">
-            <div class="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 p-3 rounded-lg flex items-center space-x-2">
-              <svg class="w-4 h-4 flex-shrink-0 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-              <span>Zero pending architectural inquiries. Agents aligned with policy.</span>
-            </div>
-          </div>
-          <div class="p-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-xs text-[#64748B] leading-relaxed">
-            <strong class="text-[#0F172A]">Why this matters:</strong> Agents resolve 99.9% of code autonomously. They only interrupt human engineers when high-level trade-offs (e.g. database schema migrations or currency rounding) require human steering.
+          <div class="text-[11px] text-[#475569]">
+            Every commit updates the Lamport causal sequence in Durable Object SQLite
           </div>
         </div>
       </div>
     </div>
 
-    <!-- DATA TABLES: EDIT-TIME LEASES & GIT NOTES PROVENANCE -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- LEVEL 3 & LEVEL 4: EDIT-TIME LEASES & IMMUNE GUARD -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-      <!-- Table 1: Edit-Time Symbol Leases -->
-      <div id="section-leases" class="border border-[#E2E8F0] bg-white rounded-xl shadow-xs flex flex-col overflow-hidden">
-        <div class="px-5 py-3 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
-          <div class="flex items-center space-x-2">
-            <div class="w-6 h-6 rounded-md bg-sky-50 text-sky-600 flex items-center justify-center">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <!-- LEVEL 3: EDIT-TIME SYMBOL LEASES -->
+      <div id="section-leases" class="border border-[#E2E8F0] bg-white rounded-2xl shadow-xs overflow-hidden level-card flex flex-col justify-between">
+        <div>
+          <div class="p-6 border-b border-[#E2E8F0] bg-gradient-to-r from-amber-50/50 via-white to-white">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center space-x-2">
+                <span class="px-2.5 py-0.5 rounded-full bg-amber-600 text-white text-xs font-bold uppercase tracking-wider">Level 3</span>
+                <span class="text-xs font-bold text-amber-600">The Race Condition</span>
+              </div>
+              <span class="text-xs font-mono px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 font-semibold" id="table-leases-status">0 Active</span>
             </div>
-            <div>
-              <span class="text-xs font-bold text-[#0F172A] uppercase tracking-wider">Step 2: Edit-Time AST Symbol Leases</span>
-              <span class="ml-1 text-[11px] text-[#64748B]">Lock-free semantic coordination</span>
+            <h3 class="text-base font-bold text-[#0F172A]">Wait... what if two agents edit the SAME function?</h3>
+            <p class="text-xs text-[#475569] mt-1 leading-relaxed">
+              <strong>Mauro's Log:</strong> "AST merges handle separate functions cleanly. But what if two agents decide to refactor <code>processOrder</code> at the exact same millisecond? In Git, both agents write hundreds of lines, and one gets rejected at merge time. In Convergence, agents acquire short TTL leases from the Durable Object before writing code."
+            </p>
+            <div class="mt-4">
+              <button id="btn-lease" onclick="testLeaseAcquire()" class="h-9 px-4 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg transition shadow-xs flex items-center space-x-1.5">
+                <svg id="icon-lease" class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3M18.5 4.5l3 3"/></svg>
+                <span id="btn-lease-text">Acquire Symbol Lease</span>
+              </button>
             </div>
           </div>
-          <span class="text-xs font-mono px-2 py-0.5 rounded bg-sky-50 text-sky-700 border border-sky-200" id="table-leases-status">0 Active</span>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs font-mono">
+              <thead class="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
+                <tr>
+                  <th class="px-4 py-2.5">Symbol ID</th>
+                  <th class="px-4 py-2.5">Holder</th>
+                  <th class="px-4 py-2.5">Type</th>
+                  <th class="px-4 py-2.5">TTL</th>
+                  <th class="px-4 py-2.5">Intent</th>
+                </tr>
+              </thead>
+              <tbody id="leases-table-body" class="divide-y divide-[#E2E8F0] text-xs">
+                <tr>
+                  <td colspan="5" class="px-4 py-6 text-center text-[#64748B] font-sans">
+                    <div class="flex items-center justify-center space-x-2">
+                      <svg class="w-4 h-4 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3M18.5 4.5l3 3"/></svg>
+                      <span>No active leases. Click above to simulate an edit-time lease lock.</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs font-mono">
-            <thead class="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
-              <tr>
-                <th class="px-4 py-2.5">Symbol ID</th>
-                <th class="px-4 py-2.5">Holder</th>
-                <th class="px-4 py-2.5">Type</th>
-                <th class="px-4 py-2.5">TTL</th>
-                <th class="px-4 py-2.5">Intent</th>
-              </tr>
-            </thead>
-            <tbody id="leases-table-body" class="divide-y divide-[#E2E8F0] text-xs">
-              <tr>
-                <td colspan="5" class="px-4 py-6 text-center text-[#64748B] font-sans">
-                  <div class="flex items-center justify-center space-x-2">
-                    <svg class="w-4 h-4 text-sky-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3M18.5 4.5l3 3"/></svg>
-                    <span>No active leases. All symbols available for concurrent agent checkout.</span>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+
+        <div class="p-4 bg-[#F8FAFC] border-t border-[#E2E8F0] text-xs text-[#64748B]">
+          <strong class="text-[#0F172A]">💡 Semantic Backpressure:</strong> When a lease is held, other agents are told to pause or work on orthogonal tasks <em>before</em> generating code, saving thousands of wasted LLM tokens.
         </div>
       </div>
 
-      <!-- Table 2: Git Notes Chain-of-Thought Provenance -->
-      <div id="section-provenance" class="border border-[#E2E8F0] bg-white rounded-xl shadow-xs flex flex-col overflow-hidden">
-        <div class="px-5 py-3 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
-          <div class="flex items-center space-x-2">
-            <div class="w-6 h-6 rounded-md bg-purple-50 text-purple-600 flex items-center justify-center">
-              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <!-- LEVEL 4: CODE IMMUNE SYSTEM -->
+      <div id="section-immune" class="border border-[#E2E8F0] bg-white rounded-2xl shadow-xs overflow-hidden level-card flex flex-col justify-between">
+        <div>
+          <div class="p-6 border-b border-[#E2E8F0] bg-gradient-to-r from-rose-50/50 via-white to-white">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center space-x-2">
+                <span class="px-2.5 py-0.5 rounded-full bg-rose-600 text-white text-xs font-bold uppercase tracking-wider">Level 4</span>
+                <span class="text-xs font-bold text-rose-600">The Hallucination Trap</span>
+              </div>
+              <span class="text-xs font-mono px-2 py-0.5 rounded-md bg-rose-50 text-rose-800 border border-rose-200 font-semibold">Active Guard</span>
             </div>
-            <div>
-              <span class="text-xs font-bold text-[#0F172A] uppercase tracking-wider">Step 4: Git Notes Provenance Inspector</span>
-              <span class="ml-1 text-[11px] text-[#64748B]">refs/notes/agent-provenance</span>
+            <h3 class="text-base font-bold text-[#0F172A]">What if an agent writes a sneaky bug?</h3>
+            <p class="text-xs text-[#475569] mt-1 leading-relaxed">
+              <strong>Mauro's Log:</strong> "AI agents frequently write code that compiles cleanly but misses boundary checks (e.g. allowing negative withdrawals or buffer overflows). I wanted to know: <em>Can the repository itself defend the code?</em> Click below to launch an adversarial probe that tries to commit an unvalidated negative input."
+            </p>
+            <div class="mt-4">
+              <button id="btn-immune" onclick="testImmuneAttack()" class="h-9 px-4 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg transition shadow-xs flex items-center space-x-1.5">
+                <svg id="icon-immune" class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span id="btn-immune-text">Adversarial AST Probe</span>
+              </button>
             </div>
           </div>
-          <span class="text-xs font-mono px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200" id="table-notes-status">0 Logged</span>
+
+          <div class="p-5 space-y-3">
+            <div class="p-3.5 bg-rose-50 border border-rose-200 rounded-xl space-y-1.5">
+              <div class="text-xs font-bold text-rose-800 flex items-center space-x-1.5">
+                <svg class="w-4 h-4 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span>Autonomous Antibody Synthesis</span>
+              </div>
+              <p class="text-xs text-[#475569] leading-relaxed">
+                When the adversarial probe strikes, the immune engine synthesizes a runtime guard:
+              </p>
+              <pre class="bg-white p-2.5 rounded-lg border border-rose-200 font-mono text-[11px] text-rose-700 font-semibold overflow-x-auto">// Synthesized Antibody:
+if (amount &lt;= 0) throw new RangeError('Security: Invalid amount');</pre>
+            </div>
+          </div>
         </div>
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs font-mono">
-            <thead class="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
-              <tr>
-                <th class="px-4 py-2.5">Symbol</th>
-                <th class="px-4 py-2.5">Agent / Model</th>
-                <th class="px-4 py-2.5">Intent &amp; Invariants</th>
-                <th class="px-4 py-2.5 text-right">Telemetry</th>
-              </tr>
-            </thead>
-            <tbody id="provenance-table-body" class="divide-y divide-[#E2E8F0] text-xs">
-              <tr>
-                <td colspan="4" class="px-4 py-6 text-center text-[#64748B] font-sans">
-                  <div class="flex items-center justify-center space-x-2">
-                    <svg class="w-4 h-4 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                    <span>Awaiting agent commits to log Chain-of-Thought records to Git notes.</span>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+
+        <div class="p-4 bg-[#F8FAFC] border-t border-[#E2E8F0] text-xs text-[#64748B]">
+          <strong class="text-[#0F172A]">💡 Autonomous Immunity:</strong> The repository actively probes mutations and injects sanitizers before code ever merges into mainline.
         </div>
       </div>
 
     </div>
 
-    <!-- CODE VIEWER & LIVE TELEMETRY ROW -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- LEVEL 5: REVERSE PRS & GIT NOTES PROVENANCE -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+      <!-- REVERSE PULL REQUESTS (HUMAN STEERING) -->
+      <div id="section-rpr" class="border border-[#E2E8F0] bg-white rounded-2xl shadow-xs overflow-hidden level-card flex flex-col justify-between">
+        <div>
+          <div class="p-6 border-b border-[#E2E8F0] bg-gradient-to-r from-purple-50/50 via-white to-white">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center space-x-2">
+                <span class="px-2.5 py-0.5 rounded-full bg-purple-600 text-white text-xs font-bold uppercase tracking-wider">Level 5</span>
+                <span class="text-xs font-bold text-purple-600">The Inversion</span>
+              </div>
+              <span class="text-xs font-mono px-2 py-0.5 rounded-md bg-purple-50 text-purple-800 border border-purple-200 font-semibold">Autonomous Inversion</span>
+            </div>
+            <h3 class="text-base font-bold text-[#0F172A]">The Reverse Pull Request: Humans provide steering, not line reviews</h3>
+            <p class="text-xs text-[#475569] mt-1 leading-relaxed">
+              <strong>Mauro's Log:</strong> "Humans can't review 5,000 PRs per hour. But AI agents shouldn't make unilateral architecture decisions either. In Convergence, agents review code themselves and open a <strong>Reverse PR</strong> to ask YOU for steering when a high-level trade-off is required."
+            </p>
+            <div class="mt-4">
+              <button id="btn-trigger-rpr" onclick="triggerTestRPR()" class="h-9 px-4 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-lg transition shadow-xs flex items-center space-x-1.5">
+                <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></svg>
+                <span id="btn-rpr-text">Simulate Reverse PR</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="p-6">
+            <div id="rpr-container" class="space-y-3">
+              <div class="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 p-3.5 rounded-xl flex items-center space-x-2">
+                <svg class="w-4 h-4 flex-shrink-0 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Zero pending architectural inquiries. Agents aligned with policy.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-4 bg-[#F8FAFC] border-t border-[#E2E8F0] text-xs text-[#64748B]">
+          <strong class="text-[#0F172A]">💡 Autonomous Inversion:</strong> Try clicking an option when a Reverse PR appears. The agent unblocks instantly without any human reviewing line diffs.
+        </div>
+      </div>
+
+      <!-- GIT NOTES PROVENANCE INSPECTOR -->
+      <div id="section-provenance" class="border border-[#E2E8F0] bg-white rounded-2xl shadow-xs overflow-hidden level-card flex flex-col justify-between">
+        <div>
+          <div class="p-6 border-b border-[#E2E8F0] bg-gradient-to-r from-indigo-50/50 via-white to-white">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center space-x-2">
+                <span class="px-2.5 py-0.5 rounded-full bg-indigo-600 text-white text-xs font-bold uppercase tracking-wider">Provenance</span>
+                <span class="text-xs font-bold text-indigo-600">Git Notes Metadata</span>
+              </div>
+              <span class="text-xs font-mono px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-800 border border-indigo-200 font-semibold" id="table-notes-status">0 Logged</span>
+            </div>
+            <h3 class="text-base font-bold text-[#0F172A]">Where did the AI's actual thinking go?</h3>
+            <p class="text-xs text-[#475569] mt-1 leading-relaxed">
+              <strong>Mauro's Log:</strong> "Two years from now, you'll look at a line of code and wonder: <em>Why did an AI write it this way?</em> Git commits lose reasoning. Convergence records model prompts, verified invariants, and token telemetry natively into <code>refs/notes/agent-provenance</code> without altering commit hashes."
+            </p>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs font-mono">
+              <thead class="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-semibold text-[#64748B] uppercase tracking-wider">
+                <tr>
+                  <th class="px-4 py-2.5">Symbol</th>
+                  <th class="px-4 py-2.5">Agent / Model</th>
+                  <th class="px-4 py-2.5">Intent &amp; Invariants</th>
+                  <th class="px-4 py-2.5 text-right">Telemetry</th>
+                </tr>
+              </thead>
+              <tbody id="provenance-table-body" class="divide-y divide-[#E2E8F0] text-xs">
+                <tr>
+                  <td colspan="4" class="px-4 py-6 text-center text-[#64748B] font-sans">
+                    <div class="flex items-center justify-center space-x-2">
+                      <svg class="w-4 h-4 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      <span>Awaiting agent commits to log Chain-of-Thought records to Git notes.</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="p-4 bg-[#F8FAFC] border-t border-[#E2E8F0] text-xs text-[#64748B]">
+          <strong class="text-[#0F172A]">💡 Native Git Compliance:</strong> Git Notes are 100% native to Git. You can clone this repo with <code>git fetch origin refs/notes/*:refs/notes/*</code> and view reasoning in your terminal.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- UNIFIED CODEBASE VIEWER & LIVE EVENT STREAM -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Unified Code Viewer -->
-      <div id="section-code" class="border border-[#E2E8F0] bg-white rounded-xl shadow-xs flex flex-col overflow-hidden">
-        <div class="px-5 py-3 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
+      <div id="section-code" class="border border-[#E2E8F0] bg-white rounded-2xl shadow-xs flex flex-col overflow-hidden">
+        <div class="px-5 py-3.5 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
           <div class="flex items-center space-x-2">
             <div class="w-6 h-6 rounded-md bg-emerald-50 text-emerald-600 flex items-center justify-center">
               <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
             </div>
             <span class="text-xs font-bold text-[#0F172A] uppercase tracking-wider">Mainline Unified Codebase (index.ts)</span>
           </div>
-          <span class="text-[11px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Auto-Synthesized via CRDT</span>
+          <span class="text-[11px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-semibold">Auto-Synthesized via CRDT</span>
         </div>
         <div class="p-4 bg-[#0F172A] text-slate-100 flex-1 max-h-[340px] overflow-auto">
           <pre id="code-viewer" class="font-mono text-xs leading-relaxed text-slate-200">// Loading unified source from Cloudflare Artifacts...</pre>
@@ -544,8 +642,8 @@
       </div>
 
       <!-- Live Event Stream -->
-      <div id="section-events" class="border border-[#E2E8F0] bg-white rounded-xl shadow-xs flex flex-col overflow-hidden">
-        <div class="px-5 py-3 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
+      <div id="section-events" class="border border-[#E2E8F0] bg-white rounded-2xl shadow-xs flex flex-col overflow-hidden">
+        <div class="px-5 py-3.5 border-b border-[#E2E8F0] flex items-center justify-between bg-[#F8FAFC]">
           <div class="flex items-center space-x-2">
             <span class="h-2 w-2 rounded-full bg-[#F6821F] animate-pulse"></span>
             <div class="w-6 h-6 rounded-md bg-[#F6821F]/15 text-[#F6821F] flex items-center justify-center">
@@ -591,11 +689,11 @@
     </div>
   </footer>
 
-  <!-- CLIENT SCRIPT -->
+  <!-- CLIENT LOGIC & GAME STEPPER SCRIPT -->
   <script>
     let ws = null;
     let cleanMerges = 0;
-    let arbitrations = 0;
+    const completedLevels = new Set();
     const canvas = document.getElementById('swarm-canvas');
     const ctx = canvas.getContext('2d');
 
@@ -682,31 +780,85 @@
     }
     drawTopology();
 
-    // Tab Navigation Logic
-    function switchTab(tabId) {
-      const tabs = ['overview', 'leases', 'provenance', 'benchmark', 'settings'];
-      tabs.forEach(t => {
-        const btn = document.getElementById(`tab-btn-${t}`);
+    // Game Level Progression Tracker
+    function markLevelCompleted(levelNum) {
+      completedLevels.add(levelNum);
+      const count = completedLevels.size;
+      document.getElementById('quest-completed-count').innerText = count;
+      document.getElementById('quest-progress-bar').style.width = `${(count / 5) * 100}%`;
+
+      const badge = document.getElementById(`badge-level-${levelNum}`);
+      if (badge) {
+        badge.innerText = 'Solved ✓';
+        badge.className = 'text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-300';
+      }
+
+      if (count === 5) {
+        document.getElementById('quest-badge').className = 'px-2 py-0.5 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-700 text-[11px] font-bold';
+        document.getElementById('quest-next-hint').innerHTML = '🎉 <strong class="text-emerald-700">All 5 Levels Solved! Mastered!</strong>';
+      } else {
+        const nextLevel = [1, 2, 3, 4, 5].find(l => !completedLevels.has(l));
+        document.getElementById('quest-next-hint').innerText = `👉 Next: Level ${nextLevel}`;
+      }
+    }
+
+    // Switch Level Tabs
+    function switchLevel(levelNum) {
+      const tabMap = {
+        1: { btn: 'tab-btn-benchmark', target: 'section-benchmark' },
+        2: { btn: 'tab-btn-overview', target: 'section-overview' },
+        3: { btn: 'tab-btn-leases', target: 'section-leases' },
+        4: { btn: 'tab-btn-settings', target: 'section-immune' },
+        5: { btn: 'tab-btn-provenance', target: 'section-rpr' }
+      };
+
+      Object.keys(tabMap).forEach(k => {
+        const item = tabMap[k];
+        const btn = document.getElementById(item.btn);
         if (!btn) return;
-        if (t === tabId) {
-          btn.className = 'px-3.5 py-2 rounded-lg font-medium border-2 border-[#F6821F] bg-[#F6821F]/10 text-[#F6821F] flex items-center space-x-2 transition shadow-xs';
+        if (Number(k) === levelNum) {
+          btn.className = 'level-tab-btn p-3 rounded-xl border-2 border-[#F6821F] bg-[#F6821F]/10 text-left transition flex flex-col justify-between shadow-xs';
         } else {
-          btn.className = 'px-3.5 py-2 rounded-lg font-medium border border-[#E2E8F0] bg-white text-[#475569] hover:text-[#0F172A] hover:bg-slate-50 flex items-center space-x-2 transition';
+          btn.className = 'level-tab-btn p-3 rounded-xl border border-[#E2E8F0] bg-white text-left transition hover:bg-slate-50 flex flex-col justify-between shadow-2xs';
         }
       });
 
-      // Scroll to relevant section
-      if (tabId === 'leases') {
-        document.getElementById('section-leases')?.scrollIntoView({ behavior: 'smooth' });
-      } else if (tabId === 'provenance') {
-        document.getElementById('section-provenance')?.scrollIntoView({ behavior: 'smooth' });
-      } else if (tabId === 'benchmark') {
-        document.getElementById('section-benchmark')?.scrollIntoView({ behavior: 'smooth' });
-      } else if (tabId === 'settings') {
-        document.getElementById('btn-immune')?.scrollIntoView({ behavior: 'smooth' });
-      } else if (tabId === 'overview') {
-        document.getElementById('section-overview')?.scrollIntoView({ behavior: 'smooth' });
+      const targetEl = document.getElementById(tabMap[levelNum].target);
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: 'smooth' });
       }
+    }
+
+    // Auto-Play Complete Tour
+    async function runAutoPlayTour() {
+      const btn = document.getElementById('btn-autoplay');
+      btn.innerText = 'Running Tour...';
+      btn.disabled = true;
+
+      switchLevel(1);
+      await runBenchmark();
+      await new Promise(r => setTimeout(r, 1200));
+
+      switchLevel(2);
+      await triggerSwarmWave();
+      await new Promise(r => setTimeout(r, 1200));
+
+      switchLevel(3);
+      await testLeaseAcquire();
+      await new Promise(r => setTimeout(r, 1200));
+
+      switchLevel(4);
+      await testImmuneAttack();
+      await new Promise(r => setTimeout(r, 1200));
+
+      switchLevel(5);
+      await triggerTestRPR();
+
+      btn.innerText = '✓ Tour Complete';
+      setTimeout(() => {
+        btn.innerText = '▶ Replay Tour';
+        btn.disabled = false;
+      }, 3000);
     }
 
     // Keyboard shortcut for Search ⌘K
@@ -830,7 +982,7 @@
       const statusText = document.getElementById('table-leases-status');
 
       countPill.innerText = leases.length;
-      tabCount.innerText = leases.length;
+      if (tabCount) tabCount.innerText = leases.length;
       statusText.innerText = `${leases.length} Active`;
 
       if (!leases || leases.length === 0) {
@@ -838,8 +990,8 @@
           <tr>
             <td colspan="5" class="px-4 py-6 text-center text-[#64748B] font-sans">
               <div class="flex items-center justify-center space-x-2">
-                <svg class="w-4 h-4 text-sky-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3M18.5 4.5l3 3"/></svg>
-                <span>No active leases. All symbols available for concurrent agent checkout.</span>
+                <svg class="w-4 h-4 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6M15.5 7.5l3 3M18.5 4.5l3 3"/></svg>
+                <span>No active leases. Click above to simulate an edit-time lease lock.</span>
               </div>
             </td>
           </tr>
@@ -849,9 +1001,9 @@
 
       tbody.innerHTML = leases.map(l => `
         <tr class="hover:bg-slate-50 transition">
-          <td class="px-4 py-2.5 text-sky-700 font-bold">${l.symbolId}</td>
+          <td class="px-4 py-2.5 text-amber-700 font-bold">${l.symbolId}</td>
           <td class="px-4 py-2.5 text-[#0F172A]">${l.agentId}</td>
-          <td class="px-4 py-2.5"><span class="px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200 text-[10px] font-semibold">${l.leaseType}</span></td>
+          <td class="px-4 py-2.5"><span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-semibold">${l.leaseType}</span></td>
           <td class="px-4 py-2.5 text-[#64748B]">${Math.max(0, Math.round((l.expiresAt - Date.now()) / 1000))}s</td>
           <td class="px-4 py-2.5 text-[#475569] truncate max-w-[180px]">${l.intent}</td>
         </tr>
@@ -873,7 +1025,7 @@
           <tr>
             <td colspan="4" class="px-4 py-6 text-center text-[#64748B] font-sans">
               <div class="flex items-center justify-center space-x-2">
-                <svg class="w-4 h-4 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <svg class="w-4 h-4 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
                 <span>Awaiting agent commits to log Chain-of-Thought records to Git notes.</span>
               </div>
             </td>
@@ -884,7 +1036,7 @@
 
       tbody.innerHTML = records.slice(-5).reverse().map(r => `
         <tr class="hover:bg-slate-50 transition">
-          <td class="px-4 py-2.5 text-purple-700 font-bold">${r.symbolId}</td>
+          <td class="px-4 py-2.5 text-indigo-700 font-bold">${r.symbolId}</td>
           <td class="px-4 py-2.5">
             <div class="text-[#0F172A] font-semibold">${r.agentId}</div>
             <div class="text-[10px] text-[#64748B]">${r.model.replace('@cf/meta/', '')}</div>
@@ -906,7 +1058,7 @@
       const pending = prs ? prs.filter((p) => p.status === 'pending') : [];
       if (pending.length === 0) {
         container.innerHTML = `
-          <div class="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 p-3 rounded-lg flex items-center space-x-2">
+          <div class="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 p-3.5 rounded-xl flex items-center space-x-2">
             <svg class="w-4 h-4 flex-shrink-0 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
             <span>Zero pending architectural inquiries. Agents aligned with policy.</span>
           </div>
@@ -915,24 +1067,35 @@
       }
 
       container.innerHTML = pending.map((pr) => `
-        <div class="p-4 bg-amber-50/50 border border-amber-200 rounded-xl space-y-2.5 rpr-card shadow-xs" data-pr-id="${pr.id}">
+        <div class="p-4 bg-purple-50/60 border border-purple-200 rounded-xl space-y-2.5 rpr-card shadow-xs" data-pr-id="${pr.id}">
           <div class="flex items-center justify-between text-xs">
-            <span class="font-mono text-[#F6821F] font-bold">${pr.agentId}</span>
-            <span class="text-[10px] text-amber-800 bg-amber-100 font-mono px-2 py-0.5 rounded border border-amber-200 font-semibold">
-              Requires Steering
+            <span class="font-mono text-purple-700 font-bold">${pr.agentId}</span>
+            <span class="text-[10px] text-purple-800 bg-purple-100 font-mono px-2 py-0.5 rounded border border-purple-200 font-semibold">
+              Requires Human Steering
             </span>
           </div>
           <p class="text-[#0F172A] text-xs font-semibold">${pr.question}</p>
           <div class="flex flex-col space-y-1.5 pt-1">
             ${pr.options.map((opt) => `
-              <button onclick="resolvePR('${pr.id}', '${opt.replace(/'/g, "\\'")}')" class="rpr-option-btn w-full text-left px-3 py-2 bg-white hover:bg-[#F6821F]/10 hover:border-[#F6821F] text-[#334155] rounded-lg transition text-xs font-mono border border-slate-200 flex items-center space-x-2 shadow-2xs">
-                <svg class="w-3.5 h-3.5 text-[#F6821F] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              <button onclick="resolvePR('${pr.id}', '${opt.replace(/'/g, "\\'")}')" class="rpr-option-btn w-full text-left px-3 py-2 bg-white hover:bg-purple-100/50 hover:border-purple-300 text-[#334155] rounded-lg transition text-xs font-mono border border-slate-200 flex items-center space-x-2 shadow-2xs">
+                <svg class="w-3.5 h-3.5 text-purple-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
                 <span>${opt}</span>
               </button>
             `).join('')}
           </div>
         </div>
       `).join('');
+    }
+
+    function switchTab(tabId) {
+      const map = {
+        benchmark: 1,
+        overview: 2,
+        leases: 3,
+        settings: 4,
+        provenance: 5
+      };
+      if (map[tabId]) switchLevel(map[tabId]);
     }
 
     async function triggerSwarmWave() {
@@ -943,8 +1106,14 @@
       icon.classList.add('animate-spin');
       btn.disabled = true;
       try {
-        await fetch('/api/swarm', { method: 'POST' });
+        const res = await fetch('/api/swarm', { method: 'POST' });
+        const data = await res.json();
+        if (data && data.resultsCount) {
+          cleanMerges += data.resultsCount;
+          document.getElementById('stat-clean').innerText = cleanMerges;
+        }
         await fetchState();
+        markLevelCompleted(2);
       } catch (e) {
         console.error(e);
       } finally {
@@ -976,6 +1145,7 @@
 
         status.innerText = `Complete: ${data.concurrencyThroughputGain}`;
         await fetchState();
+        markLevelCompleted(1);
       } catch (e) {
         console.error(e);
         status.innerText = 'Benchmark error';
@@ -1005,6 +1175,7 @@
           })
         });
         await fetchState();
+        markLevelCompleted(3);
       } catch (e) {
         console.error(e);
       } finally {
@@ -1021,6 +1192,7 @@
       try {
         await fetch('/api/immune-attack', { method: 'POST' });
         await fetchState();
+        markLevelCompleted(4);
       } catch (e) {
         console.error(e);
       } finally {
@@ -1037,6 +1209,7 @@
       try {
         await fetch('/api/reverse-pr/trigger', { method: 'POST' });
         await fetchState();
+        markLevelCompleted(5);
       } catch (e) {
         console.error(e);
       } finally {
@@ -1052,6 +1225,7 @@
         body: JSON.stringify({ prId, option })
       });
       await fetchState();
+      markLevelCompleted(5);
     }
 
     // Init

@@ -15,7 +15,7 @@
 
 ## 📸 Real Cloudflare Infrastructure Console (Retina Screenshots)
 
-I implemented an authentic, developer-first Cloudflare Console conforming to Cloudflare's modern light theme (`#FFFFFF`, `#F8FAFC`, `#E2E8F0` borders, `#F6821F` Cloudflare safety orange accent, soft rounded cards, tabular typography, and 100% inline SVG iconography). It features an **interactive step-by-step architectural tour** that allows judges and engineers to walk through every breakthrough live.
+I implemented an authentic, developer-first Cloudflare Console conforming to Cloudflare's modern light theme (`#FFFFFF`, `#F8FAFC`, `#E2E8F0` borders, `#F6821F` Cloudflare safety orange accent, soft rounded cards, and 100% inline SVG iconography). It features an **interactive 5-level engineering quest** with real-time level progression (`0/5 Solved`) and "Mauro's Log" commentary, allowing judges and engineers to break Git, discover where it fails, and test each breakthrough live (with 1-click **Auto-Play Tour**).
 
 ![Convergence Console](assets/dashboard-console.png)
 
