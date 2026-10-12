@@ -10,11 +10,18 @@ const server = serve(
     port: PORT,
   },
   (info) => {
-    console.log('===============================================================');
-    console.log('  ⚡ CONVERGENCE: CONTINUOUS SEMANTIC CODE FABRIC ACTIVE       ');
-    console.log(`  🌐 Dashboard URL: http://localhost:${info.port}               `);
-    console.log('  📁 Cloudflare Artifacts Repository: convergence-core         ');
-    console.log('===============================================================');
+    console.log('\n======================================================================');
+    console.log('  ⚡ CONVERGENCE: INTERACTIVE CLOUDFLARE INFRASTRUCTURE CONSOLE');
+    console.log('  Built for the Cloudflare Challenge by Mauro Druwel');
+    console.log('======================================================================');
+    console.log(`\n  👉 Open in your browser: http://localhost:${info.port}`);
+    console.log('\n  🎮 5-Level Interactive Engineering Quest:');
+    console.log('     • Level 1: What happens when 25 agents commit to 1 file? (diff3 benchmark)');
+    console.log('     • Level 2: Code as a Live Tree (Real-time edge radar)');
+    console.log('     • Level 3: Edit-Time Symbol Leases (Zero token waste)');
+    console.log('     • Level 4: Code Immune System (Autonomous antibody synthesis)');
+    console.log('     • Level 5: Reverse Pull Requests (Humans provide steering, not line reviews)');
+    console.log('\n  Press Ctrl+C to stop.\n');
   }
 );
 

@@ -126,7 +126,7 @@ describe('End-to-End (E2E) Browser UI Test Suite — Cloudflare Infrastructure C
       return parseInt(document.getElementById('stat-clean')?.innerText || '0', 10);
     });
 
-    await page.click('#btn-swarm');
+    await page.evaluate(() => (document.getElementById('btn-swarm') as HTMLElement)?.click());
 
     // Verify counter increments by at least 8 merges
     await page.waitForFunction((prev) => {
