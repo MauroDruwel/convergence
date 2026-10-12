@@ -6,7 +6,9 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
     "bench": "tsx src/benchmarks/run.ts",
+    "bench:100k": "tsx src/benchmarks/stress-100k.ts",
     "simulate": "tsx src/simulator/swarm-simulator.ts",
     "start": "tsx src/server.ts"
   },
@@ -21,6 +23,7 @@
     "ws": "^8.22.0"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261012.1",
     "@types/babel__generator": "^7.6.8",
     "@types/node": "^22.13.1",
     "@types/ws": "^8.18.2",
