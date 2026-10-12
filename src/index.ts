@@ -170,4 +170,29 @@ export function transferFunds(amount: number): boolean {
   return c.json({ success: true, result: res });
 });
 
+/**
+ * Edit-Time Coordination: Request Symbol Lease
+ */
+app.post('/api/leases/request', async (c) => {
+  const { symbolId, agentId, leaseType, ttlMs, intent } = await c.req.json();
+  const brain = c.env?.REPO_BRAIN
+    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
+    : getLocalBrain(c.env);
+
+  const res = brain.requestSymbolLease(symbolId, agentId, leaseType, ttlMs, intent);
+  return c.json(res);
+});
+
+/**
+ * Provenance / Chain-of-Thought query
+ */
+app.get('/api/provenance', async (c) => {
+  const brain = c.env?.REPO_BRAIN
+    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
+    : getLocalBrain(c.env);
+
+  const state = await brain.getState();
+  return c.json(state.provenanceRecords || []);
+});
+
 export default app;

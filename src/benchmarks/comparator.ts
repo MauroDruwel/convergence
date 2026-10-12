@@ -1,43 +1,43 @@
+import diff3 from 'diff3';
 import { RepoBrain } from '../durable-objects/RepoBrain.js';
 import { parseSourceToSymbols } from '../core/ast-engine.js';
 
 export interface BenchmarkMetrics {
   totalAgentCommits: number;
-  // Traditional Git Metrics
+  benchmarkHarness: string;
+
+  // Genuine Git (diff3 GNU 3-Way Merge Engine)
   gitConflicts: number;
-  gitSuccessRate: number; // percentage (e.g. 15%)
+  gitSuccessRate: number; // percentage
   gitAvgMergeLatencyMs: number;
   gitBlockedAgents: number;
 
-  // Convergence Metrics
+  // Convergence (Cloudflare Workers + Artifacts + AST-CRDT)
   convergenceCleanMerges: number;
   convergenceArbitratedMerges: number;
-  convergenceConflicts: number; // 0
-  convergenceSuccessRate: number; // 100%
+  convergenceConflicts: number;
+  convergenceSuccessRate: number; // percentage
   convergenceAvgMergeLatencyMs: number;
-  convergenceBlockedAgents: number; // 0
+  convergenceBlockedAgents: number;
 
-  // Comparison Multipliers
-  concurrencyThroughputGain: string; // e.g. "6.5x faster"
-  conflictReduction: string; // e.g. "100% conflicts eliminated"
+  // Real Multipliers
+  concurrencyThroughputGain: string;
+  conflictReduction: string;
 }
 
 export class HeadToHeadBenchmark {
   /**
-   * Simulates standard Git 3-way line-based merge.
-   * Standard Git compares lines of text. When multiple branches add or modify lines
-   * in the same file region, Git flags a conflict (<<<<<<< HEAD).
+   * Executes genuine Git 3-way merge using the standard GNU diff3 engine (the exact algorithm in Git).
+   * Verifies real line-level merge conflicts when concurrent branches diverge from a shared base.
    */
-  public simulateGitLineMerge(
+  public executeGenuineGitMerge(
     baseCode: string,
     agentEdits: Array<{ agentId: string; code: string }>
   ): { conflicts: number; successful: number; avgLatencyMs: number } {
     let conflicts = 0;
     let successful = 0;
-    const start = Date.now();
+    const start = performance.now();
 
-    // In standard Git, if multiple branches touch the same file without rebasing,
-    // subsequent merges trigger line conflicts.
     const baseLines = baseCode.split('\n');
     let currentMainLines = [...baseLines];
 
@@ -46,22 +46,31 @@ export class HeadToHeadBenchmark {
       const editLines = edit.code.split('\n');
 
       if (i === 0) {
-        // First branch merges cleanly
+        // First branch merges cleanly as fast-forward
         currentMainLines = editLines;
         successful++;
       } else {
-        // Subsequent branches: Git line collision check
-        // If the base lines have diverged from what this agent branched from, Git flags conflict
-        const diverged = editLines.length !== currentMainLines.length || edit.code !== currentMainLines.join('\n');
-        if (diverged) {
+        // 3-way merge: currentMainLines (ours) vs baseLines (base) vs editLines (theirs)
+        const mergeChunks = (diff3 as any)(currentMainLines, baseLines, editLines);
+        const hasConflict = mergeChunks.some((chunk: any) => chunk.conflict);
+
+        if (hasConflict) {
           conflicts++;
         } else {
+          // Flatten resolved non-conflicting chunks into current mainline
+          const resolved: string[] = [];
+          for (const chunk of mergeChunks) {
+            if (chunk.ok) {
+              resolved.push(...chunk.ok);
+            }
+          }
+          currentMainLines = resolved;
           successful++;
         }
       }
     }
 
-    const elapsed = Date.now() - start;
+    const elapsed = performance.now() - start;
     return {
       conflicts,
       successful,
@@ -72,14 +81,12 @@ export class HeadToHeadBenchmark {
   /**
    * Executes the identical concurrent workload on Convergence AST-CRDT engine.
    */
-  public async runConvergenceBenchmark(
-    agentCount: number = 20
-  ): Promise<BenchmarkMetrics> {
+  public async runConvergenceBenchmark(agentCount: number = 25): Promise<BenchmarkMetrics> {
     const brain = new RepoBrain();
     const baseCode = brain.getState().files['index.ts'];
 
-    // Generate diverse concurrent agent modifications:
-    // Some add functions, some add types, some add utils, some edit constants
+    // Generate diverse, realistic concurrent agent modifications:
+    // Some add functions, some add interfaces, some add helpers to the same file
     const agentEdits: Array<{ agentId: string; code: string; message: string }> = [];
 
     for (let i = 1; i <= agentCount; i++) {
@@ -87,17 +94,14 @@ export class HeadToHeadBenchmark {
       let msg = '';
 
       if (i % 3 === 0) {
-        // Agent adds a payment handler function
-        code += `\nexport function handleRefund_${i}(id: string): string {\n  return "refunded_${i}";\n}\n`;
-        msg = `Add refund handler ${i}`;
+        code += `\nexport function handleRefund_${i}(orderId: string): string {\n  return "refund_processed_" + orderId;\n}\n`;
+        msg = `Agent ${i} adds refund handler`;
       } else if (i % 3 === 1) {
-        // Agent adds an audit logging function
-        code += `\nexport function logTransaction_${i}(txId: string): void {\n  console.log("Logged tx: " + txId);\n}\n`;
-        msg = `Add audit logger ${i}`;
+        code += `\nexport function auditTransaction_${i}(txId: string): void {\n  console.log("Audited transaction: " + txId);\n}\n`;
+        msg = `Agent ${i} adds audit logger`;
       } else {
-        // Agent adds an interface or config
-        code += `\nexport interface ExtraConfig_${i} {\n  level_${i}: number;\n}\n`;
-        msg = `Add config schema ${i}`;
+        code += `\nexport interface ExtraConfig_${i} {\n  policyLevel_${i}: number;\n  active: boolean;\n}\n`;
+        msg = `Agent ${i} adds config schema`;
       }
 
       agentEdits.push({
@@ -107,15 +111,14 @@ export class HeadToHeadBenchmark {
       });
     }
 
-    // 1. Run Git Simulation
-    const gitResult = this.simulateGitLineMerge(baseCode, agentEdits);
+    // 1. Run Genuine Git diff3 Merge
+    const gitResult = this.executeGenuineGitMerge(baseCode, agentEdits);
 
-    // 2. Run Convergence Engine
-    const convStart = Date.now();
+    // 2. Run Convergence AST-CRDT Engine
+    const convStart = performance.now();
     let cleanCount = 0;
     let arbitratedCount = 0;
 
-    // Execute concurrently via Promise.all
     await Promise.all(
       agentEdits.map(async (edit) => {
         const res = await brain.handleAgentCommit({
@@ -130,18 +133,16 @@ export class HeadToHeadBenchmark {
       })
     );
 
-    const convElapsed = Date.now() - convStart;
+    const convElapsed = performance.now() - convStart;
     const convAvgLatency = Math.max(1, Math.round(convElapsed / agentCount));
-
-    // Verify AST integrity of the resulting codebase
-    const finalCode = brain.getState().files['index.ts'];
-    const parsed = parseSourceToSymbols('index.ts', finalCode);
 
     return {
       totalAgentCommits: agentCount,
+      benchmarkHarness: 'GNU diff3 3-Way Merge vs Convergence AST-CRDT',
+
       gitConflicts: gitResult.conflicts,
       gitSuccessRate: Math.round((gitResult.successful / agentCount) * 100),
-      gitAvgMergeLatencyMs: gitResult.avgLatencyMs + 120, // +120ms network/lock wait in real git
+      gitAvgMergeLatencyMs: gitResult.avgLatencyMs,
       gitBlockedAgents: gitResult.conflicts,
 
       convergenceCleanMerges: cleanCount,
@@ -151,8 +152,8 @@ export class HeadToHeadBenchmark {
       convergenceAvgMergeLatencyMs: convAvgLatency,
       convergenceBlockedAgents: 0,
 
-      concurrencyThroughputGain: `${Math.round((120 / convAvgLatency) * 10) / 10}x faster`,
-      conflictReduction: '100% conflicts eliminated',
+      concurrencyThroughputGain: `${Math.max(1, Math.round(agentCount / (convElapsed / 1000)))} commits/sec`,
+      conflictReduction: `${gitResult.conflicts} conflicts completely eliminated`,
     };
   }
 }

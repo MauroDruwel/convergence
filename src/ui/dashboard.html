@@ -179,6 +179,47 @@
       </div>
     </div>
 
+    <!-- EDIT-TIME LEASES & GIT NOTES PROVENANCE ROW -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <!-- EDIT-TIME LEASES & BACKPRESSURE -->
+      <div class="card-glass p-5 rounded-xl border border-cyan-500/30 bg-[#0f172a]/60 flex flex-col">
+        <div class="flex items-center justify-between mb-3 pb-2 border-b border-gray-800">
+          <div>
+            <h3 class="font-bold text-sm text-white uppercase tracking-wider flex items-center space-x-2">
+              <span>Edit-Time AST Symbol Leases</span>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono">Semantic Backpressure</span>
+            </h3>
+            <p class="text-xs text-gray-400">Lock-free symbol checkout with automatic downstream dependency backpressure</p>
+          </div>
+          <button onclick="testLeaseAcquire()" class="px-2.5 py-1 bg-cyan-600 hover:bg-cyan-700 text-white font-mono text-[11px] rounded transition">
+            🔑 Acquire Lease
+          </button>
+        </div>
+        <div id="leases-container" class="flex-1 space-y-2 font-mono text-xs overflow-y-auto max-h-[220px]">
+          <div class="text-gray-500 py-3 text-center">No active leases. All symbols available for concurrent edits.</div>
+        </div>
+      </div>
+
+      <!-- GIT NOTES CHAIN-OF-THOUGHT PROVENANCE -->
+      <div class="card-glass p-5 rounded-xl border border-purple-500/30 bg-[#0f172a]/60 flex flex-col">
+        <div class="flex items-center justify-between mb-3 pb-2 border-b border-gray-800">
+          <div>
+            <h3 class="font-bold text-sm text-white uppercase tracking-wider flex items-center space-x-2">
+              <span>Git Notes CoT Provenance</span>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-mono">refs/notes/agent-provenance</span>
+            </h3>
+            <p class="text-xs text-gray-400">Preserving model reasoning, prompts & token telemetry natively in Git</p>
+          </div>
+          <span class="text-[11px] font-mono text-purple-400" id="prov-count">0 Records</span>
+        </div>
+        <div id="provenance-container" class="flex-1 space-y-2 font-mono text-xs overflow-y-auto max-h-[220px]">
+          <div class="text-gray-500 py-3 text-center">Awaiting agent commits to log Chain-of-Thought records...</div>
+        </div>
+      </div>
+
+    </div>
+
     <!-- CANVAS & REVERSE PR ROW -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
@@ -436,6 +477,12 @@
       if (state.reversePRs && state.reversePRs.length > 0) {
         renderReversePRs(state.reversePRs);
       }
+      if (state.activeLeases) {
+        renderLeases(state.activeLeases);
+      }
+      if (state.provenanceRecords) {
+        renderProvenance(state.provenanceRecords);
+      }
     }
 
     function appendEvent(evt) {
@@ -460,6 +507,10 @@
         badge = '<span class="px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-400 font-bold">[IMMUNE GUARD]</span>';
       } else if (evt.type === 'chrono_revert') {
         badge = '<span class="px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400 font-bold">[CHRONO REVERT]</span>';
+      } else if (evt.type === 'lease_acquired') {
+        badge = '<span class="px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-400 font-bold">[LEASE ACQUIRED]</span>';
+      } else if (evt.type === 'backpressure_alert') {
+        badge = '<span class="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold">[BACKPRESSURE]</span>';
       }
 
       const time = new Date(evt.timestamp).toLocaleTimeString();
@@ -571,6 +622,71 @@
       } finally {
         btn.innerText = '🛡️ Test Immune System (Red-Team Fuzz)';
         btn.disabled = false;
+      }
+    }
+
+    function renderLeases(leases) {
+      const container = document.getElementById('leases-container');
+      if (!leases || leases.length === 0) {
+        container.innerHTML = '<div class="text-gray-500 py-3 text-center">No active leases. All symbols available for concurrent edits.</div>';
+        return;
+      }
+      container.innerHTML = leases.map(l => `
+        <div class="p-2 bg-gray-900/80 border border-cyan-500/30 rounded flex items-center justify-between">
+          <div>
+            <div class="text-cyan-400 font-bold">${l.symbolId}</div>
+            <div class="text-[10px] text-gray-400">${l.intent}</div>
+          </div>
+          <div class="text-right">
+            <span class="px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 text-[10px] font-bold">${l.agentId}</span>
+            <div class="text-[10px] text-gray-500">TTL: ${Math.max(0, Math.round((l.expiresAt - Date.now()) / 1000))}s</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderProvenance(records) {
+      const container = document.getElementById('provenance-container');
+      const countBadge = document.getElementById('prov-count');
+      if (!records || records.length === 0) {
+        container.innerHTML = '<div class="text-gray-500 py-3 text-center">Awaiting agent commits to log Chain-of-Thought records...</div>';
+        countBadge.innerText = '0 Records';
+        return;
+      }
+      countBadge.innerText = `${records.length} Records`;
+      container.innerHTML = records.slice(-5).reverse().map(r => `
+        <div class="p-2.5 bg-gray-900/80 border border-purple-500/30 rounded space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="text-purple-400 font-bold">${r.symbolId}</span>
+            <span class="px-1 py-0.5 bg-purple-500/20 text-purple-300 text-[10px] rounded">${r.agentId}</span>
+          </div>
+          <div class="text-gray-300 text-[11px]">${r.promptIntent}</div>
+          <div class="text-gray-500 text-[10px] flex items-center justify-between">
+            <span>Model: ${r.model.replace('@cf/meta/', '')}</span>
+            <span>${r.tokenTelemetry?.promptTokens || 0} in / ${r.tokenTelemetry?.completionTokens || 0} out</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function testLeaseAcquire() {
+      try {
+        const symbolId = 'func:processOrder';
+        const agentId = 'agent_architect_' + Math.floor(Math.random() * 100);
+        await fetch('/api/leases/request', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            symbolId,
+            agentId,
+            leaseType: 'exclusive_write',
+            ttlMs: 6000,
+            intent: 'Refactoring order processing schema'
+          })
+        });
+        await fetchState();
+      } catch (e) {
+        console.error(e);
       }
     }
 
