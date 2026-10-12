@@ -1,152 +1,194 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="100%" height="100%">
-  <defs>
-    <linearGradient id="dashBg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#070b14"/>
-      <stop offset="100%" stop-color="#0f172a"/>
-    </linearGradient>
-    <linearGradient id="cfGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f38020"/>
-      <stop offset="100%" stop-color="#faad3f"/>
-    </linearGradient>
-  </defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" width="100%" height="100%">
+  <!-- Window Chrome -->
+  <rect width="1200" height="760" fill="#0F1117" stroke="#2D333B" stroke-width="1"/>
+  <rect width="1200" height="38" fill="#161B22" stroke="#2D333B" stroke-width="1"/>
+  <circle cx="20" cy="19" r="4.5" fill="#EF4444"/>
+  <circle cx="36" cy="19" r="4.5" fill="#F59E0B"/>
+  <circle cx="52" cy="19" r="4.5" fill="#10B981"/>
+  <rect x="360" y="7" width="480" height="24" fill="#0F1117" stroke="#2D333B" stroke-width="1" rx="2"/>
+  <text x="600" y="23" fill="#7D8590" font-family="monospace" font-size="11" text-anchor="middle">dash.cloudflare.com/mauro-druwel/workers/convergence-core</text>
 
-  <!-- Browser Window Chrome -->
-  <rect width="1200" height="700" rx="14" fill="#0b0f19" stroke="#1e293b" stroke-width="2"/>
-  <rect width="1200" height="42" rx="14" fill="#0f172a"/>
-  <!-- Window Controls -->
-  <circle cx="24" cy="21" r="5" fill="#ef4444"/>
-  <circle cx="40" cy="21" r="5" fill="#f59e0b"/>
-  <circle cx="56" cy="21" r="5" fill="#10b981"/>
-  <rect x="360" y="8" width="480" height="26" rx="6" fill="#1e293b"/>
-  <text x="600" y="25" fill="#94a3b8" font-family="monospace" font-size="11" text-anchor="middle">http://localhost:3000 — Convergence Swarm Control</text>
+  <!-- Top Cloudflare Nav -->
+  <g transform="translate(24, 52)">
+    <!-- CF Logo Box -->
+    <rect x="0" y="0" width="22" height="22" fill="#F6821F" rx="2"/>
+    <text x="11" y="15" fill="#FFFFFF" font-family="sans-serif" font-size="13" font-weight="900" text-anchor="middle">C</text>
+    <text x="32" y="16" fill="#7D8590" font-family="monospace" font-size="12">/</text>
+    <text x="44" y="16" fill="#E6EDF3" font-family="monospace" font-size="12" font-weight="600">mauro-druwel</text>
+    <text x="145" y="16" fill="#7D8590" font-family="monospace" font-size="12">/</text>
+    <text x="157" y="16" fill="#7D8590" font-family="monospace" font-size="12">Workers &amp; Pages</text>
+    <text x="270" y="16" fill="#7D8590" font-family="monospace" font-size="12">/</text>
+    <text x="282" y="16" fill="#F6821F" font-family="monospace" font-size="12" font-weight="700">convergence-core</text>
 
-  <!-- Top App Navigation -->
-  <g transform="translate(30, 60)">
-    <rect width="32" height="32" rx="8" fill="url(#cfGrad)"/>
-    <text x="16" y="22" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="16" font-weight="900" text-anchor="middle">C</text>
-    <text x="44" y="20" fill="#ffffff" font-family="-apple-system, sans-serif" font-size="16" font-weight="800">CONVERGENCE</text>
-    <rect x="175" y="6" width="135" height="18" rx="4" fill="rgba(243,128,32,0.15)" stroke="rgba(243,128,32,0.3)" stroke-width="1"/>
-    <text x="242" y="19" fill="#f38020" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">CLOUDFLARE CHALLENGE</text>
+    <!-- Status Badge -->
+    <rect x="420" y="1" width="94" height="20" fill="#10B981" fill-opacity="0.12" stroke="#10B981" stroke-opacity="0.3" stroke-width="1" rx="2"/>
+    <circle cx="432" cy="11" r="3" fill="#10B981"/>
+    <text x="442" y="15" fill="#10B981" font-family="monospace" font-size="10" font-weight="600">Production</text>
 
-    <!-- Status pill -->
-    <rect x="940" y="4" width="180" height="26" rx="13" fill="rgba(16,185,129,0.1)" stroke="rgba(16,185,129,0.3)" stroke-width="1"/>
-    <circle cx="956" cy="17" r="4" fill="#10b981"/>
-    <text x="968" y="21" fill="#10b981" font-family="monospace" font-size="11" font-weight="600">Durable Object Active</text>
+    <!-- Right Context -->
+    <rect x="980" y="1" width="170" height="20" fill="#161B22" stroke="#2D333B" stroke-width="1" rx="2"/>
+    <text x="990" y="15" fill="#7D8590" font-family="monospace" font-size="10">DO SQLite: </text>
+    <text x="1060" y="15" fill="#10B981" font-family="monospace" font-size="10" font-weight="600">ctx.storage.sql</text>
   </g>
 
-  <!-- Metrics Row -->
-  <g transform="translate(30, 110)">
-    <!-- Box 1 -->
-    <rect x="0" y="0" width="215" height="65" rx="10" fill="#0f172a" stroke="#1e293b"/>
-    <text x="14" y="22" fill="#94a3b8" font-family="-apple-system, sans-serif" font-size="10" font-weight="600">CLEAN AST MERGES</text>
-    <text x="14" y="48" fill="#10b981" font-family="monospace" font-size="20" font-weight="700">100%</text>
-
-    <!-- Box 2 -->
-    <rect x="230" y="0" width="215" height="65" rx="10" fill="#0f172a" stroke="#1e293b"/>
-    <text x="244" y="22" fill="#94a3b8" font-family="-apple-system, sans-serif" font-size="10" font-weight="600">GIT CONFLICTS</text>
-    <text x="244" y="48" fill="#10b981" font-family="monospace" font-size="20" font-weight="700">0 (ELIMINATED)</text>
-
-    <!-- Box 3 -->
-    <rect x="460" y="0" width="215" height="65" rx="10" fill="#0f172a" stroke="#1e293b"/>
-    <text x="474" y="22" fill="#94a3b8" font-family="-apple-system, sans-serif" font-size="10" font-weight="600">SQLITE STORAGE</text>
-    <text x="474" y="48" fill="#06b6d4" font-family="monospace" font-size="18" font-weight="700">ctx.storage.sql</text>
-
-    <!-- Box 4 -->
-    <rect x="690" y="0" width="215" height="65" rx="10" fill="#0f172a" stroke="#1e293b"/>
-    <text x="704" y="22" fill="#94a3b8" font-family="-apple-system, sans-serif" font-size="10" font-weight="600">LAMPORT CLOCK</text>
-    <text x="704" y="48" fill="#f38020" font-family="monospace" font-size="20" font-weight="700">L: 12,480</text>
-
-    <!-- Box 5 -->
-    <rect x="920" y="0" width="220" height="65" rx="10" fill="#0f172a" stroke="#1e293b"/>
-    <text x="934" y="22" fill="#94a3b8" font-family="-apple-system, sans-serif" font-size="10" font-weight="600">THROUGHPUT</text>
-    <text x="934" y="48" fill="#a855f7" font-family="monospace" font-size="18" font-weight="700">96+ commits/sec</text>
+  <!-- Horizontal Tabs Strip -->
+  <g transform="translate(24, 88)">
+    <line x1="0" y1="28" x2="1152" y2="28" stroke="#2D333B" stroke-width="1"/>
+    <text x="0" y="18" fill="#E6EDF3" font-family="-apple-system, sans-serif" font-size="12" font-weight="600">Overview &amp; Telemetry</text>
+    <line x1="0" y1="27" x2="130" y2="27" stroke="#F6821F" stroke-width="2"/>
+    <text x="160" y="18" fill="#7D8590" font-family="-apple-system, sans-serif" font-size="12">Symbol Leases (0)</text>
+    <text x="300" y="18" fill="#7D8590" font-family="-apple-system, sans-serif" font-size="12">Git Notes Provenance</text>
+    <text x="460" y="18" fill="#7D8590" font-family="-apple-system, sans-serif" font-size="12">diff3 Benchmark Harness</text>
+    <text x="640" y="18" fill="#7D8590" font-family="-apple-system, sans-serif" font-size="12">Settings</text>
   </g>
 
-  <!-- Middle Section: Swarm Topology Canvas Mockup -->
-  <g transform="translate(30, 195)">
-    <rect width="680" height="260" rx="10" fill="#070b14" stroke="#1e293b"/>
-    <text x="20" y="28" fill="#ffffff" font-family="monospace" font-size="12" font-weight="700">LIVE AGENT TOPOLOGY (ARTIFACTS RADIAL ORBIT)</text>
+  <!-- High-Density Metrics Strip (6 Flat Boxes) -->
+  <g transform="translate(24, 130)">
+    <!-- Metric 1 -->
+    <rect x="0" y="0" width="180" height="60" fill="#161B22" stroke="#2D333B" stroke-width="1" rx="2"/>
+    <text x="12" y="18" fill="#7D8590" font-family="monospace" font-size="10" font-weight="600">AST MERGE RATE</text>
+    <text x="12" y="42" fill="#10B981" font-family="monospace" font-size="18" font-weight="700">100.0%</text>
 
-    <!-- Orbit Ring -->
-    <circle cx="340" cy="140" r="85" fill="none" stroke="#334155" stroke-width="1" stroke-dasharray="4 6"/>
+    <!-- Metric 2 -->
+    <rect x="194" y="0" width="180" height="60" fill="#161B22" stroke="#2D333B" stroke-width="1" rx="2"/>
+    <text x="206" y="18" fill="#7D8590" font-family="monospace" font-size="10" font-weight="600">GIT LINE CONFLICTS</text>
+    <text x="206" y="42" fill="#10B981" font-family="monospace" font-size="18" font-weight="700">0 (ELIMINATED)</text>
 
-    <!-- Central Node -->
-    <circle cx="340" cy="140" r="28" fill="url(#cfGrad)"/>
-    <text x="340" y="144" fill="#ffffff" font-family="monospace" font-size="9" font-weight="800" text-anchor="middle">ARTIFACTS</text>
+    <!-- Metric 3 -->
+    <rect x="388" y="0" width="180" height="60" fill="#161B22" stroke="#2D333B" stroke-width="1" rx="2"/>
+    <text x="400" y="18" fill="#7D8590" font-family="monospace" font-size="10" font-weight="600">ACTIVE LEASES</text>
+    <text x="400" y="42" fill="#38BDF8" font-family="monospace" font-size="18" font-weight="700">0 (LOCK-FREE)</text>
 
-    <!-- Satellite Agent Nodes -->
-    <line x1="340" y1="140" x2="340" y2="55" stroke="#f38020" stroke-width="1.5"/>
-    <circle cx="340" cy="55" r="8" fill="#f38020"/>
-    <text x="354" y="58" fill="#f38020" font-family="monospace" font-size="10">agent_sentinel</text>
+    <!-- Metric 4 -->
+    <rect x="582" y="0" width="180" height="60" fill="#161B22" stroke="#2D333B" stroke-width="1" rx="2"/>
+    <text x="594" y="18" fill="#7D8590" font-family="monospace" font-size="10" font-weight="600">GIT NOTES PROVENANCE</text>
+    <text x="594" y="42" fill="#A855F7" font-family="monospace" font-size="18" font-weight="700">refs/notes</text>
 
-    <line x1="340" y1="140" x2="425" y2="140" stroke="#10b981" stroke-width="1.5"/>
-    <circle cx="425" cy="140" r="8" fill="#10b981"/>
-    <text x="439" y="144" fill="#10b981" font-family="monospace" font-size="10">agent_payment</text>
+    <!-- Metric 5 -->
+    <rect x="776" y="0" width="180" height="60" fill="#161B22" stroke="#2D333B" stroke-width="1" rx="2"/>
+    <text x="788" y="18" fill="#7D8590" font-family="monospace" font-size="10" font-weight="600">LAMPORT CLOCK</text>
+    <text x="788" y="42" fill="#F6821F" font-family="monospace" font-size="18" font-weight="700">L: 15,240</text>
 
-    <line x1="340" y1="140" x2="340" y2="225" stroke="#3b82f6" stroke-width="1.5"/>
-    <circle cx="340" cy="225" r="8" fill="#3b82f6"/>
-    <text x="354" y="228" fill="#3b82f6" font-family="monospace" font-size="10">agent_auth</text>
-
-    <line x1="340" y1="140" x2="255" y2="140" stroke="#a855f7" stroke-width="1.5"/>
-    <circle cx="255" cy="140" r="8" fill="#a855f7"/>
-    <text x="180" y="144" fill="#a855f7" font-family="monospace" font-size="10">agent_fuzzer</text>
+    <!-- Metric 6 -->
+    <rect x="970" y="0" width="182" height="60" fill="#161B22" stroke="#2D333B" stroke-width="1" rx="2"/>
+    <text x="982" y="18" fill="#7D8590" font-family="monospace" font-size="10" font-weight="600">DO THROUGHPUT</text>
+    <text x="982" y="42" fill="#E6EDF3" font-family="monospace" font-size="18" font-weight="700">96+ ops/s</text>
   </g>
 
-  <!-- Right Section: Edit-Time Leases & Reverse PR -->
-  <g transform="translate(730, 195)">
-    <rect width="440" height="260" rx="10" fill="#0f172a" stroke="#1e293b"/>
-    <text x="20" y="28" fill="#38bdf8" font-family="monospace" font-size="12" font-weight="700">EDIT-TIME LEASES &amp; REVERSE PRS</text>
+  <!-- Middle Section: Swarm Radar & Action Bar -->
+  <g transform="translate(24, 205)">
+    <!-- Canvas Frame -->
+    <rect x="0" y="0" width="700" height="240" fill="#161B22" stroke="#2D333B" stroke-width="1" rx="2"/>
+    <rect x="0" y="0" width="700" height="28" fill="#1C212A"/>
+    <text x="12" y="18" fill="#7D8590" font-family="monospace" font-size="10" font-weight="700">SWARM TOPOLOGY &amp; ARTIFACTS HUB (60 FPS ACTOR RADAR)</text>
 
-    <!-- Lease Row -->
-    <g transform="translate(20, 48)">
-      <rect width="400" height="48" rx="6" fill="#1e293b" stroke="#06b6d4" stroke-width="1"/>
-      <text x="14" y="20" fill="#06b6d4" font-family="monospace" font-size="11" font-weight="700">func:processOrder</text>
-      <text x="14" y="36" fill="#94a3b8" font-family="-apple-system, sans-serif" font-size="10">Held by agent_payment (TTL: 4s) | Exclusive Write</text>
-    </g>
+    <!-- Radar lines -->
+    <circle cx="350" cy="134" r="65" fill="none" stroke="#2D333B" stroke-width="1"/>
+    <circle cx="350" cy="134" r="32" fill="none" stroke="#2D333B" stroke-width="0.75"/>
+    <line x1="260" y1="134" x2="440" y2="134" stroke="#2D333B" stroke-width="1"/>
+    <line x1="350" y1="60" x2="350" y2="208" stroke="#2D333B" stroke-width="1"/>
 
-    <!-- Backpressure Alert Row -->
-    <g transform="translate(20, 106)">
-      <rect width="400" height="48" rx="6" fill="#1e293b" stroke="#f59e0b" stroke-width="1"/>
-      <text x="14" y="20" fill="#f59e0b" font-family="monospace" font-size="11" font-weight="700">BACKPRESSURE: interface:PaymentConfig</text>
-      <text x="14" y="36" fill="#94a3b8" font-family="-apple-system, sans-serif" font-size="10">Held by agent_architect | Downstream agents queued</text>
-    </g>
+    <!-- Center Artifacts Node -->
+    <circle cx="350" cy="134" r="10" fill="#F6821F"/>
+    <text x="350" y="137" fill="#FFFFFF" font-family="monospace" font-size="7" font-weight="800" text-anchor="middle">ART</text>
 
-    <!-- Reverse PR Mock -->
-    <g transform="translate(20, 164)">
-      <rect width="400" height="80" rx="6" fill="#182234" stroke="#a855f7" stroke-width="1"/>
-      <text x="14" y="20" fill="#a855f7" font-family="monospace" font-size="11" font-weight="700">Reverse PR #42: Human Architectural Decision</text>
-      <text x="14" y="38" fill="#e2e8f0" font-family="-apple-system, sans-serif" font-size="10">Should payment backoff be exponential (2s,4s) or linear (3s)?</text>
-      <rect x="14" y="48" width="160" height="22" rx="4" fill="#a855f7"/>
-      <text x="94" y="63" fill="#ffffff" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">✓ Exponential (Selected)</text>
-    </g>
-  </g>
+    <!-- Satellite Agents -->
+    <circle cx="350" cy="69" r="4" fill="#F6821F"/>
+    <text x="350" y="62" fill="#F6821F" font-family="monospace" font-size="8" text-anchor="middle">agent_sentinel</text>
 
-  <!-- Bottom Section: Git Notes CoT & Real-Time Code Inspector -->
-  <g transform="translate(30, 475)">
-    <!-- Provenance Box -->
-    <rect width="550" height="195" rx="10" fill="#0f172a" stroke="#1e293b"/>
-    <text x="20" y="28" fill="#a855f7" font-family="monospace" font-size="12" font-weight="700">GIT NOTES CHAIN-OF-THOUGHT (refs/notes)</text>
-    <g transform="translate(20, 42)">
-      <rect width="510" height="135" rx="6" fill="#070b14"/>
-      <text x="14" y="22" fill="#a855f7" font-family="monospace" font-size="10 font-weight=700">{ schema: "cloudflare.artifacts.provenance.v1" }</text>
-      <text x="14" y="42" fill="#38bdf8" font-family="monospace" font-size="10">agent: "agent_sentinel" | model: "@cf/meta/llama-3.3-70b-instruct"</text>
-      <text x="14" y="62" fill="#94a3b8" font-family="monospace" font-size="10">intent: "Refactored payment idempotency guard"</text>
-      <text x="14" y="82" fill="#10b981" font-family="monospace" font-size="10">reasoning: ["Analyzed AST", "Synthesized boundary check", "Pass: 0 errors"]</text>
-      <text x="14" y="102" fill="#94a3b8" font-family="monospace" font-size="10">telemetry: { promptTokens: 420, completionTokens: 110, latencyMs: 12 }</text>
-    </g>
+    <circle cx="415" cy="134" r="4" fill="#10B981"/>
+    <text x="445" y="137" fill="#10B981" font-family="monospace" font-size="8">agent_payment</text>
 
-    <!-- Code Inspector Box -->
-    <g transform="translate(570, 0)">
-      <rect width="570" height="195" rx="10" fill="#0f172a" stroke="#1e293b"/>
-      <text x="20" y="28" fill="#06b6d4" font-family="monospace" font-size="12" font-weight="700">LIVE UNIFIED CODEBASE (index.ts)</text>
-      <g transform="translate(20, 42)">
-        <rect width="530" height="135" rx="6" fill="#070b14"/>
-        <text x="14" y="22" fill="#94a3b8" font-family="monospace" font-size="10">// Reconciled via AST-CRDT (5,000+ Concurrent Symbols)</text>
-        <text x="14" y="42" fill="#38bdf8" font-family="monospace" font-size="10">export function processOrder(orderId: string, amount: number): boolean {</text>
-        <text x="14" y="62" fill="#10b981" font-family="monospace" font-size="10">  if (amount &lt;= 0) throw new RangeError("Invalid amount: " + amount);</text>
-        <text x="14" y="82" fill="#e2e8f0" font-family="monospace" font-size="10">  return recordPayment(orderId, amount);</text>
-        <text x="14" y="102" fill="#38bdf8" font-family="monospace" font-size="10">}</text>
+    <circle cx="350" cy="199" r="4" fill="#38BDF8"/>
+    <text x="350" y="211" fill="#38BDF8" font-family="monospace" font-size="8" text-anchor="middle">agent_auth</text>
+
+    <circle cx="285" cy="134" r="4" fill="#A855F7"/>
+    <text x="250" y="137" fill="#A855F7" font-family="monospace" font-size="8">agent_optimizer</text>
+
+    <!-- Right Box: Actions & Governance -->
+    <g transform="translate(716, 0)">
+      <rect width="436" height="240" fill="#161B22" stroke="#2D333B" stroke-width="1" rx="2"/>
+      <rect width="436" height="28" fill="#1C212A"/>
+      <text x="12" y="18" fill="#F6821F" font-family="monospace" font-size="10" font-weight="700">AGENT ACTIONS &amp; REVERSE PRS</text>
+
+      <!-- Action Buttons -->
+      <g transform="translate(12, 40)">
+        <rect x="0" y="0" width="195" height="30" fill="#F6821F" rx="2"/>
+        <text x="97" y="19" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="11" font-weight="600" text-anchor="middle">⚡ Dispatch Swarm Wave</text>
+
+        <rect x="207" y="0" width="205" height="30" fill="#0F1117" stroke="#2D333B" stroke-width="1" rx="2"/>
+        <text x="309" y="19" fill="#E6EDF3" font-family="-apple-system, sans-serif" font-size="11" font-weight="500" text-anchor="middle">📊 Run diff3 Benchmark</text>
       </g>
+
+      <!-- Reverse PR Inversion card -->
+      <g transform="translate(12, 82)">
+        <rect width="412" height="142" fill="#0F1117" stroke="#2D333B" stroke-width="1" rx="2"/>
+        <text x="12" y="22" fill="#F6821F" font-family="monospace" font-size="10" font-weight="700">REVERSE PR #01 // HUMAN STEERING REQUIRED</text>
+        <text x="12" y="42" fill="#E6EDF3" font-family="-apple-system, sans-serif" font-size="11">Agent payment: Should currency format conform to ISO 4217</text>
+        <text x="12" y="58" fill="#E6EDF3" font-family="-apple-system, sans-serif" font-size="11">standard strings ("USD") or custom typed symbol union?</text>
+        <!-- Selection Buttons -->
+        <rect x="12" y="72" width="388" height="26" fill="#161B22" stroke="#2D333B" stroke-width="1" rx="2"/>
+        <text x="24" y="89" fill="#10B981" font-family="monospace" font-size="10">✓ ISO 4217 Currency Standard (Selected)</text>
+        <rect x="12" y="104" width="388" height="26" fill="#161B22" stroke="#2D333B" stroke-width="1" rx="2"/>
+        <text x="24" y="121" fill="#7D8590" font-family="monospace" font-size="10">👉 Custom Union Type ("USD" | "EUR" | "GBP")</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Bottom Section: Dense Tabular Data (Leases & Provenance) -->
+  <g transform="translate(24, 460)">
+    <!-- Table Left: Edit-Time AST Symbol Leases -->
+    <rect x="0" y="0" width="570" height="260" fill="#161B22" stroke="#2D333B" stroke-width="1" rx="2"/>
+    <rect x="0" y="0" width="570" height="28" fill="#1C212A"/>
+    <text x="12" y="18" fill="#38BDF8" font-family="monospace" font-size="10" font-weight="700">EDIT-TIME AST SYMBOL LEASES (LOCK-FREE COORDINATION)</text>
+
+    <!-- Table Header -->
+    <rect x="0" y="28" width="570" height="22" fill="#0F1117"/>
+    <text x="12" y="43" fill="#7D8590" font-family="monospace" font-size="9" font-weight="600">SYMBOL ID</text>
+    <text x="160" y="43" fill="#7D8590" font-family="monospace" font-size="9" font-weight="600">HOLDER</text>
+    <text x="280" y="43" fill="#7D8590" font-family="monospace" font-size="9" font-weight="600">TYPE</text>
+    <text x="360" y="43" fill="#7D8590" font-family="monospace" font-size="9" font-weight="600">TTL</text>
+    <text x="420" y="43" fill="#7D8590" font-family="monospace" font-size="9" font-weight="600">INTENT</text>
+    <line x1="0" y1="50" x2="570" y2="50" stroke="#2D333B" stroke-width="1"/>
+
+    <!-- Row 1 -->
+    <text x="12" y="70" fill="#38BDF8" font-family="monospace" font-size="10">func:processOrder</text>
+    <text x="160" y="70" fill="#E6EDF3" font-family="monospace" font-size="10">agent_payment</text>
+    <text x="280" y="70" fill="#38BDF8" font-family="monospace" font-size="9">exclusive</text>
+    <text x="360" y="70" fill="#7D8590" font-family="monospace" font-size="10">4s</text>
+    <text x="420" y="70" fill="#7D8590" font-family="monospace" font-size="10">Add idempotency</text>
+    <line x1="0" y1="82" x2="570" y2="82" stroke="#22272E" stroke-width="1"/>
+
+    <!-- Row 2 -->
+    <text x="12" y="102" fill="#F59E0B" font-family="monospace" font-size="10">interface:PaymentConfig</text>
+    <text x="160" y="102" fill="#E6EDF3" font-family="monospace" font-size="10">agent_architect</text>
+    <text x="280" y="102" fill="#F59E0B" font-family="monospace" font-size="9">backpressure</text>
+    <text x="360" y="102" fill="#7D8590" font-family="monospace" font-size="10">3s</text>
+    <text x="420" y="102" fill="#7D8590" font-family="monospace" font-size="10">Schema mutation</text>
+    <line x1="0" y1="114" x2="570" y2="114" stroke="#22272E" stroke-width="1"/>
+
+    <!-- Table Right: Git Notes Provenance -->
+    <g transform="translate(582, 0)">
+      <rect width="570" height="260" fill="#161B22" stroke="#2D333B" stroke-width="1" rx="2"/>
+      <rect width="570" height="28" fill="#1C212A"/>
+      <text x="12" y="18" fill="#A855F7" font-family="monospace" font-size="10" font-weight="700">GIT NOTES PROVENANCE (refs/notes/agent-provenance)</text>
+
+      <rect x="0" y="28" width="570" height="22" fill="#0F1117"/>
+      <text x="12" y="43" fill="#7D8590" font-family="monospace" font-size="9" font-weight="600">SYMBOL</text>
+      <text x="160" y="43" fill="#7D8590" font-family="monospace" font-size="9" font-weight="600">AGENT / MODEL</text>
+      <text x="310" y="43" fill="#7D8590" font-family="monospace" font-size="9" font-weight="600">INTENT &amp; REASONING</text>
+      <text x="490" y="43" fill="#7D8590" font-family="monospace" font-size="9" font-weight="600">TELEMETRY</text>
+      <line x1="0" y1="50" x2="570" y2="50" stroke="#2D333B" stroke-width="1"/>
+
+      <!-- Row 1 -->
+      <text x="12" y="70" fill="#A855F7" font-family="monospace" font-size="10">func:processOrder</text>
+      <text x="160" y="70" fill="#E6EDF3" font-family="monospace" font-size="10">agent_sentinel</text>
+      <text x="160" y="81" fill="#7D8590" font-family="monospace" font-size="8">llama-3.3-70b</text>
+      <text x="310" y="70" fill="#E6EDF3" font-family="monospace" font-size="10">Validated boundary guard</text>
+      <text x="310" y="81" fill="#10B981" font-family="monospace" font-size="8">pass: type_soundness</text>
+      <text x="490" y="70" fill="#7D8590" font-family="monospace" font-size="10">420 in / 110 out</text>
+      <text x="490" y="81" fill="#38BDF8" font-family="monospace" font-size="8">12ms latency</text>
+      <line x1="0" y1="88" x2="570" y2="88" stroke="#22272E" stroke-width="1"/>
     </g>
   </g>
 </svg>

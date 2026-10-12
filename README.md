@@ -1,7 +1,8 @@
 # Convergence (Cloudflare Challenge Submission)
 
 > **The Autonomous Continuous Semantic Code Fabric for 100,000+ Concurrent Agents**  
-> Built for the [Cloudflare Challenge: Build the Next Git Platform](https://www.cloudflare.com/git-competition/).
+> Built for the [Cloudflare Challenge: Build the Next Git Platform](https://www.cloudflare.com/git-competition/).  
+> **Author:** Mauro Druwel ([@MauroDruwel](https://github.com/MauroDruwel))
 
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-F38020?logo=cloudflare)](https://workers.cloudflare.com/)
 [![Cloudflare Artifacts](https://img.shields.io/badge/Storage-Cloudflare%20Artifacts-06B6D4)](https://developers.cloudflare.com/)
@@ -11,9 +12,9 @@
 
 ---
 
-## 📸 System Overview & Dashboard Preview
+## 📸 Cloudflare Infrastructure Console Preview
 
-![Convergence Dashboard](assets/dashboard-preview.svg)
+![Convergence Console](assets/dashboard-preview.svg)
 
 ---
 
@@ -30,22 +31,22 @@ Git was architected in 2005 for Linus Torvalds and human engineers manually trad
 ## 2. The Solution: Six Breakthrough Primitives
 
 ### ⚡ 1. The AST-CRDT Conflict-Free Merge Engine
-Code is parsed into a **Typed Semantic AST Symbol Graph** (functions, interfaces, types, imports, statements) with content-addressed hashes.
+I parse code into a **Typed Semantic AST Symbol Graph** (functions, interfaces, types, imports, statements) with content-addressed hashes.
 * When 50 agents add functions or modify different symbols in the same file, Convergence reconciles them **with 0 line-merge conflicts** via Lamport-stamped CRDT operations.
 
 ### 🔑 2. Edit-Time Symbol Leases & Semantic Backpressure
-Instead of letting collisions happen at merge time, agents acquire short-lived TTL **Symbol Leases** directly from the Durable Object.
+Instead of letting collisions happen at merge time, I designed a system where agents acquire short-lived TTL **Symbol Leases** directly from the Durable Object.
 * When an agent mutates an interface, downstream dependent symbols receive instant **Semantic Backpressure** mid-edit before any broken commit is ever created.
 
 ### 🧠 3. Git Notes Chain-of-Thought Provenance (`refs/notes/agent-provenance`)
-Preserves model attribution, prompt intent, reasoning chains, and token telemetry natively within Git metadata.
+I preserve model attribution, prompt intent, reasoning chains, and token telemetry natively within Git metadata.
 * Fully auditable years later without altering commit SHA-1 hashes. Directly answers Cloudflare's core question on reasoning retention.
 
 ### 🗄️ 4. Durable Object Transactional SQLite (`ctx.storage.sql`)
-The repository is an atomic relationally indexed actor. Symbols, dependency graphs, active leases, and operations logs are written in ACID SQLite transactions with sub-millisecond query performance.
+The repository is an atomic relationally indexed actor. I store symbols, dependency graphs, active leases, and operations logs in ACID SQLite transactions with sub-millisecond query performance.
 
 ### 🛡️ 5. Autonomous Code Immune System & Chrono-Revert
-* **Immune Defense**: Adversarial fuzzer probes AST nodes and automatically synthesizes runtime boundary guards before code reaches mainline.
+* **Immune Defense**: An adversarial fuzzer probes AST nodes and automatically synthesizes runtime boundary guards before code reaches mainline.
 * **Chrono-Revert**: Surgically rolls back a single faulty symbol in the CRDT DAG without touching any other agent's concurrent work.
 
 ### 🌐 6. Ephemeral Micro-Worktrees via Cloudflare Artifacts
@@ -63,7 +64,7 @@ Agents request task-scoped **Sparse Worktrees** directly via `env.ARTIFACTS`. Co
 
 ![Benchmark Results](assets/benchmark-chart.svg)
 
-We benchmarked 25 concurrent agents making simultaneous additions and refactors to the same codebase using the **genuine GNU diff3 3-way merge engine**:
+I benchmarked 25 concurrent agents making simultaneous additions and refactors to the same codebase using the **genuine GNU diff3 3-way merge engine**:
 
 | Metric | Traditional Git (GNU diff3) | Convergence (Cloudflare) | Advantage |
 | :--- | :--- | :--- | :--- |
@@ -82,7 +83,7 @@ npm run bench
 
 ## 5. Scaling to Massive Swarms: 100,000 Agent Scale Harness
 
-We built a dedicated high-throughput stress test harness (`src/benchmarks/stress-100k.ts`) to evaluate how the system handles swarms scaling up to 100,000 agents across a modular monorepo:
+I built a dedicated high-throughput stress test harness (`src/benchmarks/stress-100k.ts`) to evaluate how the system handles swarms scaling up to 100,000 agents across a modular monorepo:
 
 ### Empirical Test Run Results (5,000 Autonomous Agents):
 * **Total Concurrent Agents**: 5,000 agents across 50 microservices
@@ -106,7 +107,7 @@ AGENTS=100000 npm run bench:100k
 
 ## 6. Quickstart & Verification
 
-### Run the Interactive Visual Dashboard (Local Standalone)
+### Run the Interactive Visual Console (Local Standalone)
 ```bash
 # 1. Install dependencies
 npm install
@@ -120,9 +121,9 @@ npm test
 # 4. Run genuine GNU diff3 benchmark
 npm run bench
 
-# 5. Start interactive dashboard & WebSocket server
+# 5. Start interactive Cloudflare Infrastructure Console & WebSocket server
 npm start
-# Visit http://localhost:3000 to interact with the live swarm canvas
+# Visit http://localhost:3000 to interact with the live swarm console
 ```
 
 ### Deploy to Cloudflare Workers
@@ -137,9 +138,9 @@ npx wrangler deploy
 ```
 convergence/
 ├── assets/
-│   ├── architecture-diagram.svg  # Visual topology diagram
+│   ├── architecture-diagram.svg  # Engineering topology diagram
 │   ├── benchmark-chart.svg       # Empirical diff3 comparison chart
-│   └── dashboard-preview.svg     # Vector preview of the interactive UI
+│   └── dashboard-preview.svg     # Cloudflare Infrastructure Console preview
 ├── src/
 │   ├── core/
 │   │   ├── ast-engine.ts         # Babel-based AST symbol extraction & 3-way merge
@@ -161,7 +162,7 @@ convergence/
 │   ├── simulator/
 │   │   └── swarm-simulator.ts    # Multi-agent wave concurrency simulator
 │   ├── ui/
-│   │   └── dashboard.html        # Interactive 60fps canvas, leases & provenance UI
+│   │   └── dashboard.html        # Cloudflare Infrastructure UI System Console
 │   ├── index.ts                  # Cloudflare Worker entry point
 │   └── server.ts                 # Standalone Node/Hono server for local demo
 ├── tests/                        # Vitest unit & integration test suite (15 tests)
@@ -169,3 +170,9 @@ convergence/
 ├── package.json
 └── LICENSE                       # MIT License
 ```
+
+---
+
+## License
+
+MIT © Mauro Druwel

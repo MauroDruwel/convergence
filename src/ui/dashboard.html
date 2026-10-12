@@ -1,331 +1,395 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Convergence | The Autonomous Continuous Semantic Code Fabric</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloudflare Dash — convergence-core</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cf: {
+              orange: '#F6821F',
+              orangeHover: '#FA8C16',
+              bg: '#0F1117',
+              panel: '#161B22',
+              panelSubtle: '#1C212A',
+              border: '#2D333B',
+              borderSubtle: '#22272E',
+              text: '#E6EDF3',
+              muted: '#7D8590',
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'Inter', 'sans-serif'],
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', '"Liberation Mono"', 'monospace'],
+          }
+        }
+      }
+    };
+  </script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
     body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #0b0f19;
-      color: #e2e8f0;
+      background-color: #0F1117;
+      color: #E6EDF3;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-    .font-mono {
-      font-family: 'JetBrains Mono', monospace;
-    }
-    .cf-gradient {
-      background: linear-gradient(135deg, #f38020 0%, #faad3f 100%);
-    }
-    .cf-border {
-      border-color: rgba(243, 128, 32, 0.25);
-    }
-    .cf-glow {
-      box-shadow: 0 0 25px rgba(243, 128, 32, 0.2);
-    }
-    .card-glass {
-      background: rgba(17, 24, 39, 0.75);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0F1117; }
+    ::-webkit-scrollbar-thumb { background: #2D333B; border-radius: 2px; }
+    ::-webkit-scrollbar-thumb:hover { background: #444C56; }
   </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-orange-500 selection:text-white">
+<body class="min-h-screen flex flex-col bg-[#0F1117] text-[#E6EDF3] text-sm antialiased selection:bg-[#F6821F]/30 selection:text-white">
 
-  <!-- TOP NAVIGATION BAR -->
-  <header class="border-b border-gray-800 bg-[#0f172a]/90 backdrop-blur sticky top-0 z-50 px-6 py-3.5">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <div class="w-8 h-8 rounded-lg cf-gradient flex items-center justify-center font-bold text-white shadow-lg shadow-orange-500/20">
-          C
-        </div>
-        <div>
-          <div class="flex items-center space-x-2">
-            <span class="font-extrabold text-lg tracking-tight text-white">CONVERGENCE</span>
-            <span class="px-2 py-0.5 text-[10px] font-mono font-bold bg-orange-500/10 text-orange-400 border border-orange-500/30 rounded">CLOUDFLARE CHALLENGE</span>
-          </div>
-          <p class="text-[11px] text-gray-400">Continuous Semantic Code Fabric for Agent Swarms</p>
-        </div>
+  <!-- TOP CLOUDFLARE NAV HEADER -->
+  <header class="h-12 border-b border-[#2D333B] bg-[#161B22] px-4 flex items-center justify-between text-xs sticky top-0 z-50">
+    <div class="flex items-center space-x-3">
+      <!-- Cloudflare Logo Symbol -->
+      <a href="#" class="flex items-center space-x-2 text-[#E6EDF3] hover:text-[#F6821F] transition">
+        <svg class="h-5 w-auto text-[#F6821F]" viewBox="0 0 112 48" fill="currentColor">
+          <path d="M78.6 38.4H23.8c-1.3 0-2.4-.9-2.7-2.1-.3-1.3.4-2.5 1.6-2.9 2.1-.7 3.6-2.5 3.8-4.7.1-1.6-.6-3.2-1.9-4.2-1.3-1-3-1.3-4.6-.9-2.3.6-4.7-.6-5.6-2.7-.9-2.1-.3-4.6 1.4-6 1.8-1.5 2.6-3.8 2-6.1-.6-2.3-2.4-4-4.7-4.4-1.8-.3-3.6.4-4.7 1.8-.6.8-1.7 1.1-2.6.7-.9-.4-1.4-1.3-1.2-2.3C6.3 8.3 19.4 0 34.6 0c14.2 0 26.6 7.2 31.8 17.8 1.9-.6 3.9-.9 6-.9 9.8 0 17.8 7.8 17.8 17.4 0 1.4-.2 2.7-.5 4.1h-11.1z"/>
+          <path d="M91.9 38.4h17.3c1.5 0 2.8-1.3 2.8-2.8 0-8.6-6.8-15.6-15.3-15.8-1.2 4.1-3.1 7.8-5.6 11-.4.5-.6 1.1-.6 1.8.1 3.2 1.4 5.8 1.4 5.8z"/>
+        </svg>
+      </a>
+
+      <!-- Breadcrumbs -->
+      <div class="flex items-center space-x-2 text-[#7D8590] font-mono text-xs">
+        <span>/</span>
+        <span class="text-[#E6EDF3] hover:underline cursor-pointer">mauro-druwel</span>
+        <span>/</span>
+        <span class="hover:underline cursor-pointer">Workers &amp; Pages</span>
+        <span>/</span>
+        <span class="text-[#F6821F] font-semibold">convergence-core</span>
       </div>
 
-      <!-- Live Connection Pill -->
-      <div class="flex items-center space-x-4">
-        <div class="flex items-center space-x-2 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-xs text-emerald-400">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span class="font-mono font-semibold" id="conn-status">Durable Object Active</span>
-        </div>
-        <div class="text-xs text-gray-400 font-mono">
-          Artifacts: <span class="text-orange-400 font-bold">convergence-core</span>
-        </div>
+      <span class="px-2 py-0.5 rounded-sm bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/30 font-mono text-[11px] font-semibold">
+        ● Production
+      </span>
+    </div>
+
+    <!-- Right Controls -->
+    <div class="flex items-center space-x-3">
+      <div class="flex items-center space-x-1.5 px-2 py-1 bg-[#0F1117] border border-[#2D333B] rounded-sm text-[11px] font-mono text-[#7D8590]">
+        <span>Binding:</span>
+        <span class="text-[#E6EDF3]">env.ARTIFACTS</span>
       </div>
+      <div class="flex items-center space-x-1.5 px-2 py-1 bg-[#0F1117] border border-[#2D333B] rounded-sm text-[11px] font-mono text-[#7D8590]">
+        <span>Storage:</span>
+        <span class="text-[#10B981]">Durable Object (SQLite)</span>
+      </div>
+      <button class="px-2.5 py-1 text-xs text-[#7D8590] hover:text-[#E6EDF3] hover:bg-[#1C212A] rounded-sm border border-transparent hover:border-[#2D333B] transition">
+        Docs ↗
+      </button>
     </div>
   </header>
 
-  <!-- MAIN DASHBOARD CONTENT -->
-  <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
+  <!-- SECONDARY TAB NAVIGATION -->
+  <div class="border-b border-[#2D333B] bg-[#161B22] px-6">
+    <div class="flex items-center space-x-6 text-xs font-medium">
+      <button class="py-3 border-b-2 border-[#F6821F] text-[#E6EDF3] font-semibold flex items-center space-x-2">
+        <span>Overview &amp; Telemetry</span>
+      </button>
+      <button class="py-3 border-b-2 border-transparent text-[#7D8590] hover:text-[#E6EDF3] transition flex items-center space-x-2">
+        <span>Symbol Leases &amp; Locks</span>
+        <span class="px-1.5 py-0.2 rounded-sm bg-[#2D333B] text-[10px] text-[#E6EDF3]" id="tab-leases-count">0</span>
+      </button>
+      <button class="py-3 border-b-2 border-transparent text-[#7D8590] hover:text-[#E6EDF3] transition">
+        <span>Git Notes Provenance</span>
+      </button>
+      <button class="py-3 border-b-2 border-transparent text-[#7D8590] hover:text-[#E6EDF3] transition">
+        <span>diff3 Benchmark Harness</span>
+      </button>
+      <button class="py-3 border-b-2 border-transparent text-[#7D8590] hover:text-[#E6EDF3] transition">
+        <span>Settings</span>
+      </button>
+    </div>
+  </div>
 
-    <!-- HERO METRICS ROW -->
-    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-      <div class="card-glass p-4 rounded-xl">
-        <div class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Clean AST Merges</div>
-        <div class="text-2xl font-bold text-emerald-400 font-mono mt-1" id="stat-clean">0</div>
-        <div class="text-[11px] text-emerald-500/80 font-mono mt-0.5">0 Line Conflicts</div>
+  <!-- MAIN DASHBOARD CONTENT -->
+  <main class="flex-1 max-w-[1600px] w-full mx-auto p-6 space-y-5">
+
+    <!-- HERO METRICS STRIP (HIGH DENSITY FLAT CARDS) -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm">
+        <div class="text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">AST Merge Rate</div>
+        <div class="mt-1 text-xl font-bold font-mono text-[#10B981]" id="stat-clean-rate">100.0%</div>
+        <div class="text-[11px] text-[#7D8590] mt-0.5"><span id="stat-clean">0</span> clean symbol merges</div>
       </div>
-      <div class="card-glass p-4 rounded-xl">
-        <div class="text-xs text-gray-400 uppercase tracking-wider font-semibold">AI Arbitrations</div>
-        <div class="text-2xl font-bold text-purple-400 font-mono mt-1" id="stat-arbiter">0</div>
-        <div class="text-[11px] text-purple-400/80 font-mono mt-0.5">Workers AI Invariant Gate</div>
+
+      <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm">
+        <div class="text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">Git Line Conflicts</div>
+        <div class="mt-1 text-xl font-bold font-mono text-[#10B981]" id="stat-conflicts">0</div>
+        <div class="text-[11px] text-[#7D8590] mt-0.5">Eliminated via AST hashing</div>
       </div>
-      <div class="card-glass p-4 rounded-xl">
-        <div class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Total Symbols</div>
-        <div class="text-2xl font-bold text-cyan-400 font-mono mt-1" id="stat-symbols">0</div>
-        <div class="text-[11px] text-cyan-500/80 font-mono mt-0.5">Symbol Graph Nodes</div>
+
+      <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm">
+        <div class="text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">Active Leases</div>
+        <div class="mt-1 text-xl font-bold font-mono text-[#38BDF8]" id="stat-leases">0</div>
+        <div class="text-[11px] text-[#7D8590] mt-0.5">Edit-time symbol locks</div>
       </div>
-      <div class="card-glass p-4 rounded-xl">
-        <div class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Lamport Clock</div>
-        <div class="text-2xl font-bold text-orange-400 font-mono mt-1" id="stat-lamport">0</div>
-        <div class="text-[11px] text-orange-500/80 font-mono mt-0.5">Logical Vector Time</div>
+
+      <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm">
+        <div class="text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">CoT Git Notes</div>
+        <div class="mt-1 text-xl font-bold font-mono text-[#A855F7]" id="stat-notes">0</div>
+        <div class="text-[11px] text-[#7D8590] mt-0.5">refs/notes/agent-provenance</div>
       </div>
-      <div class="card-glass p-4 rounded-xl col-span-2 md:col-span-1">
-        <div class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Git Line Conflicts</div>
-        <div class="text-2xl font-bold text-emerald-400 font-mono mt-1">0%</div>
-        <div class="text-[11px] text-emerald-500 font-mono mt-0.5">100% Eliminated</div>
+
+      <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm">
+        <div class="text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">Lamport Clock</div>
+        <div class="mt-1 text-xl font-bold font-mono text-[#F6821F]" id="stat-lamport">L: 0</div>
+        <div class="text-[11px] text-[#7D8590] mt-0.5">Causal scalar sequence</div>
+      </div>
+
+      <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm">
+        <div class="text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">Throughput</div>
+        <div class="mt-1 text-xl font-bold font-mono text-[#E6EDF3]" id="stat-throughput">96+ ops/s</div>
+        <div class="text-[11px] text-[#7D8590] mt-0.5">Durable Object latency: 10ms</div>
       </div>
     </div>
 
-    <!-- ACTION CONTROL BAR -->
-    <div class="card-glass p-4 rounded-xl flex flex-wrap items-center justify-between gap-4 border border-orange-500/20 bg-gradient-to-r from-orange-500/5 via-transparent to-purple-500/5">
-      <div>
-        <h2 class="text-sm font-bold text-white uppercase tracking-wider">Swarm Orchestration Panel</h2>
-        <p class="text-xs text-gray-400">Trigger high-concurrency multi-agent workloads directly against the Durable Object</p>
+    <!-- ACTION TOOLBAR -->
+    <div class="p-3 bg-[#161B22] border border-[#2D333B] rounded-sm flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center space-x-2">
+        <span class="text-xs font-semibold text-[#E6EDF3]">Swarm Operations:</span>
+        <span class="text-xs text-[#7D8590]">Dispatch concurrent agent workloads against Cloudflare Durable Objects</span>
       </div>
-      <div class="flex flex-wrap items-center gap-2">
-        <button id="btn-swarm" onclick="triggerSwarmWave()" class="px-3.5 py-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold text-xs rounded-lg shadow-lg shadow-orange-500/20 transition flex items-center space-x-1.5">
+
+      <div class="flex items-center space-x-2">
+        <button id="btn-swarm" onclick="triggerSwarmWave()" class="h-8 px-3 bg-[#F6821F] hover:bg-[#FA8C16] text-white text-xs font-semibold rounded-sm transition flex items-center space-x-1.5 focus:outline-none focus:ring-1 focus:ring-[#F6821F]">
           <span>⚡ Dispatch Swarm Wave (8 Agents)</span>
         </button>
-        <button id="btn-bench" onclick="runBenchmark()" class="px-3.5 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold text-xs rounded-lg shadow-lg shadow-purple-500/20 transition flex items-center space-x-1.5">
-          <span>📊 Live Benchmark (25 Agents)</span>
+
+        <button id="btn-bench" onclick="runBenchmark()" class="h-8 px-3 bg-[#1C212A] hover:bg-[#22272E] border border-[#2D333B] text-[#E6EDF3] text-xs font-medium rounded-sm transition flex items-center space-x-1.5">
+          <span>📊 Run diff3 Benchmark (25 Agents vs Git)</span>
         </button>
-        <button id="btn-immune" onclick="testImmuneAttack()" class="px-3.5 py-2 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white font-semibold text-xs rounded-lg shadow-lg shadow-rose-500/20 transition flex items-center space-x-1.5">
-          <span>🛡️ Test Immune System (Red-Team Fuzz)</span>
+
+        <button id="btn-lease" onclick="testLeaseAcquire()" class="h-8 px-3 bg-[#1C212A] hover:bg-[#22272E] border border-[#2D333B] text-[#38BDF8] text-xs font-medium rounded-sm transition flex items-center space-x-1.5">
+          <span>🔑 Acquire Symbol Lease</span>
+        </button>
+
+        <button id="btn-immune" onclick="testImmuneAttack()" class="h-8 px-3 bg-[#1C212A] hover:bg-[#22272E] border border-[#2D333B] text-[#F87171] text-xs font-medium rounded-sm transition flex items-center space-x-1.5">
+          <span>🛡️ Adversarial AST Probe</span>
         </button>
       </div>
     </div>
 
-    <!-- COMPARISON HARNESS SHOWCASE -->
-    <div id="bench-panel" class="card-glass p-5 rounded-xl border border-indigo-500/30 bg-[#0f172a]/60">
-      <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-800">
+    <!-- COMPARISON RESULTS (DIFF3 HARNESS) -->
+    <div class="border border-[#2D333B] bg-[#161B22] rounded-sm">
+      <div class="px-4 py-3 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
         <div>
-          <h3 class="font-bold text-base text-white flex items-center space-x-2">
-            <span>🏆 Head-to-Head Benchmark: Traditional Git vs. Convergence</span>
-            <span class="text-xs px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono">25 Concurrent Agents</span>
-          </h3>
-          <p class="text-xs text-gray-400">Identical workload: 25 agents making concurrent function, interface, and logic additions</p>
+          <h2 class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Head-to-Head Concurrency Benchmark: GNU diff3 vs. Convergence</h2>
+          <p class="text-[11px] text-[#7D8590]">Identical workload: 25 agents making concurrent function and interface changes to the same file</p>
         </div>
-        <div id="bench-status" class="text-xs font-mono text-gray-400">Live baseline ready</div>
+        <span class="text-xs font-mono text-[#7D8590]" id="bench-status">Ready</span>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Traditional Git Box -->
-        <div class="p-4 rounded-lg bg-red-950/20 border border-red-500/30 space-y-3">
+      <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#2D333B]">
+        <!-- Git Box -->
+        <div class="p-4 space-y-3">
           <div class="flex items-center justify-between">
-            <span class="font-bold text-red-400 text-sm">Traditional Git / GitHub</span>
-            <span class="text-xs font-mono px-2 py-0.5 bg-red-500/20 text-red-300 rounded font-bold">Line 3-Way Merge</span>
+            <span class="font-semibold text-xs text-[#F87171]">Traditional Git / GitHub (diff3 Engine)</span>
+            <span class="text-[11px] font-mono text-[#7D8590]">Line 3-Way Merge</span>
           </div>
-          <div class="grid grid-cols-3 gap-2 text-center pt-2">
-            <div class="bg-black/30 p-2 rounded">
-              <div class="text-[10px] text-gray-400">Success Rate</div>
-              <div class="text-lg font-bold text-red-400 font-mono" id="git-rate">4%</div>
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="bg-[#0F1117] p-2 border border-[#2D333B] rounded-sm">
+              <div class="text-[10px] text-[#7D8590]">Success Rate</div>
+              <div class="text-base font-bold font-mono text-[#F87171]" id="git-rate">4%</div>
             </div>
-            <div class="bg-black/30 p-2 rounded">
-              <div class="text-[10px] text-gray-400">Conflicts</div>
-              <div class="text-lg font-bold text-red-400 font-mono" id="git-conflicts">24 / 25</div>
+            <div class="bg-[#0F1117] p-2 border border-[#2D333B] rounded-sm">
+              <div class="text-[10px] text-[#7D8590]">Merge Conflicts</div>
+              <div class="text-base font-bold font-mono text-[#F87171]" id="git-conflicts">24 / 25</div>
             </div>
-            <div class="bg-black/30 p-2 rounded">
-              <div class="text-[10px] text-gray-400">Stalled Agents</div>
-              <div class="text-lg font-bold text-red-400 font-mono" id="git-stalled">24</div>
+            <div class="bg-[#0F1117] p-2 border border-[#2D333B] rounded-sm">
+              <div class="text-[10px] text-[#7D8590]">Blocked Agents</div>
+              <div class="text-base font-bold font-mono text-[#F87171]" id="git-stalled">24</div>
             </div>
           </div>
-          <p class="text-xs text-red-300/80 leading-relaxed">
-            🛑 <strong class="text-red-200">Result:</strong> Standard Git flags textual conflicts across 96% of branches. Agents require manual human rebasing and lock up the release pipeline.
+          <p class="text-[11px] text-[#7D8590] leading-normal">
+            Textual line collisions force rebase queues and block autonomous deployment.
           </p>
         </div>
 
         <!-- Convergence Box -->
-        <div class="p-4 rounded-lg bg-emerald-950/20 border border-emerald-500/30 space-y-3">
+        <div class="p-4 space-y-3">
           <div class="flex items-center justify-between">
-            <span class="font-bold text-emerald-400 text-sm">Convergence (Cloudflare Platform)</span>
-            <span class="text-xs font-mono px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded font-bold">Artifacts + AST-CRDT</span>
+            <span class="font-semibold text-xs text-[#10B981]">Convergence (Cloudflare Workers + Artifacts)</span>
+            <span class="text-[11px] font-mono text-[#10B981]">AST-CRDT Engine</span>
           </div>
-          <div class="grid grid-cols-3 gap-2 text-center pt-2">
-            <div class="bg-black/30 p-2 rounded">
-              <div class="text-[10px] text-gray-400">Success Rate</div>
-              <div class="text-lg font-bold text-emerald-400 font-mono" id="conv-rate">100%</div>
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="bg-[#0F1117] p-2 border border-[#2D333B] rounded-sm">
+              <div class="text-[10px] text-[#7D8590]">Success Rate</div>
+              <div class="text-base font-bold font-mono text-[#10B981]" id="conv-rate">100%</div>
             </div>
-            <div class="bg-black/30 p-2 rounded">
-              <div class="text-[10px] text-gray-400">Conflicts</div>
-              <div class="text-lg font-bold text-emerald-400 font-mono" id="conv-conflicts">0</div>
+            <div class="bg-[#0F1117] p-2 border border-[#2D333B] rounded-sm">
+              <div class="text-[10px] text-[#7D8590]">Merge Conflicts</div>
+              <div class="text-base font-bold font-mono text-[#10B981]" id="conv-conflicts">0</div>
             </div>
-            <div class="bg-black/30 p-2 rounded">
-              <div class="text-[10px] text-gray-400">Latency</div>
-              <div class="text-lg font-bold text-emerald-400 font-mono" id="conv-latency">8ms</div>
+            <div class="bg-[#0F1117] p-2 border border-[#2D333B] rounded-sm">
+              <div class="text-[10px] text-[#7D8590]">Avg Merge Latency</div>
+              <div class="text-base font-bold font-mono text-[#10B981]" id="conv-latency">10ms</div>
             </div>
           </div>
-          <p class="text-xs text-emerald-300/80 leading-relaxed">
-            ⚡ <strong class="text-emerald-200">Result:</strong> Conflict-free convergence via symbol AST hashing. All 25 agents land commits concurrently with sub-10ms latency.
+          <p class="text-[11px] text-[#7D8590] leading-normal">
+            Symbols reconciled with zero line collisions via deterministic content-addressed AST hashing.
           </p>
         </div>
       </div>
     </div>
 
-    <!-- EDIT-TIME LEASES & GIT NOTES PROVENANCE ROW -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-      <!-- EDIT-TIME LEASES & BACKPRESSURE -->
-      <div class="card-glass p-5 rounded-xl border border-cyan-500/30 bg-[#0f172a]/60 flex flex-col">
-        <div class="flex items-center justify-between mb-3 pb-2 border-b border-gray-800">
-          <div>
-            <h3 class="font-bold text-sm text-white uppercase tracking-wider flex items-center space-x-2">
-              <span>Edit-Time AST Symbol Leases</span>
-              <span class="text-[10px] px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300 font-mono">Semantic Backpressure</span>
-            </h3>
-            <p class="text-xs text-gray-400">Lock-free symbol checkout with automatic downstream dependency backpressure</p>
-          </div>
-          <button onclick="testLeaseAcquire()" class="px-2.5 py-1 bg-cyan-600 hover:bg-cyan-700 text-white font-mono text-[11px] rounded transition">
-            🔑 Acquire Lease
-          </button>
+    <!-- MIDDLE SECTION: TOPOLOGY RADAR & REVERSE PRS -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <!-- Swarm Topology Canvas -->
+      <div class="lg:col-span-2 border border-[#2D333B] bg-[#161B22] rounded-sm flex flex-col">
+        <div class="px-4 py-2.5 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
+          <span class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Swarm Topology &amp; Artifacts Hub</span>
+          <span class="text-[11px] font-mono text-[#7D8590]">60 FPS Edge Actor Visualizer</span>
         </div>
-        <div id="leases-container" class="flex-1 space-y-2 font-mono text-xs overflow-y-auto max-h-[220px]">
-          <div class="text-gray-500 py-3 text-center">No active leases. All symbols available for concurrent edits.</div>
+        <div class="p-3 flex-1 flex flex-col">
+          <div class="relative w-full h-[280px] bg-[#0F1117] border border-[#2D333B] rounded-sm overflow-hidden">
+            <canvas id="swarm-canvas" class="w-full h-full block"></canvas>
+          </div>
+          <div class="mt-2 flex items-center justify-between text-[11px] text-[#7D8590] font-mono">
+            <span>Center: Cloudflare Artifacts (RepoBrain DO)</span>
+            <span>Orbits: Active Swarm Agents</span>
+          </div>
         </div>
       </div>
 
-      <!-- GIT NOTES CHAIN-OF-THOUGHT PROVENANCE -->
-      <div class="card-glass p-5 rounded-xl border border-purple-500/30 bg-[#0f172a]/60 flex flex-col">
-        <div class="flex items-center justify-between mb-3 pb-2 border-b border-gray-800">
-          <div>
-            <h3 class="font-bold text-sm text-white uppercase tracking-wider flex items-center space-x-2">
-              <span>Git Notes CoT Provenance</span>
-              <span class="text-[10px] px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-mono">refs/notes/agent-provenance</span>
-            </h3>
-            <p class="text-xs text-gray-400">Preserving model reasoning, prompts & token telemetry natively in Git</p>
-          </div>
-          <span class="text-[11px] font-mono text-purple-400" id="prov-count">0 Records</span>
+      <!-- Reverse Pull Requests Panel -->
+      <div class="border border-[#2D333B] bg-[#161B22] rounded-sm flex flex-col">
+        <div class="px-4 py-2.5 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
+          <span class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Reverse Pull Requests</span>
+          <span class="text-[11px] font-mono text-[#F6821F]">Human Governance</span>
         </div>
-        <div id="provenance-container" class="flex-1 space-y-2 font-mono text-xs overflow-y-auto max-h-[220px]">
-          <div class="text-gray-500 py-3 text-center">Awaiting agent commits to log Chain-of-Thought records...</div>
+        <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
+          <div id="rpr-container" class="space-y-2">
+            <div class="text-xs text-[#10B981] font-mono">✅ Zero pending architectural inquiries. Agents aligned with policy.</div>
+          </div>
+          <div class="p-2.5 bg-[#0F1117] border border-[#2D333B] rounded-sm text-[11px] text-[#7D8590] leading-relaxed">
+            <strong class="text-[#E6EDF3]">Autonomous Inversion:</strong> Agents resolve code-level changes autonomously and query human supervisors only when high-level architectural tradeoffs require steering.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DENSE DATA TABLES (EDIT-TIME LEASES & GIT NOTES PROVENANCE) -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+      <!-- Table 1: Edit-Time Symbol Leases -->
+      <div class="border border-[#2D333B] bg-[#161B22] rounded-sm flex flex-col">
+        <div class="px-4 py-2.5 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
+          <div>
+            <span class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Edit-Time AST Symbol Leases</span>
+            <span class="ml-2 text-[11px] text-[#7D8590]">Lock-free semantic coordination</span>
+          </div>
+          <span class="text-[11px] font-mono text-[#38BDF8]" id="table-leases-status">0 Active</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs font-mono">
+            <thead class="bg-[#0F1117] border-b border-[#2D333B] text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">
+              <tr>
+                <th class="px-4 py-2">Symbol ID</th>
+                <th class="px-4 py-2">Holder</th>
+                <th class="px-4 py-2">Type</th>
+                <th class="px-4 py-2">TTL</th>
+                <th class="px-4 py-2">Intent</th>
+              </tr>
+            </thead>
+            <tbody id="leases-table-body" class="divide-y divide-[#2D333B] text-xs">
+              <tr>
+                <td colspan="5" class="px-4 py-6 text-center text-[#7D8590] font-sans">
+                  No active leases. All symbols available for concurrent agent checkout.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Table 2: Git Notes Chain-of-Thought Provenance -->
+      <div class="border border-[#2D333B] bg-[#161B22] rounded-sm flex flex-col">
+        <div class="px-4 py-2.5 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
+          <div>
+            <span class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Git Notes Provenance Inspector</span>
+            <span class="ml-2 text-[11px] text-[#7D8590]">refs/notes/agent-provenance</span>
+          </div>
+          <span class="text-[11px] font-mono text-[#A855F7]" id="table-notes-status">0 Logged</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs font-mono">
+            <thead class="bg-[#0F1117] border-b border-[#2D333B] text-[11px] font-semibold text-[#7D8590] uppercase tracking-wider">
+              <tr>
+                <th class="px-4 py-2">Symbol</th>
+                <th class="px-4 py-2">Agent / Model</th>
+                <th class="px-4 py-2">Intent &amp; Reasoning</th>
+                <th class="px-4 py-2 text-right">Telemetry</th>
+              </tr>
+            </thead>
+            <tbody id="provenance-table-body" class="divide-y divide-[#2D333B] text-xs">
+              <tr>
+                <td colspan="4" class="px-4 py-6 text-center text-[#7D8590] font-sans">
+                  Awaiting agent commits to log Chain-of-Thought records to Git notes.
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
     </div>
 
-    <!-- CANVAS & REVERSE PR ROW -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-      <!-- SWARM VISUAL CANVAS -->
-      <div class="lg:col-span-2 card-glass p-5 rounded-xl flex flex-col">
-        <div class="flex items-center justify-between mb-3">
-          <div>
-            <h3 class="font-bold text-sm text-white uppercase tracking-wider">Live Agent Swarm Topology</h3>
-            <p class="text-xs text-gray-400">Real-time visualization of concurrent agent branches converging into mainline</p>
-          </div>
-          <span class="text-[11px] font-mono text-orange-400 px-2 py-0.5 rounded bg-orange-500/10 border border-orange-500/20">Canvas 60fps</span>
+    <!-- CODE VIEWER & LIVE STREAM ROW -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <!-- Unified Code Viewer -->
+      <div class="border border-[#2D333B] bg-[#161B22] rounded-sm flex flex-col">
+        <div class="px-4 py-2.5 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
+          <span class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Mainline Unified Codebase (index.ts)</span>
+          <span class="text-[11px] font-mono text-[#7D8590]">Auto-Refreshed via CRDT</span>
         </div>
-        <div class="relative flex-1 min-h-[340px] bg-[#070b14] rounded-lg border border-gray-800 overflow-hidden flex items-center justify-center">
-          <canvas id="swarm-canvas" class="w-full h-full"></canvas>
+        <div class="p-3 bg-[#0F1117] flex-1 max-h-[340px] overflow-auto">
+          <pre id="code-viewer" class="font-mono text-xs text-[#E6EDF3] leading-relaxed">// Loading unified source from Cloudflare Artifacts...</pre>
         </div>
       </div>
 
-      <!-- REVERSE PR (HUMAN INVARIANT STEERING) -->
-      <div class="card-glass p-5 rounded-xl flex flex-col justify-between">
-        <div>
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="font-bold text-sm text-white uppercase tracking-wider flex items-center space-x-2">
-              <span>Reverse Pull Requests</span>
-              <span class="px-1.5 py-0.2 text-[10px] bg-amber-500/20 text-amber-300 rounded font-mono">Human Steering</span>
-            </h3>
-          </div>
-          <p class="text-xs text-gray-400 mb-4">
-            Instead of humans reviewing code, agents self-govern and consult humans only on high-level architectural decisions.
-          </p>
-
-          <div id="rpr-container" class="space-y-3">
-            <div class="p-3 bg-gray-900/60 border border-gray-800 rounded-lg text-xs space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="font-mono text-orange-400 font-semibold">agent_payment</span>
-                <span class="text-[10px] text-gray-500">Pending Decision</span>
-              </div>
-              <p class="text-gray-300 font-medium">
-                Should payment retry backoff be exponential (2s, 4s, 8s) or linear (3s, 3s, 3s)?
-              </p>
-              <div class="flex flex-col space-y-1.5 pt-1">
-                <button onclick="resolvePR('rpr_mock_1', 'Exponential Backoff')" class="w-full text-left px-2.5 py-1.5 bg-gray-800 hover:bg-orange-500/20 hover:text-orange-300 text-gray-300 rounded transition text-xs font-mono">
-                  👉 Option A: Exponential Backoff (Recommended)
-                </button>
-                <button onclick="resolvePR('rpr_mock_1', 'Linear Backoff')" class="w-full text-left px-2.5 py-1.5 bg-gray-800 hover:bg-orange-500/20 hover:text-orange-300 text-gray-300 rounded transition text-xs font-mono">
-                  👉 Option B: Linear Backoff
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-4 pt-3 border-t border-gray-800 text-[11px] text-gray-500 flex items-center justify-between">
-          <span>Decisions recorded in Git metadata</span>
-          <span class="text-emerald-400">Zero Blockers</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- CODE INSPECTOR & LIVE ACTIVITY LOG -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-      <!-- LIVE CODE INSPECTOR -->
-      <div class="card-glass p-5 rounded-xl flex flex-col">
-        <div class="flex items-center justify-between mb-3">
+      <!-- Live Event Stream -->
+      <div class="border border-[#2D333B] bg-[#161B22] rounded-sm flex flex-col">
+        <div class="px-4 py-2.5 border-b border-[#2D333B] flex items-center justify-between bg-[#1C212A]">
           <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
-            <h3 class="font-bold text-sm text-white font-mono">index.ts (Cloudflare Artifacts Root)</h3>
+            <span class="h-2 w-2 rounded-full bg-[#F6821F] animate-pulse"></span>
+            <span class="text-xs font-semibold text-[#E6EDF3] uppercase tracking-wider">Live Telemetry Stream</span>
           </div>
-          <span class="text-xs font-mono text-gray-400">Auto-Refreshed via CRDT</span>
+          <span class="text-[11px] font-mono text-[#7D8590]">WebSocket Hibernation</span>
         </div>
-        <div class="relative flex-1 min-h-[300px] max-h-[420px] bg-[#070b14] p-4 rounded-lg border border-gray-800 overflow-auto font-mono text-xs text-gray-300 leading-relaxed whitespace-pre">
-          <code id="code-viewer">// Loading unified codebase from Cloudflare Artifacts...</code>
+        <div id="event-stream" class="p-3 bg-[#0F1117] flex-1 max-h-[340px] overflow-y-auto space-y-1.5 font-mono text-xs">
+          <div class="text-[#7D8590]">[System] Connected to Durable Object event sequencer. Awaiting events...</div>
         </div>
       </div>
-
-      <!-- LIVE ACTIVITY LOG -->
-      <div class="card-glass p-5 rounded-xl flex flex-col">
-        <div class="flex items-center justify-between mb-3">
-          <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-orange-400 animate-ping"></span>
-            <h3 class="font-bold text-sm text-white uppercase tracking-wider">Live Swarm Telemetry</h3>
-          </div>
-          <span class="text-xs font-mono text-gray-400">Streaming Event Log</span>
-        </div>
-        <div id="event-stream" class="flex-1 min-h-[300px] max-h-[420px] bg-[#070b14] p-4 rounded-lg border border-gray-800 overflow-y-auto space-y-2 font-mono text-xs">
-          <div class="text-gray-500">[System] Initialized Convergence telemetry stream. Waiting for swarm dispatches...</div>
-        </div>
-      </div>
-
     </div>
 
   </main>
 
-  <!-- FOOTER -->
-  <footer class="border-t border-gray-800 mt-12 py-6 px-6 text-center text-xs text-gray-500">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
-      <div>
-        Built with <span class="text-orange-400 font-semibold">Cloudflare Workers</span>, <span class="text-orange-400 font-semibold">Artifacts</span>, and <span class="text-orange-400 font-semibold">Durable Objects</span>.
+  <!-- CLOUDFLARE DASH FOOTER -->
+  <footer class="border-t border-[#2D333B] bg-[#161B22] py-4 px-6 text-xs text-[#7D8590] mt-8">
+    <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
+      <div class="flex items-center space-x-4">
+        <span>Cloudflare Workers</span>
+        <span>•</span>
+        <span>Artifacts Storage Engine</span>
+        <span>•</span>
+        <span>Durable Objects (Transactional SQLite)</span>
       </div>
       <div>
-        Cloudflare Challenge Submission: <em>Build the Next GitHub for 100,000 Concurrent Agents</em>.
+        Cloudflare Challenge Submission: <em>Build the Next Git Platform</em>
       </div>
     </div>
   </footer>
 
-  <!-- CLIENT-SIDE SCRIPT -->
+  <!-- CLIENT SCRIPT -->
   <script>
     let ws = null;
     let cleanMerges = 0;
@@ -333,7 +397,6 @@
     const canvas = document.getElementById('swarm-canvas');
     const ctx = canvas.getContext('2d');
 
-    // Resize canvas
     function resizeCanvas() {
       const rect = canvas.parentElement.getBoundingClientRect();
       canvas.width = rect.width;
@@ -342,117 +405,104 @@
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    // Canvas Agent Nodes Simulation
+    // Canvas Agent Topology Nodes
     const agents = [
-      { id: 'sentinel', name: 'agent_sentinel', x: 0, y: 0, angle: 0, color: '#f38020', active: false },
-      { id: 'payment', name: 'agent_payment', x: 0, y: 0, angle: (Math.PI / 4) * 1, color: '#10b981', active: false },
-      { id: 'auth', name: 'agent_auth', x: 0, y: 0, angle: (Math.PI / 4) * 2, color: '#3b82f6', active: false },
-      { id: 'optimizer', name: 'agent_optimizer', x: 0, y: 0, angle: (Math.PI / 4) * 3, color: '#a855f7', active: false },
-      { id: 'fuzzer', name: 'agent_fuzzer', x: 0, y: 0, angle: (Math.PI / 4) * 4, color: '#ec4899', active: false },
-      { id: 'refactor', name: 'agent_refactor', x: 0, y: 0, angle: (Math.PI / 4) * 5, color: '#06b6d4', active: false },
-      { id: 'docs', name: 'agent_docs', x: 0, y: 0, angle: (Math.PI / 4) * 6, color: '#eab308', active: false },
-      { id: 'tester', name: 'agent_tester', x: 0, y: 0, angle: (Math.PI / 4) * 7, color: '#14b8a6', active: false }
+      { name: 'agent_sentinel', angle: 0, speed: 0.015, color: '#F6821F', active: false },
+      { name: 'agent_payment', angle: Math.PI / 4, speed: 0.02, color: '#10B981', active: false },
+      { name: 'agent_auth', angle: Math.PI / 2, speed: 0.012, color: '#38BDF8', active: false },
+      { name: 'agent_fuzzer', angle: (3 * Math.PI) / 4, speed: 0.025, color: '#EC4899', active: false },
+      { name: 'agent_optimizer', angle: Math.PI, speed: 0.018, color: '#A855F7', active: false },
+      { name: 'agent_auditor', angle: (5 * Math.PI) / 4, speed: 0.014, color: '#F59E0B', active: false },
+      { name: 'agent_reconciler', angle: (3 * Math.PI) / 2, speed: 0.022, color: '#06B6D4', active: false },
+      { name: 'agent_architect', angle: (7 * Math.PI) / 4, speed: 0.017, color: '#6366F1', active: false },
     ];
 
-    let pulse = 0;
-    function renderCanvas() {
-      pulse += 0.03;
+    function drawTopology() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const centerX = canvas.width / 2;
-      const centerY = canvas.height / 2;
-      const radius = Math.min(centerX, centerY) * 0.72;
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const radius = Math.min(cx, cy) * 0.65;
 
-      // Draw Orbit Ring
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      // Draw Grid Lines (Technical Console Aesthetic)
+      ctx.strokeStyle = '#1E232D';
       ctx.lineWidth = 1;
-      ctx.setLineDash([4, 6]);
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.arc(cx, cy, radius * 0.5, 0, Math.PI * 2);
       ctx.stroke();
-      ctx.setLineDash([]);
 
-      // Draw Connections & Satellites
+      // Crosshairs
+      ctx.beginPath();
+      ctx.moveTo(cx - radius - 20, cy);
+      ctx.lineTo(cx + radius + 20, cy);
+      ctx.moveTo(cx, cy - radius - 20);
+      ctx.lineTo(cx, cy + radius + 20);
+      ctx.stroke();
+
+      // Center: Cloudflare Artifacts
+      ctx.fillStyle = '#F6821F';
+      ctx.beginPath();
+      ctx.arc(cx, cy, 14, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 9px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('ARTIFACTS', cx, cy + 3);
+
+      // Orbiting Agents
       agents.forEach((ag) => {
-        ag.angle += 0.003;
-        ag.x = centerX + Math.cos(ag.angle) * radius;
-        ag.y = centerY + Math.sin(ag.angle) * radius;
+        ag.angle += ag.speed;
+        const x = cx + Math.cos(ag.angle) * radius;
+        const y = cy + Math.sin(ag.angle) * radius;
 
-        // Connection Line to Center
+        // Connection wire
+        ctx.strokeStyle = ag.active ? ag.color : '#2D333B';
+        ctx.lineWidth = ag.active ? 1.5 : 1;
         ctx.beginPath();
-        ctx.moveTo(centerX, centerY);
-        ctx.lineTo(ag.x, ag.y);
-        ctx.strokeStyle = ag.active ? 'rgba(243, 128, 32, 0.5)' : 'rgba(255, 255, 255, 0.04)';
-        ctx.lineWidth = ag.active ? 2 : 1;
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(x, y);
         ctx.stroke();
 
-        // Agent Satellite Node
-        ctx.beginPath();
-        ctx.arc(ag.x, ag.y, ag.active ? 8 : 6, 0, Math.PI * 2);
+        // Node
         ctx.fillStyle = ag.color;
+        ctx.beginPath();
+        ctx.arc(x, y, ag.active ? 6 : 4, 0, Math.PI * 2);
         ctx.fill();
 
-        // Agent Name Label
-        ctx.fillStyle = ag.active ? '#ffffff' : '#64748b';
-        ctx.font = '10px JetBrains Mono';
-        ctx.fillText(ag.name, ag.x + 10, ag.y + 3);
+        // Label
+        ctx.fillStyle = ag.active ? '#FFFFFF' : '#7D8590';
+        ctx.font = '9px monospace';
+        ctx.fillText(ag.name, x, y - 8);
       });
 
-      // Draw Center Mainline Node (Artifacts)
-      const centerGlow = 18 + Math.sin(pulse) * 4;
-      const gradient = ctx.createRadialGradient(centerX, centerY, 5, centerX, centerY, centerGlow + 12);
-      gradient.addColorStop(0, '#f38020');
-      gradient.addColorStop(1, 'rgba(243, 128, 32, 0)');
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, centerGlow + 12, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(centerX, centerY, centerGlow, 0, Math.PI * 2);
-      ctx.fillStyle = '#f38020';
-      ctx.fill();
-
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 11px JetBrains Mono';
-      ctx.textAlign = 'center';
-      ctx.fillText('ARTIFACTS', centerX, centerY + 4);
-      ctx.textAlign = 'left';
-
-      requestAnimationFrame(renderCanvas);
+      requestAnimationFrame(drawTopology);
     }
-    renderCanvas();
+    drawTopology();
 
-    // Setup WebSocket connection to Durable Object
+    // WebSocket Connection
     function connectWS() {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       const wsUrl = `${protocol}//${window.location.host}/ws`;
 
-      ws = new WebSocket(wsUrl);
-
-      ws.onopen = () => {
-        document.getElementById('conn-status').innerText = 'Durable Object Active';
-      };
-
-      ws.onmessage = (event) => {
-        try {
+      try {
+        ws = new WebSocket(wsUrl);
+        ws.onmessage = (event) => {
           const msg = JSON.parse(event.data);
           if (msg.type === 'init_state') {
             updateFullState(msg.state);
           } else if (msg.type === 'swarm_event') {
             appendEvent(msg.event);
           }
-        } catch (e) {
-          console.error(e);
-        }
-      };
-
-      ws.onclose = () => {
-        document.getElementById('conn-status').innerText = 'Reconnecting DO...';
-        setTimeout(connectWS, 2000);
-      };
+        };
+        ws.onclose = () => {
+          setTimeout(connectWS, 2000);
+        };
+      } catch (e) {
+        console.warn('WebSocket fallback to polling', e);
+      }
     }
 
-    // Fallback polling if WS is not active
     async function fetchState() {
       try {
         const res = await fetch('/api/state');
@@ -468,56 +518,51 @@
       if (state.files && state.files['index.ts']) {
         document.getElementById('code-viewer').innerText = state.files['index.ts'];
       }
-      if (state.symbols && state.symbols['index.ts']) {
-        document.getElementById('stat-symbols').innerText = state.symbols['index.ts'].length;
-      }
       if (state.lamportClock) {
-        document.getElementById('stat-lamport').innerText = state.lamportClock;
+        document.getElementById('stat-lamport').innerText = `L: ${state.lamportClock}`;
       }
-      if (state.reversePRs && state.reversePRs.length > 0) {
+      if (state.reversePRs) {
         renderReversePRs(state.reversePRs);
       }
       if (state.activeLeases) {
-        renderLeases(state.activeLeases);
+        renderLeasesTable(state.activeLeases);
       }
       if (state.provenanceRecords) {
-        renderProvenance(state.provenanceRecords);
+        renderProvenanceTable(state.provenanceRecords);
       }
     }
 
     function appendEvent(evt) {
       const container = document.getElementById('event-stream');
       const row = document.createElement('div');
-      row.className = 'py-1 border-b border-gray-800/60 flex items-start space-x-2 text-xs';
+      row.className = 'py-1 border-b border-[#22272E] flex items-start space-x-2 text-xs';
 
       let badge = '';
       if (evt.type === 'ast_merge') {
-        badge = '<span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold">[AST MERGE]</span>';
+        badge = '<span class="px-1.5 py-0.2 rounded-sm bg-[#10B981]/20 text-[#10B981] font-bold">[AST MERGE]</span>';
         cleanMerges++;
         document.getElementById('stat-clean').innerText = cleanMerges;
       } else if (evt.type === 'conflict_detected') {
-        badge = '<span class="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold">[COLLISION]</span>';
+        badge = '<span class="px-1.5 py-0.2 rounded-sm bg-[#F59E0B]/20 text-[#F59E0B] font-bold">[COLLISION]</span>';
       } else if (evt.type === 'arbiter_resolved') {
-        badge = '<span class="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 font-bold">[AI ARBITED]</span>';
-        arbitrations++;
-        document.getElementById('stat-arbiter').innerText = arbitrations;
+        badge = '<span class="px-1.5 py-0.2 rounded-sm bg-[#A855F7]/20 text-[#A855F7] font-bold">[AI ARBITED]</span>';
       } else if (evt.type === 'reverse_pr') {
-        badge = '<span class="px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-400 font-bold">[REVERSE PR]</span>';
+        badge = '<span class="px-1.5 py-0.2 rounded-sm bg-[#38BDF8]/20 text-[#38BDF8] font-bold">[REVERSE PR]</span>';
       } else if (evt.type === 'immune_defense') {
-        badge = '<span class="px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-400 font-bold">[IMMUNE GUARD]</span>';
+        badge = '<span class="px-1.5 py-0.2 rounded-sm bg-[#F87171]/20 text-[#F87171] font-bold">[IMMUNE GUARD]</span>';
       } else if (evt.type === 'chrono_revert') {
-        badge = '<span class="px-1.5 py-0.5 rounded bg-yellow-500/20 text-yellow-400 font-bold">[CHRONO REVERT]</span>';
+        badge = '<span class="px-1.5 py-0.2 rounded-sm bg-[#FBBF24]/20 text-[#FBBF24] font-bold">[CHRONO REVERT]</span>';
       } else if (evt.type === 'lease_acquired') {
-        badge = '<span class="px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-400 font-bold">[LEASE ACQUIRED]</span>';
+        badge = '<span class="px-1.5 py-0.2 rounded-sm bg-[#38BDF8]/20 text-[#38BDF8] font-bold">[LEASE ACQUIRED]</span>';
       } else if (evt.type === 'backpressure_alert') {
-        badge = '<span class="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold">[BACKPRESSURE]</span>';
+        badge = '<span class="px-1.5 py-0.2 rounded-sm bg-[#F59E0B]/20 text-[#F59E0B] font-bold">[BACKPRESSURE]</span>';
       }
 
       const time = new Date(evt.timestamp).toLocaleTimeString();
       row.innerHTML = `
-        <span class="text-gray-500 text-[10px]">${time}</span>
+        <span class="text-[#7D8590] text-[10px]">${time}</span>
         ${badge}
-        <span class="text-gray-300"><strong class="text-white">${evt.agentId}:</strong> ${evt.data?.message || evt.data?.guard || evt.data?.explanation || JSON.stringify(evt.data)}</span>
+        <span class="text-[#E6EDF3]"><strong class="text-white">${evt.agentId}:</strong> ${evt.data?.message || evt.data?.guard || evt.data?.explanation || JSON.stringify(evt.data)}</span>
       `;
 
       container.prepend(row);
@@ -530,24 +575,94 @@
       }
     }
 
+    function renderLeasesTable(leases) {
+      const tbody = document.getElementById('leases-table-body');
+      const countPill = document.getElementById('stat-leases');
+      const tabCount = document.getElementById('tab-leases-count');
+      const statusText = document.getElementById('table-leases-status');
+
+      countPill.innerText = leases.length;
+      tabCount.innerText = leases.length;
+      statusText.innerText = `${leases.length} Active`;
+
+      if (!leases || leases.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="px-4 py-6 text-center text-[#7D8590] font-sans">
+              No active leases. All symbols available for concurrent agent checkout.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = leases.map(l => `
+        <tr class="hover:bg-[#1C212A] transition">
+          <td class="px-4 py-2 text-[#38BDF8] font-bold">${l.symbolId}</td>
+          <td class="px-4 py-2 text-[#E6EDF3]">${l.agentId}</td>
+          <td class="px-4 py-2"><span class="px-1.5 py-0.5 rounded-sm bg-[#38BDF8]/15 text-[#38BDF8] text-[10px] font-semibold">${l.leaseType}</span></td>
+          <td class="px-4 py-2 text-[#7D8590]">${Math.max(0, Math.round((l.expiresAt - Date.now()) / 1000))}s</td>
+          <td class="px-4 py-2 text-[#7D8590] truncate max-w-[180px]">${l.intent}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderProvenanceTable(records) {
+      const tbody = document.getElementById('provenance-table-body');
+      const countPill = document.getElementById('stat-notes');
+      const statusText = document.getElementById('table-notes-status');
+
+      countPill.innerText = records.length;
+      statusText.innerText = `${records.length} Logged`;
+
+      if (!records || records.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" class="px-4 py-6 text-center text-[#7D8590] font-sans">
+              Awaiting agent commits to log Chain-of-Thought records to Git notes.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = records.slice(-5).reverse().map(r => `
+        <tr class="hover:bg-[#1C212A] transition">
+          <td class="px-4 py-2 text-[#A855F7] font-bold">${r.symbolId}</td>
+          <td class="px-4 py-2">
+            <div class="text-[#E6EDF3]">${r.agentId}</div>
+            <div class="text-[10px] text-[#7D8590]">${r.model.replace('@cf/meta/', '')}</div>
+          </td>
+          <td class="px-4 py-2 text-[#7D8590]">
+            <div class="text-[#E6EDF3]">${r.promptIntent}</div>
+            <div class="text-[10px] text-[#10B981]">${r.invariantsChecked?.join(', ') || 'verified'}</div>
+          </td>
+          <td class="px-4 py-2 text-right text-[11px] text-[#7D8590]">
+            <div>${r.tokenTelemetry?.promptTokens || 0} in / ${r.tokenTelemetry?.completionTokens || 0} out</div>
+            <div class="text-[10px] text-[#38BDF8]">${r.tokenTelemetry?.latencyMs || 0}ms</div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
     function renderReversePRs(prs) {
       const container = document.getElementById('rpr-container');
       const pending = prs.filter((p) => p.status === 'pending');
       if (pending.length === 0) {
-        container.innerHTML = '<div class="text-xs text-emerald-400 font-mono py-2">✅ All agent architectural decisions aligned. Zero pending queries.</div>';
+        container.innerHTML = '<div class="text-xs text-[#10B981] font-mono">✅ Zero pending architectural inquiries. Agents aligned with policy.</div>';
         return;
       }
 
       container.innerHTML = pending.map((pr) => `
-        <div class="p-3 bg-gray-900/60 border border-orange-500/30 rounded-lg text-xs space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="font-mono text-orange-400 font-semibold">${pr.agentId}</span>
-            <span class="text-[10px] text-amber-400 font-mono">Requires Human Steering</span>
+        <div class="p-3 bg-[#0F1117] border border-[#F6821F]/40 rounded-sm space-y-2">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-mono text-[#F6821F] font-semibold">${pr.agentId}</span>
+            <span class="text-[10px] text-[#F59E0B] font-mono">Requires Steering</span>
           </div>
-          <p class="text-gray-200 font-medium">${pr.question}</p>
-          <div class="flex flex-col space-y-1.5 pt-1">
+          <p class="text-[#E6EDF3] text-xs font-medium">${pr.question}</p>
+          <div class="flex flex-col space-y-1 pt-1">
             ${pr.options.map((opt) => `
-              <button onclick="resolvePR('${pr.id}', '${opt}')" class="w-full text-left px-2.5 py-1.5 bg-gray-800 hover:bg-orange-500/20 hover:text-orange-300 text-gray-300 rounded transition text-xs font-mono">
+              <button onclick="resolvePR('${pr.id}', '${opt}')" class="w-full text-left px-2.5 py-1.5 bg-[#161B22] hover:bg-[#F6821F]/20 hover:text-[#F6821F] text-[#7D8590] rounded-sm transition text-xs font-mono border border-[#2D333B]">
                 👉 ${opt}
               </button>
             `).join('')}
@@ -574,9 +689,9 @@
     async function runBenchmark() {
       const btn = document.getElementById('btn-bench');
       const status = document.getElementById('bench-status');
-      btn.innerText = '⏳ Benchmarking 25 Agents...';
-      status.innerText = 'Running concurrent simulation...';
+      btn.innerText = '📊 Running diff3 Benchmark...';
       btn.disabled = true;
+      status.innerText = 'Executing 25-agent diff3 workload...';
 
       try {
         const res = await fetch('/api/benchmark', { method: 'POST' });
@@ -596,77 +711,9 @@
         console.error(e);
         status.innerText = 'Benchmark error';
       } finally {
-        btn.innerText = '📊 Run Live Benchmark (25 Agents vs Git)';
+        btn.innerText = '📊 Run diff3 Benchmark (25 Agents vs Git)';
         btn.disabled = false;
       }
-    }
-
-    async function resolvePR(prId, option) {
-      await fetch('/api/reverse-pr/resolve', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prId, option })
-      });
-      await fetchState();
-    }
-
-    async function testImmuneAttack() {
-      const btn = document.getElementById('btn-immune');
-      btn.innerText = '🛡️ Probing AST...';
-      btn.disabled = true;
-      try {
-        await fetch('/api/immune-attack', { method: 'POST' });
-        await fetchState();
-      } catch (e) {
-        console.error(e);
-      } finally {
-        btn.innerText = '🛡️ Test Immune System (Red-Team Fuzz)';
-        btn.disabled = false;
-      }
-    }
-
-    function renderLeases(leases) {
-      const container = document.getElementById('leases-container');
-      if (!leases || leases.length === 0) {
-        container.innerHTML = '<div class="text-gray-500 py-3 text-center">No active leases. All symbols available for concurrent edits.</div>';
-        return;
-      }
-      container.innerHTML = leases.map(l => `
-        <div class="p-2 bg-gray-900/80 border border-cyan-500/30 rounded flex items-center justify-between">
-          <div>
-            <div class="text-cyan-400 font-bold">${l.symbolId}</div>
-            <div class="text-[10px] text-gray-400">${l.intent}</div>
-          </div>
-          <div class="text-right">
-            <span class="px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 text-[10px] font-bold">${l.agentId}</span>
-            <div class="text-[10px] text-gray-500">TTL: ${Math.max(0, Math.round((l.expiresAt - Date.now()) / 1000))}s</div>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function renderProvenance(records) {
-      const container = document.getElementById('provenance-container');
-      const countBadge = document.getElementById('prov-count');
-      if (!records || records.length === 0) {
-        container.innerHTML = '<div class="text-gray-500 py-3 text-center">Awaiting agent commits to log Chain-of-Thought records...</div>';
-        countBadge.innerText = '0 Records';
-        return;
-      }
-      countBadge.innerText = `${records.length} Records`;
-      container.innerHTML = records.slice(-5).reverse().map(r => `
-        <div class="p-2.5 bg-gray-900/80 border border-purple-500/30 rounded space-y-1">
-          <div class="flex items-center justify-between">
-            <span class="text-purple-400 font-bold">${r.symbolId}</span>
-            <span class="px-1 py-0.5 bg-purple-500/20 text-purple-300 text-[10px] rounded">${r.agentId}</span>
-          </div>
-          <div class="text-gray-300 text-[11px]">${r.promptIntent}</div>
-          <div class="text-gray-500 text-[10px] flex items-center justify-between">
-            <span>Model: ${r.model.replace('@cf/meta/', '')}</span>
-            <span>${r.tokenTelemetry?.promptTokens || 0} in / ${r.tokenTelemetry?.completionTokens || 0} out</span>
-          </div>
-        </div>
-      `).join('');
     }
 
     async function testLeaseAcquire() {
@@ -688,6 +735,30 @@
       } catch (e) {
         console.error(e);
       }
+    }
+
+    async function testImmuneAttack() {
+      const btn = document.getElementById('btn-immune');
+      btn.innerText = '🛡️ Probing AST...';
+      btn.disabled = true;
+      try {
+        await fetch('/api/immune-attack', { method: 'POST' });
+        await fetchState();
+      } catch (e) {
+        console.error(e);
+      } finally {
+        btn.innerText = '🛡️ Adversarial AST Probe';
+        btn.disabled = false;
+      }
+    }
+
+    async function resolvePR(prId, option) {
+      await fetch('/api/reverse-pr/resolve', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prId, option })
+      });
+      await fetchState();
     }
 
     // Init
