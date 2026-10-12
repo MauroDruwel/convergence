@@ -7,9 +7,11 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
+    "demo": "tsx src/demo/run-live-demo.ts",
     "bench": "tsx src/benchmarks/run.ts",
     "bench:100k": "tsx src/benchmarks/stress-100k.ts",
     "simulate": "tsx src/simulator/swarm-simulator.ts",
+    "capture": "tsx scripts/capture-screenshots.ts",
     "start": "tsx src/server.ts"
   },
   "dependencies": {
@@ -27,6 +29,7 @@
     "@types/babel__generator": "^7.6.8",
     "@types/node": "^22.13.1",
     "@types/ws": "^8.18.2",
+    "puppeteer-core": "^25.13.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
     "vitest": "^3.0.5"

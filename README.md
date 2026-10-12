@@ -12,9 +12,28 @@
 
 ---
 
-## 📸 Cloudflare Infrastructure Console Preview
+## 📸 Real Cloudflare Infrastructure Console (Retina Screenshot)
 
-![Convergence Console](assets/dashboard-preview.svg)
+![Convergence Console](assets/dashboard-console.png)
+
+---
+
+## 🎮 Live Dogfooding Demo: Autonomous Swarm Building an Edge Commerce API
+
+To see Convergence in action as a platform, run the interactive multi-agent dogfooding demo:
+
+```bash
+npm run demo
+```
+
+This executes a realistic collaborative development lifecycle where 6 agents co-author an Edge Commerce API (`api/commerce.ts`) simultaneously:
+1. **Initial Baseline Seed**: Initialized `CommerceConfig` and baseline AST symbols in Durable Object SQLite.
+2. **Edit-Time Symbol Leases**: `Agent Security` claims exclusive write lock on `func:processCheckout`. When `Agent Fraud` attempts concurrent mutation, the Durable Object immediately emits **Semantic Backpressure** mid-edit.
+3. **Concurrent Orthogonal Merges**: `Agent Auth` (JWT helper), `Agent Tax` (`calculateVat` & `TaxBreakdown` interface), and `Agent Stripe` (`handleStripeWebhook`) commit simultaneously to the *exact same file* with **0 line conflicts**.
+4. **Autonomous Immune Defense**: `Adversarial Fuzzer` attempts an unvalidated negative withdrawal; the Code Immune System automatically synthesizes a boundary antibody guard (`if (amount <= 0) throw new RangeError(...)`).
+5. **Reverse Pull Request (Autonomous Inversion)**: `Agent Architect` queries a human supervisor on international currency rounding policy; human input is confirmed with 1 click.
+6. **Git Notes Provenance**: Every commit logs full Chain-of-Thought reasoning, prompt intent, and token telemetry natively to `refs/notes/agent-provenance`.
+7. **Final Verification**: 100% syntactically valid Babel TypeScript AST. Clean builds guaranteed.
 
 ---
 
@@ -118,10 +137,13 @@ npm run typecheck
 # 3. Run unit test suite (15/15 passing tests)
 npm test
 
-# 4. Run genuine GNU diff3 benchmark
+# 4. Run interactive dogfooding demo (6 agents building edge commerce API)
+npm run demo
+
+# 5. Run genuine GNU diff3 benchmark
 npm run bench
 
-# 5. Start interactive Cloudflare Infrastructure Console & WebSocket server
+# 6. Start interactive Cloudflare Infrastructure Console & WebSocket server
 npm start
 # Visit http://localhost:3000 to interact with the live swarm console
 ```
