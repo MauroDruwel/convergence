@@ -246,4 +246,65 @@ describe('End-to-End (E2E) Browser UI Test Suite — Cloudflare Infrastructure C
     expect(code).toContain('export function');
     expect(code).toContain('module_');
   });
+
+  it('11. should open interactive code editor, commit parallel code, and verify commit in history', async () => {
+    // 1. Click "Edit File" button
+    await page.evaluate(() => (document.getElementById('btn-edit-file') as HTMLElement)?.click());
+    await wait(300);
+
+    const isEditorVisible = await page.evaluate(() => {
+      const el = document.getElementById('platform-editor-wrap');
+      return el && !el.classList.contains('hidden');
+    });
+    expect(isEditorVisible).toBe(true);
+
+    // 2. Type a new commit message and append code
+    await page.evaluate(() => {
+      const textarea = document.getElementById('code-editor-textarea') as HTMLTextAreaElement;
+      if (textarea) textarea.value += '\nexport function e2e_verified_function(): boolean { return true; }\n';
+      const msg = document.getElementById('commit-msg-input') as HTMLInputElement;
+      if (msg) msg.value = 'feat(e2e): live test commit directly to main';
+    });
+
+    // 3. Submit commit
+    await page.evaluate(() => (window as any).submitCodeCommit());
+    await wait(1000);
+
+    // 4. Verify editor closed and code viewer updated
+    const editorClosed = await page.evaluate(() => {
+      const el = document.getElementById('platform-editor-wrap');
+      return el && el.classList.contains('hidden');
+    });
+    expect(editorClosed).toBe(true);
+
+    const platformCode = await page.evaluate(() => document.getElementById('platform-file-view')?.innerText || '');
+    expect(platformCode).toContain('e2e_verified_function');
+  });
+
+  it('12. should directly acquire and release a symbol lease from the platform console', async () => {
+    // 1. Switch to leases tab
+    await page.evaluate(() => (window as any).switchPTab('leases'));
+    await wait(300);
+
+    // 2. Request lease on func:authorizePayment
+    await page.evaluate(async () => {
+      const symSelect = document.getElementById('direct-lease-symbol') as unknown as HTMLSelectElement;
+      if (symSelect) symSelect.value = 'func:authorizePayment';
+      await (window as any).requestDirectLease();
+    });
+    await wait(500);
+
+    // 3. Verify lease is visible in table
+    const leaseTable = await page.evaluate(() => document.getElementById('platform-leases-list')?.innerText || '');
+    expect(leaseTable).toContain('func:authorizePayment');
+
+    // 4. Release the lease
+    await page.evaluate(async () => {
+      await (window as any).releaseDirectLease('func:authorizePayment', 'human_architect');
+    });
+    await wait(500);
+
+    const postReleaseTable = await page.evaluate(() => document.getElementById('platform-leases-list')?.innerText || '');
+    expect(postReleaseTable).not.toContain('human_architect');
+  });
 });

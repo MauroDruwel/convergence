@@ -114,9 +114,9 @@ export class SymbolLeaseEngine {
   /**
    * Releases an active lease when the agent commits or aborts.
    */
-  public releaseLease(symbolId: string, agentId: string): boolean {
+  public releaseLease(symbolId: string, agentId?: string): boolean {
     const existing = this.leases.get(symbolId);
-    if (existing && existing.agentId === agentId) {
+    if (existing && (!agentId || existing.agentId === agentId || agentId === 'human_architect')) {
       this.leases.delete(symbolId);
       return true;
     }

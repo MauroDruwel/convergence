@@ -346,6 +346,23 @@ copies or substantial portions of the Software.
   }
 
   /**
+   * Releases an active symbol lease and broadcasts the release event.
+   */
+  public releaseSymbolLease(symbolId: string, agentId?: string): boolean {
+    const released = this.leaseEngine.releaseLease(symbolId, agentId);
+    if (released) {
+      this.broadcast({
+        id: `evt_lease_rel_${Date.now()}`,
+        type: 'lease_released' as any,
+        agentId: agentId || 'human_architect',
+        timestamp: Date.now(),
+        data: { symbolId },
+      });
+    }
+    return released;
+  }
+
+  /**
    * Primary entry point for an agent pushing a commit to the repository.
    */
   public async handleAgentCommit(req: AgentCommitRequest): Promise<{
@@ -453,10 +470,11 @@ copies or substantial portions of the Software.
     const finalSource = this.crdt.getFileSource(req.filename);
 
     // 4. Record commit in Cloudflare Artifacts
+    const authorName = req.agentId.startsWith('agent_') ? `Agent ${req.agentId}` : req.agentId;
     const artifactCommit = await this.artifacts.commit(
       this.repoName,
       req.branchName || 'main',
-      `Agent ${req.agentId}`,
+      authorName,
       req.message,
       { [req.filename]: finalSource }
     );

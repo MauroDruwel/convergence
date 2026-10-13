@@ -233,6 +233,19 @@ app.post('/api/leases/request', async (c) => {
 });
 
 /**
+ * Edit-Time Coordination: Release Symbol Lease
+ */
+app.post('/api/leases/release', async (c) => {
+  const { symbolId, agentId } = await c.req.json();
+  const brain = c.env?.REPO_BRAIN
+    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
+    : getLocalBrain(c.env);
+
+  const ok = brain.releaseSymbolLease(symbolId, agentId);
+  return c.json({ success: ok, symbolId });
+});
+
+/**
  * Provenance / Chain-of-Thought query
  */
 app.get('/api/provenance', async (c) => {
