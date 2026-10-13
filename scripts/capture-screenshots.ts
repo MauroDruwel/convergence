@@ -59,8 +59,14 @@ async function main() {
     console.warn('Notice during pre-seed:', e);
   }
 
+  const chromePath =
+    process.env.PUPPETEER_EXECUTABLE_PATH ||
+    (process.platform === 'darwin'
+      ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+      : '/usr/bin/chromium');
+
   const browser = await puppeteer.launch({
-    executablePath: '/usr/bin/chromium',
+    executablePath: chromePath,
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
     defaultViewport: {
       width: 1600,
@@ -78,12 +84,17 @@ async function main() {
 
   const assetsDir = path.resolve(process.cwd(), 'assets');
 
-  // 1. Capture Full Dashboard Console
+  // 1. Capture Full Dashboard Console (Clean Discoverable State)
   const fullScreenshotPath = path.join(assetsDir, 'dashboard-console.png');
   await page.screenshot({ path: fullScreenshotPath, fullPage: false });
   console.log(`✓ Real high-res screenshot saved: ${fullScreenshotPath}`);
 
-  // 2. Capture Full Page Document
+  // 2. Trigger interactive benchmark race in browser so the duel is visualized
+  console.log('Running interactive benchmark duel in browser...');
+  await page.evaluate(() => (window as any).runBenchmark());
+  await wait(2200);
+
+  // 3. Capture Full Page Document with Duel & Swarm Active
   const fullPagePath = path.join(assetsDir, 'dashboard-full.png');
   await page.screenshot({ path: fullPagePath, fullPage: true });
   console.log(`✓ Full-page document screenshot saved: ${fullPagePath}`);

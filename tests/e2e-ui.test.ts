@@ -4,7 +4,7 @@ import { spawn, ChildProcess } from 'node:child_process';
 import http from 'node:http';
 
 const TEST_PORT = 3999;
-const BASE_URL = `http://localhost:${TEST_PORT}`;
+const BASE_URL = `http://localhost:${TEST_PORT}?e2e=1`;
 
 async function wait(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
@@ -43,9 +43,15 @@ describe('End-to-End (E2E) Browser UI Test Suite — Cloudflare Infrastructure C
     const isUp = await waitForServer(TEST_PORT);
     if (!isUp) throw new Error(`Server failed to start on port ${TEST_PORT}`);
 
+    const chromePath =
+      process.env.PUPPETEER_EXECUTABLE_PATH ||
+      (process.platform === 'darwin'
+        ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+        : '/usr/bin/chromium');
+
     // 2. Launch headless Chromium
     browser = await puppeteer.launch({
-      executablePath: '/usr/bin/chromium',
+      executablePath: chromePath,
       args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
       defaultViewport: { width: 1440, height: 900 },
     });
@@ -126,7 +132,7 @@ describe('End-to-End (E2E) Browser UI Test Suite — Cloudflare Infrastructure C
       return parseInt(document.getElementById('stat-clean')?.innerText || '0', 10);
     });
 
-    await page.evaluate(() => (document.getElementById('btn-swarm') as HTMLElement)?.click());
+    await page.evaluate(() => (document.getElementById('btn-swarm-l2') as HTMLElement)?.click());
 
     // Verify counter increments by at least 8 merges
     await page.waitForFunction((prev) => {
@@ -149,7 +155,7 @@ describe('End-to-End (E2E) Browser UI Test Suite — Cloudflare Infrastructure C
   }, 25000);
 
   it('5. should acquire an AST Symbol Lease and display it in the Leases table', async () => {
-    await page.click('#btn-lease');
+    await page.evaluate(() => (document.getElementById('btn-lease-l3') as HTMLElement)?.click());
 
     await page.waitForFunction(() => {
       const el = document.getElementById('stat-leases');
@@ -166,7 +172,7 @@ describe('End-to-End (E2E) Browser UI Test Suite — Cloudflare Infrastructure C
   }, 18000);
 
   it('6. should execute Adversarial AST Probe and trigger Code Immune System guard', async () => {
-    await page.click('#btn-immune');
+    await page.evaluate(() => (document.getElementById('btn-immune-l4') as HTMLElement)?.click());
 
     await page.waitForFunction(() => {
       const stream = document.getElementById('event-stream')?.innerText || '';
@@ -178,7 +184,7 @@ describe('End-to-End (E2E) Browser UI Test Suite — Cloudflare Infrastructure C
   }, 25000);
 
   it('7. should execute the GNU diff3 vs Convergence benchmark and populate comparison metrics', async () => {
-    await page.click('#btn-bench');
+    await page.click('#btn-bench-l1');
 
     await page.waitForFunction(() => {
       const status = document.getElementById('bench-status')?.innerText || '';
@@ -205,7 +211,7 @@ describe('End-to-End (E2E) Browser UI Test Suite — Cloudflare Infrastructure C
 
   it('8. should simulate a Reverse Pull Request and resolve it via human interactive steering', async () => {
     // 1. Click "Simulate Reverse PR" button
-    await page.click('#btn-trigger-rpr');
+    await page.evaluate(() => (document.getElementById('btn-rpr-l5') as HTMLElement)?.click());
 
     // 2. Wait for Reverse PR card to appear in rpr-container
     await page.waitForSelector('.rpr-card', { timeout: 10000 });
@@ -217,7 +223,7 @@ describe('End-to-End (E2E) Browser UI Test Suite — Cloudflare Infrastructure C
     expect(cardQuestion).toContain('Database schema tradeoff');
 
     // 3. Click the first resolution option ('Migrate to D1 SQLite')
-    await page.click('.rpr-option-btn');
+    await page.evaluate(() => (document.querySelector('.rpr-option-btn') as HTMLElement)?.click());
 
     // 4. Wait for Reverse PR container to revert to zero pending
     await page.waitForFunction(() => {

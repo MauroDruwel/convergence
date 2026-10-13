@@ -14,18 +14,12 @@ export interface Env {
 
 const app = new Hono<{ Bindings: Env }>();
 
-// Cache dashboard HTML
-let dashboardHtml: string | null = null;
 function getDashboardHtml(): string {
-  if (!dashboardHtml) {
-    try {
-      // In local node / bundle environment
-      dashboardHtml = readFileSync(join(process.cwd(), 'src', 'ui', 'dashboard.html'), 'utf-8');
-    } catch {
-      dashboardHtml = '<h1>Convergence Dashboard Active</h1>';
-    }
+  try {
+    return readFileSync(join(process.cwd(), 'src', 'ui', 'dashboard.html'), 'utf-8');
+  } catch {
+    return '<h1>Convergence Dashboard Active</h1>';
   }
-  return dashboardHtml;
 }
 
 // In-memory fallback brain for local Node server execution
@@ -80,30 +74,69 @@ app.post('/api/swarm', async (c) => {
     : getLocalBrain(c.env);
 
   const waveId = Date.now().toString(36).slice(-4);
-  const agentNames = [
-    'agent_sentinel',
-    'agent_payment',
-    'agent_auth',
-    'agent_optimizer',
-    'agent_fuzzer',
-    'agent_refactor',
-    'agent_docs',
-    'agent_tester',
+  // Each agent contributes a real, role-appropriate symbol (names keep the
+  // module_ prefix so live dashboards can trace swarm output in mainline).
+  const wave: Array<{ name: string; symbol: string; message: string; snippet: string }> = [
+    {
+      name: 'agent_sentinel',
+      symbol: `module_sentinel_rateLimit_${waveId}`,
+      message: `Agent agent_sentinel adds per-merchant rate limiter`,
+      snippet: `\n// Added by agent_sentinel: per-merchant leaky-bucket guard\nconst rateHits_${waveId}: number[] = [];\nexport function module_sentinel_rateLimit_${waveId}(now: number = Date.now()): boolean {\n  while (rateHits_${waveId}.length > 0 && now - rateHits_${waveId}[0] > 60000) rateHits_${waveId}.shift();\n  if (rateHits_${waveId}.length >= 120) return false;\n  rateHits_${waveId}.push(now);\n  return true;\n}\n`,
+    },
+    {
+      name: 'agent_payment',
+      symbol: `module_payment_idempotency_${waveId}`,
+      message: `Agent agent_payment adds idempotency-key dedupe`,
+      snippet: `\n// Added by agent_payment: idempotency-key dedupe so retries never double-charge\nconst seenKeys_${waveId}: Record<string, string> = {};\nexport function module_payment_idempotency_${waveId}(orderId: string, idempotencyKey: string): string {\n  if (seenKeys_${waveId}[idempotencyKey]) return seenKeys_${waveId}[idempotencyKey];\n  const txId = "tx_" + idempotencyKey.slice(0, 12) + "_" + orderId.slice(0, 8);\n  seenKeys_${waveId}[idempotencyKey] = txId;\n  return txId;\n}\n`,
+    },
+    {
+      name: 'agent_auth',
+      symbol: `module_auth_verifyToken_${waveId}`,
+      message: `Agent agent_auth adds structural JWT verification`,
+      snippet: `\n// Added by agent_auth: structural JWT verification (shape + expiry, no network)\nexport function module_auth_verifyToken_${waveId}(jwt: string, nowSec: number = Math.floor(Date.now() / 1000)): boolean {\n  const parts = jwt.split(".");\n  if (parts.length !== 3) return false;\n  try {\n    const payload = JSON.parse(Buffer.from(parts[1].replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8"));\n    if (typeof payload.exp === "number" && payload.exp < nowSec) return false;\n    return typeof payload.sub === "string" && payload.sub.length > 0;\n  } catch {\n    return false;\n  }\n}\n`,
+    },
+    {
+      name: 'agent_optimizer',
+      symbol: `module_optimizer_batchSettle_${waveId}`,
+      message: `Agent agent_optimizer adds batch settlement aggregation`,
+      snippet: `\n// Added by agent_optimizer: batch settlement aggregates captures into one payout\nexport function module_optimizer_batchSettle_${waveId}(amounts: number[]): { count: number; total: number; fee: number } {\n  const total = amounts.reduce((sum, a) => sum + (a > 0 ? a : 0), 0);\n  const fee = Math.round(total * 0.029 * 100) / 100 + 0.3 * amounts.length;\n  return { count: amounts.length, total: Math.round((total - fee) * 100) / 100, fee: Math.round(fee * 100) / 100 };\n}\n`,
+    },
+    {
+      name: 'agent_fuzzer',
+      symbol: `module_fuzzer_clampAmount_${waveId}`,
+      message: `Agent agent_fuzzer adds boundary sanitizer from fuzz findings`,
+      snippet: `\n// Added by agent_fuzzer: boundary sanitizer distilled from fuzz findings\n// (fuzz corpus: -99999, 0, NaN, "1999", 1e12 — all must collapse to safe values)\nexport function module_fuzzer_clampAmount_${waveId}(raw: unknown): number {\n  const n = typeof raw === "string" ? Number(raw) : (raw as number);\n  if (typeof n !== "number" || !Number.isFinite(n) || n <= 0) return 0;\n  return Math.min(n, 1000000);\n}\n`,
+    },
+    {
+      name: 'agent_refactor',
+      symbol: `module_refactor_moneyFormat_${waveId}`,
+      message: `Agent agent_refactor adds locale-aware money formatting`,
+      snippet: `\n// Added by agent_refactor: locale-aware money formatting for receipts\nexport function module_refactor_moneyFormat_${waveId}(amount: number, currency: string = CONFIG.currency): string {\n  return new Intl.NumberFormat("en-US", { style: "currency", currency }).format(amount);\n}\n`,
+    },
+    {
+      name: 'agent_docs',
+      symbol: `module_docs_describeError_${waveId}`,
+      message: `Agent agent_docs adds typed error catalog`,
+      snippet: `\n// Added by agent_docs: typed error catalog so agents raise consistent failures\nexport const module_docs_errorCatalog_${waveId}: Record<string, string> = {\n  E_AUTH: "Missing or invalid customer token",\n  E_LIMIT: "Merchant rate limit exceeded",\n  E_FUNDS: "Amount failed boundary validation",\n};\nexport function module_docs_describeError_${waveId}(code: string): string {\n  return module_docs_errorCatalog_${waveId}[code] ?? "Unknown convergence error";\n}\n`,
+    },
+    {
+      name: 'agent_tester',
+      symbol: `module_tester_orderFixture_${waveId}`,
+      message: `Agent agent_tester adds deterministic order fixture`,
+      snippet: `\n// Added by agent_tester: deterministic order fixture for hermetic agent tests\nexport function module_tester_orderFixture_${waveId}(orderId: string): Transaction {\n  return { id: "tx_test_" + orderId, orderId, amount: 1999, currency: "USD", status: "pending" };\n}\n`,
+    },
   ];
 
   const currentState = await brain.getState();
   const currentCode = currentState.files['index.ts'] || '';
 
   const results = await Promise.all(
-    agentNames.map(async (name) => {
-      const funcName = `module_${name}_${waveId}`;
-      const codeSnippet = `\n// Generated by ${name}\nexport function ${funcName}(): string {\n  return "Execution from ${name}";\n}\n`;
-
+    wave.map(async (w) => {
       return await brain.handleAgentCommit({
-        agentId: name,
+        agentId: w.name,
         filename: 'index.ts',
-        sourceCode: currentCode + codeSnippet,
-        message: `Agent ${name} adds ${funcName}`,
+        sourceCode: currentCode + w.snippet,
+        message: w.message,
       });
     })
   );

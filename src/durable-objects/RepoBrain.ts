@@ -80,13 +80,24 @@ export class RepoBrain {
   }
 
   private seedRepository() {
-    const defaultCode = `// Core Commerce API
-import { createId } from 'crypto';
+    const defaultCode = `// Core Commerce API — edge-native payment processing (Convergence mainline)
+import { createId, createHmac } from 'crypto';
 
 export interface PaymentConfig {
   currency: string;
   merchantId: string;
   sandbox: boolean;
+}
+
+export type TransactionStatus = 'pending' | 'authorized' | 'captured' | 'refunded' | 'failed';
+
+export interface Transaction {
+  id: string;
+  orderId: string;
+  amount: number;
+  currency: string;
+  status: TransactionStatus;
+  idempotencyKey?: string;
 }
 
 export const CONFIG: PaymentConfig = {
@@ -95,26 +106,184 @@ export const CONFIG: PaymentConfig = {
   sandbox: true,
 };
 
+export const LEDGER: Record<string, Transaction> = {};
+
+export function validateAmount(amount: number): { valid: boolean; reason: string } {
+  if (typeof amount !== 'number' || !Number.isFinite(amount)) return { valid: false, reason: 'not-a-finite-number' };
+  if (amount <= 0) return { valid: false, reason: 'must-be-positive' };
+  if (amount > 1000000) return { valid: false, reason: 'exceeds-maximum' };
+  return { valid: true, reason: 'ok' };
+}
+
+export function authorizePayment(orderId: string, amount: number, idempotencyKey?: string): Transaction | null {
+  const check = validateAmount(amount);
+  if (!check.valid) return null;
+  const tx: Transaction = { id: createId(), orderId, amount, currency: CONFIG.currency, status: 'authorized' };
+  if (idempotencyKey) tx.idempotencyKey = idempotencyKey;
+  LEDGER[tx.id] = tx;
+  return tx;
+}
+
+export function capturePayment(txId: string): boolean {
+  const tx = LEDGER[txId];
+  if (!tx || tx.status !== 'authorized') return false;
+  tx.status = 'captured';
+  return true;
+}
+
+export function refundPayment(txId: string, amount?: number): boolean {
+  const tx = LEDGER[txId];
+  if (!tx || (tx.status !== 'captured' && tx.status !== 'authorized')) return false;
+  const value = amount ?? tx.amount;
+  if (value <= 0 || value > tx.amount) return false;
+  tx.status = 'refunded';
+  return true;
+}
+
+export function verifyWebhookSignature(payload: string, signature: string, secret: string): boolean {
+  const expected = createHmac('sha256', secret).update(payload).digest('hex');
+  if (expected.length !== signature.length) return false;
+  let diff = 0;
+  for (let i = 0; i < expected.length; i++) diff |= expected.charCodeAt(i) ^ signature.charCodeAt(i);
+  return diff === 0;
+}
+
 export function processOrder(orderId: string, amount: number): boolean {
   console.log(\`Processing order \${orderId} for $\${amount}\`);
   return amount > 0;
 }
 `;
-    const parsed = parseSourceToSymbols('index.ts', defaultCode);
+    const readmeCode = `# convergence-core
+Agent-native payment mainline. Humans steer, agents write.
+
+## How code lands here
+1. Agents acquire a symbol lease before editing (no merge queues).
+2. Symbols merge by AST hash, not line numbers.
+3. The immune system fuzzes every symbol pre-merge.
+4. Architecture questions come back to humans as Reverse PRs.
+
+## Why not Git
+Git sees lines. This repo sees trees.
+`;
+    const policyCode = `// Convergence merge policy — agents read this before landing work
+export interface MergePolicy {
+  requireLease: boolean;
+  maxAgentsPerWave: number;
+  immuneScan: 'pre-merge' | 'post-merge';
+  provenance: 'git-notes' | 'commit-message';
+}
+
+export const MERGE_POLICY: MergePolicy = {
+  requireLease: true,
+  maxAgentsPerWave: 100000,
+  immuneScan: 'pre-merge',
+  provenance: 'git-notes',
+};
+
+export const TOKEN_BUDGET_PER_WAVE = 1420;
+
+export function policyAllows(symbolId: string): boolean {
+  return !symbolId.startsWith('file:');
+}
+`;
+    const paymentCode = `// Core Payment Gateway Services
+import { CONFIG, Transaction, validateAmount, LEDGER } from './index.js';
+
+export class PaymentGateway {
+  private merchantId: string = CONFIG.merchantId;
+
+  public async capture(txId: string): Promise<boolean> {
+    const tx = LEDGER[txId];
+    if (!tx || tx.status !== 'authorized') return false;
+    tx.status = 'captured';
+    return true;
+  }
+
+  public async settleBatch(transactions: Transaction[]): Promise<{ total: number; fee: number }> {
+    let total = 0;
+    for (const tx of transactions) {
+      if (tx.status === 'captured') total += tx.amount;
+    }
+    const fee = total * 0.029;
+    return { total: total - fee, fee };
+  }
+}
+`;
+
+    const authCode = `// Structural Edge Authentication & JWT Verification
+export interface AuthUser {
+  id: string;
+  role: 'agent' | 'human_architect';
+  permissions: string[];
+}
+
+export function verifyAgentToken(token: string): boolean {
+  if (!token || !token.startsWith('cf_agt_')) return false;
+  return token.length >= 16;
+}
+
+export function checkLeasePermission(user: AuthUser, symbolId: string): boolean {
+  if (user.role === 'human_architect') return true;
+  return !symbolId.startsWith('policy:');
+}
+`;
+
+    const wranglerCode = `{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "convergence",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "durable_objects": {
+    "bindings": [{ "name": "REPO_BRAIN", "class_name": "RepoBrain" }]
+  },
+  "artifacts": [{ "binding": "ARTIFACTS" }],
+  "ai": { "binding": "AI" }
+}
+`;
+
+    const licenseCode = `MIT License
+
+Copyright (c) 2026 Mauro Druwel
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+`;
+
+    const seedFiles: Array<{ name: string; code: string }> = [
+      { name: 'index.ts', code: defaultCode },
+      { name: 'src/payment.ts', code: paymentCode },
+      { name: 'src/auth.ts', code: authCode },
+      { name: 'src/policy.ts', code: policyCode },
+      { name: 'wrangler.jsonc', code: wranglerCode },
+      { name: 'README.md', code: readmeCode },
+      { name: 'LICENSE', code: licenseCode },
+    ];
+    const seedSnapshot: Record<string, string> = {};
     let lamport = 1;
-    for (const [id, symbol] of parsed.symbols.entries()) {
-      this.crdt.applyOperation({
-        id: `seed_${id}`,
-        type: 'upsert',
-        filename: 'index.ts',
-        symbolId: id,
-        symbol,
-        agentId: 'system_init',
-        lamport: lamport++,
-        wallClock: Date.now(),
-      });
-      this.sqlite.upsertSymbol('index.ts', symbol, lamport);
-      this.leaseEngine.registerDependency(id, 'interface:PaymentConfig');
+    for (const file of seedFiles) {
+      const parsed = parseSourceToSymbols(file.name, file.code);
+      seedSnapshot[file.name] = file.code;
+      for (const [id, symbol] of parsed.symbols.entries()) {
+        this.crdt.applyOperation({
+          id: `seed_${id}`,
+          type: 'upsert',
+          filename: file.name,
+          symbolId: id,
+          symbol,
+          agentId: 'system_init',
+          lamport: lamport++,
+          wallClock: Date.now(),
+        });
+        this.sqlite.upsertSymbol(file.name, symbol, lamport);
+        this.leaseEngine.registerDependency(id, 'interface:PaymentConfig');
+      }
     }
 
     this.artifacts.commit(
@@ -122,7 +291,7 @@ export function processOrder(orderId: string, amount: number): boolean {
       'main',
       'System',
       'Seed repository with commerce module',
-      { 'index.ts': defaultCode }
+      seedSnapshot
     );
   }
 
@@ -293,7 +462,18 @@ export function processOrder(orderId: string, amount: number): boolean {
     );
 
     // 5. Record Chain-of-Thought Provenance (refs/notes/agent-provenance)
-    const primarySymbolId = changedSymbolIds.values().next().value || `file:${req.filename}`;
+    // Attribute the commit to what the agent actually added: prefer newly-added
+    // function-like symbols, then any new symbol, then any landed symbol.
+    // (cleanMerges also carries stale-base delete markers — see merge Cases 5/6.)
+    const baseIds = new Set(baseSymbols.keys());
+    const inMap = (id: string) => resolvedSymbols.has(id);
+    const isNew = (id: string) => !baseIds.has(id);
+    const isFnLike = (id: string) => /^(func|class|interface|type):/.test(id);
+    const primarySymbolId =
+      [...changedSymbolIds].find((id) => inMap(id) && isNew(id) && isFnLike(id)) ||
+      [...changedSymbolIds].find((id) => inMap(id) && isNew(id)) ||
+      [...changedSymbolIds].find((id) => inMap(id)) ||
+      `file:${req.filename}`;
     const provRecord = this.provenance.recordProvenance({
       commitId: artifactCommit.commitId,
       symbolId: primarySymbolId,

@@ -122,6 +122,34 @@ export function parseSourceToSymbols(filename: string, code: string): AstParseRe
     return { filename, symbols, rawAstAvailable: false };
   }
 
+  // Comment hygiene (prevents phantom diffs + duplication across merge cycles):
+  // 1. Drop detached (own-line) trailing comments. Babel attaches an appended
+  //    block's header comment as trailing of the previous sibling, which would
+  //    otherwise register the untouched sibling as "changed" on every merge.
+  // 2. Deduplicate comment objects Babel shares across siblings, or the same
+  //    text would be emitted twice on every regenerate→reparse roundtrip.
+  const seenCommentKeys = new Set<string>();
+  for (const node of ast.program.body as Array<any>) {
+    const trailing = node.trailingComments;
+    if (Array.isArray(trailing)) {
+      node.trailingComments = trailing.filter((c: any) => {
+        const nodeEndLine = node.loc?.end?.line;
+        const commentStartLine = c.loc?.start?.line;
+        return nodeEndLine !== undefined && commentStartLine === nodeEndLine;
+      });
+    }
+    for (const key of ['leadingComments', 'trailingComments', 'innerComments'] as const) {
+      const arr = node[key];
+      if (!Array.isArray(arr)) continue;
+      node[key] = arr.filter((c: any) => {
+        const k = `${c.start}:${c.end}:${c.value}`;
+        if (seenCommentKeys.has(k)) return false;
+        seenCommentKeys.add(k);
+        return true;
+      });
+    }
+  }
+
   let orderIndex = 0;
 
   for (const node of ast.program.body) {
