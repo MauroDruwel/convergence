@@ -48,7 +48,7 @@ In real benchmarks testing 25 concurrent AI agents against genuine `GNU diff3`:
 - **96% of merges fail with merge conflicts.**
 - 24 agents get stalled in an infinite rebase queue.
 - Your agents burn **thousands of dollars in LLM tokens** rewriting rejected diffs that shouldn't have conflicted in the first place.
-- It’s like 100 drunk toddlers trying to scramble through a single revolving door at the same time.
+- It’s like 50 hyper-caffeinated engineers all trying to squeeze through a single turnstile at 8:59 AM while holding hot coffee.
 
 ---
 
@@ -154,6 +154,36 @@ npx conv rpr approve rpr-101 optionA
 # Pull the latest snapshot from Cloudflare Artifacts
 npx conv pull
 ```
+
+---
+
+## ⚔️ `git` vs. `conv`: Side-by-Side Comparison
+
+| Dimension | Traditional `git` (2005) | Convergence `conv` (2026) | Why It Matters |
+| :--- | :--- | :--- | :--- |
+| **Core Abstraction** | Flat byte arrays & line numbers | **Abstract Syntax Tree (AST)** symbol nodes | Code is a tree, not a grocery list. Line 42 is meaningless. |
+| **Merge Engine** | GNU `diff3` text heuristic | **Commutative AST-CRDT** lattice | Independent functions never conflict, even in the same file. |
+| **Conflict Handling** | Post-hoc merge hell (`<<<<<<< HEAD`) | **Proactive Symbol Leases** + Semantic Backpressure | Agents know a symbol is locked *before* wasting tokens. |
+| **Agent Concurrency** | 1–3 humans pushing per hour | **100,000+ autonomous AI agents** streaming commits | Scales to swarms without deadlocks or rebase queues. |
+| **State & Coordination** | Dumb file server with repo lockfile | **Active Durable Object (SQLite WAL)** actor | Sub-millisecond ACID transactions at the edge. |
+| **Snapshot Storage** | Loose `.git/objects` packfiles on disk | **Cloudflare Artifacts (`env.ARTIFACTS`)** CAS | Global edge distribution with zero storage bottlenecks. |
+| **Code Verification** | Blind commits (human must run tests) | **Autonomous Code Immune System** (AST Fuzzing) | Auto-synthesizes runtime boundary guards on merge. |
+| **AI Provenance** | Lost in git commit squash / log noise | **Native Git Notes (`refs/notes/`)** Chain-of-Thought | Stores model IDs, prompts, and reasoning without hash churn. |
+| **Human In The Loop** | 50 PRs rotting in GitHub review backlog | **Reverse Pull Requests (RPR)** | Agents review routine code, but ask you for 1-click strategic guidance. |
+
+### 🔄 Command Translation Table
+
+| What You Want to Do | Traditional `git` | Convergence `conv` |
+| :--- | :--- | :--- |
+| **Check repository state** | `git status` | `conv status` *(returns active leases & Lamport clock)* |
+| **Create a new repository** | `git init` | `conv init <repo-name>` *(provisions edge DO actor)* |
+| **Download repository** | `git clone <url>` | `conv clone <repo-name>` *(hydrates from Artifacts CAS)* |
+| **Inspect symbols / functions**| `grep -rn "function" .` | `conv symbols <file>` *(parses live AST nodes & hashes)* |
+| **Start working on a feature** | `git checkout -b feat/tax` | `conv lease func:calcTax` *(locks symbol, zero branch sprawl)* |
+| **Commit & push changes** | `git add . && git commit && git push` | `conv push --file index.ts --msg "feat" --symbol "func:calcTax"` |
+| **Merge parallel work** | `git merge` / `git rebase` *(praying for no conflict)* | **Automatic & Commutative** *(0 conflicts at edge)* |
+| **Ask architect for steering**| Open a Slack thread / wait 2 days | `conv rpr list` & `conv rpr approve <id> <choice>` |
+| **Pull verified code** | `git pull origin main` | `conv pull` *(pulls latest verified CAS snapshot)* |
 
 ---
 
