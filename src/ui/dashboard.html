@@ -4235,14 +4235,14 @@ async function commitAgentSample(agentId) {
 }
 
 function switchPTab(t) {
-  const allTabs = ['code', 'arena', 'radar', 'leases', 'security', 'rpr', 'commits', 'people', 'connect'];
+  const allTabs = ['code', 'claude', 'arena', 'radar', 'leases', 'security', 'rpr', 'commits', 'people', 'connect'];
   allTabs.forEach((k) => {
     const b = document.getElementById('ptab-' + k);
     if (!b || b.classList.contains('hidden')) return;
     b.className = 'px-3.5 py-2.5 border-b-2 whitespace-nowrap flex items-center space-x-1.5 transition-all ' + (k === t ? 'border-[#F6821F] text-zinc-950 font-bold' : 'border-transparent text-zinc-500 hover:text-zinc-950');
   });
 
-  const panes = ['code', 'commits', 'people', 'rpr', 'leases', 'security', 'connect'];
+  const panes = ['code', 'claude', 'commits', 'people', 'rpr', 'leases', 'security', 'connect'];
   panes.forEach((p) => {
     const el = document.getElementById('ppane-' + p);
     if (!el) return;
@@ -4250,6 +4250,9 @@ function switchPTab(t) {
       el.classList.remove('hidden', 'pane-enter-anim');
       void el.offsetWidth;
       el.classList.add('pane-enter-anim');
+      if (p === 'claude' && typeof renderClaudeTerminalPanes === 'function') {
+        renderClaudeTerminalPanes();
+      }
     } else {
       el.classList.add('hidden');
     }
