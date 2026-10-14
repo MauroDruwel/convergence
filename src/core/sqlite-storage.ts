@@ -208,8 +208,32 @@ export class RepoSqliteStorage {
   }
 
   public getStats() {
+    if (this.driver) {
+      // Query the REAL Durable Object SQLite tables (never memory counters).
+      try {
+        const count = (table: string): number => {
+          const cursor: any = this.driver!.exec(`SELECT COUNT(*) AS n FROM ${table}`);
+          const rows = cursor?.toArray ? cursor.toArray() : Array.from(cursor || []);
+          return Number(rows?.[0]?.n ?? 0);
+        };
+        return {
+          storageEngine: 'Cloudflare Durable Object SQLite (ctx.storage.sql)',
+          totalSymbolsCount: count('symbols'),
+          activeLeasesCount: count('symbol_leases'),
+          provenanceRecordsCount: count('agent_provenance'),
+        };
+      } catch {
+        /* table missing pre-init: report zeros, not memory state */
+        return {
+          storageEngine: 'Cloudflare Durable Object SQLite (ctx.storage.sql)',
+          totalSymbolsCount: 0,
+          activeLeasesCount: 0,
+          provenanceRecordsCount: 0,
+        };
+      }
+    }
     return {
-      storageEngine: this.driver ? 'Cloudflare Durable Object SQLite (ctx.storage.sql)' : 'Embedded Relational Driver',
+      storageEngine: 'Embedded Relational Driver',
       totalSymbolsCount: this.memoryTables.symbols.size,
       activeLeasesCount: this.memoryTables.leases.size,
       provenanceRecordsCount: this.memoryTables.provenance.size,

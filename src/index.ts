@@ -4,8 +4,7 @@ import { HeadToHeadBenchmark } from './benchmarks/comparator.js';
 import { ConvEngine } from './cli/conv-engine.js';
 import { parseSourceToSymbols } from './core/ast-engine.js';
 import { createCloudflareMcpRouter } from './mcp/cloudflare-mcp.js';
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { DASHBOARD_HTML } from './ui/dashboard-html.js';
 
 export { RepoBrain };
 
@@ -18,11 +17,10 @@ export interface Env {
 const app = new Hono<{ Bindings: Env }>();
 
 function getDashboardHtml(): string {
-  try {
-    return readFileSync(join(process.cwd(), 'src', 'ui', 'dashboard.html'), 'utf-8');
-  } catch {
-    return '<h1>Convergence Dashboard Active</h1>';
-  }
+  // Embedded at build time (scripts/build-ui.ts) so this works identically
+  // on Node.js AND Cloudflare Workers (which have no node:fs at runtime).
+  if (DASHBOARD_HTML && DASHBOARD_HTML.length > 1000) return DASHBOARD_HTML;
+  return '<h1>Convergence Dashboard Active</h1><p>Run `npm run build:ui` to embed the full console.</p>';
 }
 
 export interface RepoMetadata {
@@ -87,9 +85,27 @@ export function getRepoBrain(c: any, repoKey?: string): RepoBrain | any {
 }
 
 // Cloudflare Workers MCP Server (HTTP JSON-RPC & SSE endpoints for AI agents)
-const mcpRouter = createCloudflareMcpRouter((repoKey) => getLocalBrain(undefined, repoKey));
+// NOTE: the brain getter is request-scoped so production traffic resolves to
+// the Durable Object stub (via c.env) instead of isolate-local memory.
+const mcpRouter = createCloudflareMcpRouter((c: any, repoKey?: string) => getRepoBrain(c, repoKey));
 app.route('/api/mcp', mcpRouter);
 app.route('/mcp', mcpRouter);
+
+/**
+ * WebSocket telemetry endpoint.
+ * - Local dev (`npm run demo`): upgrade requests on /ws are intercepted by the
+ *   `ws` server in src/server.ts before reaching Hono.
+ * - Production (Cloudflare): proxies the upgrade to the RepoBrain Durable
+ *   Object, which uses the WebSocket Hibernation API.
+ */
+app.get('/ws', (c) => {
+  const repoName = c.req.query('repo') || 'convergence-core';
+  if (c.env?.REPO_BRAIN) {
+    const stub = getRepoBrain(c, repoName) as any;
+    if (stub?.fetch) return stub.fetch(c.req.raw);
+  }
+  return c.text('WebSocket upgrade required (local dev handles /ws via src/server.ts)', 426);
+});
 
 /**
  * Serves the interactive Swarm Dashboard
@@ -122,9 +138,9 @@ app.post('/api/commit', async (c) => {
  * Triggers a wave of 8 concurrent simulated agents
  */
 app.post('/api/swarm', async (c) => {
-  const brain = c.env?.REPO_BRAIN
-    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
-    : getLocalBrain(c.env);
+  const body = await c.req.json().catch(() => ({} as any));
+  const repoName = body.repoName || body.repo || c.req.query('repo') || 'convergence-core';
+  const brain = getRepoBrain(c, repoName);
 
   const waveId = Date.now().toString(36).slice(-4);
   // Each agent contributes a real, role-appropriate symbol (names keep the
@@ -210,10 +226,8 @@ app.post('/api/benchmark', async (c) => {
  * Resolves Reverse PR architectural inquiry
  */
 app.post('/api/reverse-pr/resolve', async (c) => {
-  const { prId, option } = await c.req.json();
-  const brain = c.env?.REPO_BRAIN
-    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
-    : getLocalBrain(c.env);
+  const { prId, option, repoName, repo } = await c.req.json();
+  const brain = getRepoBrain(c, repoName || repo || 'convergence-core');
 
   const ok = await brain.resolveReversePR(prId, option);
   return c.json({ success: ok });
@@ -223,9 +237,8 @@ app.post('/api/reverse-pr/resolve', async (c) => {
  * Triggers a test Reverse PR to simulate architectural steering
  */
 app.post('/api/reverse-pr/trigger', async (c) => {
-  const brain = c.env?.REPO_BRAIN
-    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
-    : getLocalBrain(c.env);
+  const body = await c.req.json().catch(() => ({} as any));
+  const brain = getRepoBrain(c, body.repoName || body.repo || 'convergence-core');
 
   const pr = brain.createReversePR(
     'agent_architect',
@@ -239,10 +252,8 @@ app.post('/api/reverse-pr/trigger', async (c) => {
  * Chrono-Revert: Surgical rollback of a single symbol
  */
 app.post('/api/revert', async (c) => {
-  const { filename, symbolId } = await c.req.json();
-  const brain = c.env?.REPO_BRAIN
-    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
-    : getLocalBrain(c.env);
+  const { filename, symbolId, repoName, repo } = await c.req.json();
+  const brain = getRepoBrain(c, repoName || repo || 'convergence-core');
 
   const res = await brain.chronoRevertSymbol(filename || 'index.ts', symbolId);
   return c.json(res);
@@ -252,9 +263,8 @@ app.post('/api/revert', async (c) => {
  * Simulates an adversarial red-team injection to showcase the Immune System
  */
 app.post('/api/immune-attack', async (c) => {
-  const brain = c.env?.REPO_BRAIN
-    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
-    : getLocalBrain(c.env);
+  const body = await c.req.json().catch(() => ({} as any));
+  const brain = getRepoBrain(c, body.repoName || body.repo || 'convergence-core');
 
   // Commits a flawed function with missing boundary check to test the autonomous immune defense
   const res = await brain.handleAgentCommit({
@@ -276,10 +286,8 @@ export function transferFunds(amount: number): boolean {
  * Edit-Time Coordination: Request Symbol Lease
  */
 app.post('/api/leases/request', async (c) => {
-  const { symbolId, agentId, leaseType, ttlMs, intent } = await c.req.json();
-  const brain = c.env?.REPO_BRAIN
-    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
-    : getLocalBrain(c.env);
+  const { symbolId, agentId, leaseType, ttlMs, intent, repoName, repo } = await c.req.json();
+  const brain = getRepoBrain(c, repoName || repo || 'convergence-core');
 
   const res = brain.requestSymbolLease(symbolId, agentId, leaseType, ttlMs, intent);
   return c.json(res);
@@ -289,10 +297,8 @@ app.post('/api/leases/request', async (c) => {
  * Edit-Time Coordination: Release Symbol Lease
  */
 app.post('/api/leases/release', async (c) => {
-  const { symbolId, agentId } = await c.req.json();
-  const brain = c.env?.REPO_BRAIN
-    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
-    : getLocalBrain(c.env);
+  const { symbolId, agentId, repoName, repo } = await c.req.json();
+  const brain = getRepoBrain(c, repoName || repo || 'convergence-core');
 
   const ok = brain.releaseSymbolLease(symbolId, agentId);
   return c.json({ success: ok, symbolId });
@@ -302,9 +308,8 @@ app.post('/api/leases/release', async (c) => {
  * Provenance / Chain-of-Thought query
  */
 app.get('/api/provenance', async (c) => {
-  const brain = c.env?.REPO_BRAIN
-    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
-    : getLocalBrain(c.env);
+  const repoName = c.req.query('repo') || 'convergence-core';
+  const brain = getRepoBrain(c, repoName);
 
   const state = await brain.getState();
   return c.json(state.provenanceRecords || []);

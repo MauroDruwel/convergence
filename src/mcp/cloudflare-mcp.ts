@@ -368,16 +368,20 @@ export async function executeMcpMethod(
 }
 
 /**
- * Creates the Hono Cloudflare MCP Router
+ * Creates the Hono Cloudflare MCP Router.
+ * The brain getter is request-scoped (receives Hono context `c`) so that
+ * deployed Workers resolve per-repo Durable Object stubs, while local dev
+ * falls back to the in-memory brain. Never capture a module-level brain here:
+ * that would pin state to a single isolate in production.
  */
-export function createCloudflareMcpRouter(getBrain: (repo?: string) => RepoBrain): Hono {
+export function createCloudflareMcpRouter(getBrain: (c: any, repo?: string) => RepoBrain): Hono {
   const router = new Hono();
 
   // POST /mcp or /api/mcp - Standard JSON-RPC Endpoint
   router.post('/', async (c) => {
     try {
       const body = await c.req.json();
-      const response = await executeMcpMethod(body, getBrain);
+      const response = await executeMcpMethod(body, (repo) => getBrain(c, repo));
       return c.json(response);
     } catch (e: any) {
       return c.json(

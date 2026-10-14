@@ -23,7 +23,8 @@
   },
   "artifacts": [
     {
-      "binding": "ARTIFACTS"
+      "binding": "ARTIFACTS",
+      "namespace": "default"
     }
   ],
   "observability": {

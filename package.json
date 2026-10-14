@@ -9,6 +9,13 @@
   "scripts": {
     "conv": "node ./bin/conv.mjs",
     "build:ui": "tsx scripts/build-ui.ts",
+    "predemo": "npm run build:ui",
+    "prestart": "npm run build:ui",
+    "predeploy": "npm run build:ui && npm run typecheck",
+    "deploy": "wrangler deploy",
+    "deploy:dry": "wrangler deploy --dry-run",
+    "dev": "wrangler dev",
+    "types": "wrangler types",
     "test": "vitest run --sequence.concurrent=false",
     "test:watch": "vitest",
     "test:e2e": "vitest run tests/e2e-ui.test.ts",
@@ -29,7 +36,7 @@
     "@hono/node-server": "^2.1.4",
     "diff3": "^0.0.4",
     "hono": "^4.7.2",
-    "isomorphic-git": "^1.44.1",
+    "tsx": "^4.19.2",
     "ws": "^8.22.0"
   },
   "devDependencies": {
@@ -38,8 +45,14 @@
     "@types/node": "^22.13.1",
     "@types/ws": "^8.18.2",
     "puppeteer-core": "^25.13.0",
-    "tsx": "^4.19.2",
     "typescript": "^5.7.3",
-    "vitest": "^3.0.5"
+    "vitest": "^3.0.5",
+    "wrangler": "^4.151.0"
+  },
+  "allowScripts": {
+    "wrangler@4.151.0": true,
+    "esbuild@0.28.2": true,
+    "workerd@1.20261012.1": true,
+    "fsevents@2.3.3": true
   }
 }

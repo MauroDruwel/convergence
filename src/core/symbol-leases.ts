@@ -124,13 +124,25 @@ export class SymbolLeaseEngine {
   }
 
   public getActiveLeases(): SymbolLease[] {
+    this.purgeExpired();
+    return Array.from(this.leases.values());
+  }
+
+  /**
+   * Evicts all expired leases. Called lazily on access AND deterministically
+   * from the Durable Object `alarm()` handler (see RepoBrain), which is
+   * scheduled via `ctx.storage.setAlarm(expiresAt)` on every acquisition.
+   * Returns the evicted symbol ids for broadcast/telemetry.
+   */
+  public purgeExpired(): string[] {
     const now = Date.now();
-    // Filter out expired
+    const evicted: string[] = [];
     for (const [id, lease] of this.leases.entries()) {
       if (lease.expiresAt <= now) {
         this.leases.delete(id);
+        evicted.push(id);
       }
     }
-    return Array.from(this.leases.values());
+    return evicted;
   }
 }

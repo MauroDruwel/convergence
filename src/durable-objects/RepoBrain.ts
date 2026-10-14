@@ -376,13 +376,22 @@ Convergence records full agent provenance in \`refs/notes/agent-provenance\`:
 
   /**
    * Broadcasts an event to all connected dashboard WebSockets.
+   * Covers both local-dev sockets AND hibernated production sockets
+   * (`ctx.getWebSockets()`), so no listener is missed after eviction.
    */
   public broadcast(event: SwarmEvent) {
     this.events.unshift(event);
     if (this.events.length > 200) this.events.pop();
 
     const payload = JSON.stringify({ type: 'swarm_event', event });
-    for (const ws of this.sockets) {
+    const hibernated: any[] = [];
+    try {
+      const wsList = this.ctx?.getWebSockets?.();
+      if (Array.isArray(wsList)) hibernated.push(...wsList);
+    } catch {
+      /* local dev has no hibernation API */
+    }
+    for (const ws of [...this.sockets, ...hibernated]) {
       try {
         ws.send(payload);
       } catch (err) {
@@ -404,6 +413,13 @@ Convergence records full agent provenance in \`refs/notes/agent-provenance\`:
     const result = this.leaseEngine.acquireLease(symbolId, agentId, leaseType, ttlMs, intent);
 
     if (result.granted && result.lease) {
+      // Deterministic expiry: wake the DO exactly when the lease dies so
+      // dead-agent locks can never stall the swarm (no polling threads).
+      try {
+        this.ctx?.storage?.setAlarm?.(result.lease.expiresAt);
+      } catch {
+        /* local dev has no DO storage */
+      }
       this.broadcast({
         id: `evt_lease_${Date.now()}`,
         type: 'lease_acquired',
@@ -566,7 +582,9 @@ Convergence records full agent provenance in \`refs/notes/agent-provenance\`:
     const inMap = (id: string) => resolvedSymbols.has(id);
     const isNew = (id: string) => !baseIds.has(id);
     const isFnLike = (id: string) => /^(func|class|interface|type):/.test(id);
+    const isFunc = (id: string) => /^func:/.test(id);
     const primarySymbolId =
+      [...changedSymbolIds].find((id) => inMap(id) && isNew(id) && isFunc(id)) ||
       [...changedSymbolIds].find((id) => inMap(id) && isNew(id) && isFnLike(id)) ||
       [...changedSymbolIds].find((id) => inMap(id) && isNew(id)) ||
       [...changedSymbolIds].find((id) => inMap(id)) ||
@@ -728,6 +746,7 @@ Convergence records full agent provenance in \`refs/notes/agent-provenance\`:
       activeLeases: this.leaseEngine.getActiveLeases(),
       provenanceRecords: this.provenance.getAll().slice(-20),
       sqliteStats: this.sqlite.getStats(),
+      artifacts: this.artifacts.getStatus(),
       events: this.events.slice(0, 50),
       reversePRs: Array.from(this.reversePRs.values()),
       lamportClock: this.crdt.getLamportClock(),
@@ -745,6 +764,31 @@ Convergence records full agent provenance in \`refs/notes/agent-provenance\`:
 
   public unregisterSocket(ws: any) {
     this.sockets.delete(ws);
+  }
+
+  // Cloudflare Durable Object Alarm Handler: deterministic lease eviction.
+  // Scheduled via ctx.storage.setAlarm(expiresAt) on every lease acquisition.
+  public async alarm() {
+    const evicted = this.leaseEngine.purgeExpired();
+    for (const symbolId of evicted) {
+      this.broadcast({
+        id: `evt_alarm_${Date.now()}_${symbolId}`,
+        type: 'lease_released' as any,
+        agentId: 'do_alarm',
+        timestamp: Date.now(),
+        data: { symbolId, reason: 'ttl_expired_deterministic_eviction' },
+      });
+    }
+    // Re-arm for the nearest surviving lease, if any.
+    const remaining = this.leaseEngine.getActiveLeases();
+    if (remaining.length > 0) {
+      const next = Math.min(...remaining.map((l) => l.expiresAt));
+      try {
+        await this.ctx?.storage?.setAlarm?.(next);
+      } catch {
+        /* local dev */
+      }
+    }
   }
 
   // Cloudflare Durable Object WebSocket Hibernation Handlers

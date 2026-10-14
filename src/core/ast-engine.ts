@@ -287,13 +287,19 @@ export function parseSourceToSymbols(filename: string, code: string): AstParseRe
 
 /**
  * Reconstructs source code from a set of symbol nodes in a clean, consistent order.
+ * If an opaque `file:` fallback chunk coexists with structured symbols (e.g. a
+ * commit that failed to parse), the structured symbols render first and the
+ * opaque chunk is appended — the file view never collapses to one fragment.
  */
 export function symbolsToSource(filename: string, symbols: Map<string, SymbolNode>): string {
-  if (symbols.has(`file:${filename}`)) {
-    return symbols.get(`file:${filename}`)!.code;
-  }
+  const fileKey = `file:${filename}`;
+  const fileNode = symbols.get(fileKey);
 
-  const nodes = Array.from(symbols.values());
+  const nodes = Array.from(symbols.values()).filter((n) => n.id !== fileKey);
+
+  if (nodes.length === 0) {
+    return fileNode ? fileNode.code : '';
+  }
 
   // Deterministic ordering:
   // 1. Imports
@@ -317,7 +323,8 @@ export function symbolsToSource(filename: string, symbols: Map<string, SymbolNod
     return a.order - b.order;
   });
 
-  return nodes.map((n) => n.code).join('\n\n') + '\n';
+  const rendered = nodes.map((n) => n.code).join('\n\n') + '\n';
+  return fileNode ? `${rendered}\n${fileNode.code}\n` : rendered;
 }
 
 /**
