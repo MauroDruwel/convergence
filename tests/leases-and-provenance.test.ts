@@ -84,4 +84,50 @@ describe('Edit-Time Coordination: Symbol Leases & Git Notes Provenance', () => {
     const stats = storage.getStats();
     expect(stats.totalSymbolsCount).toBe(1);
   });
+
+  it('should roundtrip symbol records and provenance for post-eviction rehydration', () => {
+    const storage = new RepoSqliteStorage();
+
+    storage.upsertSymbol(
+      'index.ts',
+      {
+        id: 'func:rehydrated',
+        kind: 'function',
+        name: 'rehydrated',
+        code: 'export function rehydrated(): boolean { return true; }',
+        hash: 'h999',
+        dependencies: [],
+        order: 7,
+      },
+      42,
+      'agent_persist'
+    );
+
+    const tracker = new ProvenanceTracker();
+    const prov = tracker.recordProvenance({
+      commitId: 'c_persist_1',
+      symbolId: 'func:rehydrated',
+      agentId: 'agent_persist',
+      model: '@cf/meta/llama-3.3-70b-instruct',
+      promptIntent: 'Persist across eviction',
+      reasoningChain: ['r1'],
+      invariantsChecked: ['i1'],
+      tokenTelemetry: { promptTokens: 10, completionTokens: 5, latencyMs: 2 },
+    });
+    storage.recordProvenance(prov);
+
+    // Simulate a fresh instance reading the same backing store.
+    const records = storage.getAllSymbolRecords();
+    expect(records.length).toBe(1);
+    expect(records[0].filename).toBe('index.ts');
+    expect(records[0].symbol.order).toBe(7);
+    expect(records[0].lamport).toBe(42);
+    expect(records[0].agentId).toBe('agent_persist');
+
+    const restored = new ProvenanceTracker();
+    restored.restoreRecords(storage.getAllProvenance());
+    expect(restored.getByCommit('c_persist_1').length).toBe(1);
+    expect(restored.getBySymbol('func:rehydrated').length).toBe(1);
+    expect(restored.getAll()[0].reasoningChain).toEqual(['r1']);
+  });
 });

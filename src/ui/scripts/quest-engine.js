@@ -24,6 +24,11 @@
         return;
       }
 
+      // Session persistence: restore tutorial progress + platform unlock
+      // before rendering any gate (survives reloads within the session).
+      restoreQuestProgressOnce();
+      syncQuestProgressUI();
+
       const maxUnlocked = [1, 2, 3, 4, 5].find(l => !completedLevels.has(l)) || 5;
       const solvedCount = completedLevels.size;
 
@@ -121,7 +126,7 @@
 
       const pz = document.getElementById('platform-zone');
       const pIcon = document.getElementById('viewbtn-platform-icon');
-      if (completedLevels.size >= 5) {
+      if (isPlatformUnlocked()) {
         if (pIcon) pIcon.innerText = '⚡';
         if (pz) pz.classList.remove('hidden');
       } else {
@@ -139,7 +144,7 @@
     }
 
     function tryOpenPlatformView() {
-      if (completedLevels.size < 5 && !window.__e2e) {
+      if (!isPlatformUnlocked() && !window.__e2e) {
         const rem = 5 - completedLevels.size;
         showToast('Convergence Locked', `Verify ${rem} more architectural stage${rem === 1 ? '' : 's'} to unlock the standalone Edge Platform.`, 'warning');
         return;
@@ -191,6 +196,7 @@
     function markLevelCompleted(levelNum) {
       const first = !completedLevels.has(levelNum);
       completedLevels.add(levelNum);
+      persistQuestProgress();
       const count = completedLevels.size;
       document.getElementById('quest-completed-count').innerText = count;
       const pbar = document.getElementById('quest-progress-bar');

@@ -7,6 +7,78 @@ let lastSeenSource = "";
 const completedLevels = new Set();
 let activeLevelView = 0;
 let isDeepDiveOpen = true; // Open by default per user specification
+
+// ---------------------------------------------------------------------
+// SESSION PERSISTENCE: tutorial progress + platform unlock.
+// Once the 5-stage quest is completed, the Convergence Platform stays
+// unlocked for the rest of the browser session (sessionStorage survives
+// reloads in the same tab, and clears when the session ends).
+// ---------------------------------------------------------------------
+const QUEST_STORE_LEVELS = 'conv_quest_levels_v1';
+const QUEST_STORE_UNLOCK = 'conv_platform_unlocked_v1';
+
+function questStoreAvailable() {
+  try {
+    return typeof sessionStorage !== 'undefined';
+  } catch (e) {
+    return false;
+  }
+}
+
+function isPlatformUnlocked() {
+  if (completedLevels.size >= 5) return true;
+  try {
+    return questStoreAvailable() && sessionStorage.getItem(QUEST_STORE_UNLOCK) === '1';
+  } catch (e) {
+    return false;
+  }
+}
+
+function persistQuestProgress() {
+  try {
+    if (!questStoreAvailable()) return;
+    sessionStorage.setItem(QUEST_STORE_LEVELS, JSON.stringify(Array.from(completedLevels)));
+    if (completedLevels.size >= 5) sessionStorage.setItem(QUEST_STORE_UNLOCK, '1');
+  } catch (e) {}
+}
+
+let questProgressRestored = false;
+function restoreQuestProgressOnce() {
+  if (questProgressRestored) return;
+  questProgressRestored = true;
+  try {
+    if (!questStoreAvailable()) return;
+    const raw = sessionStorage.getItem(QUEST_STORE_LEVELS);
+    if (!raw) return;
+    const arr = JSON.parse(raw);
+    if (Array.isArray(arr)) {
+      arr.forEach((l) => {
+        const n = Number(l);
+        if (n >= 1 && n <= 5) completedLevels.add(n);
+      });
+    }
+  } catch (e) {}
+}
+
+function syncQuestProgressUI() {
+  try {
+    const count = completedLevels.size;
+    const cc = document.getElementById('quest-completed-count');
+    if (cc) cc.innerText = count;
+    const pbar = document.getElementById('quest-progress-bar');
+    if (pbar) pbar.style.width = `${(count / 5) * 100}%`;
+    for (let l = 1; l <= 5; l++) {
+      const seg = document.getElementById(`quest-seg-${l}`);
+      if (seg && completedLevels.has(l)) seg.className = 'h-1.5 rounded-xs bg-[#F6821F] transition-all';
+    }
+    if (count >= 5) {
+      const badge = document.getElementById('quest-badge');
+      if (badge) badge.className = 'px-2 py-0.5 rounded bg-emerald-950 border border-emerald-700 text-emerald-400 font-bold';
+      const hint = document.getElementById('quest-next-hint');
+      if (hint) hint.innerHTML = '<strong class="text-emerald-400">ALL 5/5 VERIFIED · PLATFORM READY</strong>';
+    }
+  } catch (e) {}
+}
 let currentChapterKey = "welcome";
 let currentChapterStep = 0;
 let isShowingPayoff = false;

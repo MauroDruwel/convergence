@@ -46,6 +46,8 @@ export class RepoSqliteStorage {
             code TEXT,
             hash TEXT,
             lamport INTEGER,
+            ord INTEGER DEFAULT 0,
+            agent_id TEXT DEFAULT '',
             updated_at INTEGER
           );
           CREATE TABLE IF NOT EXISTS symbol_dependencies (
@@ -76,21 +78,34 @@ export class RepoSqliteStorage {
             agent_id TEXT,
             model TEXT,
             intent TEXT,
+            payload TEXT DEFAULT '',
             created_at INTEGER
           );
         `);
+        // Evolve pre-existing tables from older deployments (no-ops if present).
+        for (const ddl of [
+          'ALTER TABLE symbols ADD COLUMN ord INTEGER DEFAULT 0',
+          "ALTER TABLE symbols ADD COLUMN agent_id TEXT DEFAULT ''",
+          "ALTER TABLE agent_provenance ADD COLUMN payload TEXT DEFAULT ''",
+        ]) {
+          try {
+            this.driver.exec(ddl);
+          } catch {
+            /* column already exists */
+          }
+        }
       } catch (err) {
         console.warn('SQLite schema initialization notice:', err);
       }
     }
   }
 
-  public upsertSymbol(filename: string, sym: SymbolNode, lamport: number) {
+  public upsertSymbol(filename: string, sym: SymbolNode, lamport: number, agentId: string = '') {
     if (this.driver) {
       try {
         this.driver.exec(
-          `INSERT OR REPLACE INTO symbols (id, filename, kind, name, code, hash, lamport, updated_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+          `INSERT OR REPLACE INTO symbols (id, filename, kind, name, code, hash, lamport, ord, agent_id, updated_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           sym.id,
           filename,
           sym.kind,
@@ -98,13 +113,15 @@ export class RepoSqliteStorage {
           sym.code,
           sym.hash,
           lamport,
+          sym.order || 0,
+          agentId,
           Date.now()
         );
         return;
       } catch (e) {}
     }
 
-    this.memoryTables.symbols.set(sym.id, {
+    this.memoryTables.symbols.set(`${filename}::${sym.id}`, {
       id: sym.id,
       filename,
       kind: sym.kind,
@@ -112,6 +129,8 @@ export class RepoSqliteStorage {
       code: sym.code,
       hash: sym.hash,
       lamport,
+      ord: sym.order || 0,
+      agent_id: agentId,
       updated_at: Date.now(),
     });
   }
@@ -136,7 +155,15 @@ export class RepoSqliteStorage {
       } catch (e) {}
     }
 
-    const row = this.memoryTables.symbols.get(id);
+    const row = (() => {
+      const direct = this.memoryTables.symbols.get(id);
+      if (direct) return direct;
+      // Composite keys are `filename::id`; fall back to suffix scan.
+      for (const [key, value] of this.memoryTables.symbols.entries()) {
+        if (key === id || key.endsWith(`::${id}`)) return value;
+      }
+      return undefined;
+    })();
     if (!row) return null;
     return {
       id: row.id,
@@ -190,14 +217,15 @@ export class RepoSqliteStorage {
     if (this.driver) {
       try {
         this.driver.exec(
-          `INSERT OR REPLACE INTO agent_provenance (id, commit_id, symbol_id, agent_id, model, intent, created_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?)`,
+          `INSERT OR REPLACE INTO agent_provenance (id, commit_id, symbol_id, agent_id, model, intent, payload, created_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
           prov.id,
           prov.commitId,
           prov.symbolId,
           prov.agentId,
           prov.model,
           prov.promptIntent,
+          JSON.stringify(prov),
           prov.timestamp
         );
         return;
@@ -205,6 +233,96 @@ export class RepoSqliteStorage {
     }
 
     this.memoryTables.provenance.set(prov.id, prov);
+  }
+
+  /**
+   * Full symbol records for post-eviction CRDT rehydration.
+   * Returns every persisted (filename, symbol, lamport, agentId) tuple.
+   */
+  public getAllSymbolRecords(): Array<{
+    filename: string;
+    symbol: SymbolNode;
+    lamport: number;
+    agentId: string;
+  }> {
+    if (this.driver) {
+      try {
+        const cursor: any = this.driver.exec(
+          `SELECT id, filename, kind, name, code, hash, lamport, ord, agent_id FROM symbols`
+        );
+        const rows = cursor?.toArray ? cursor.toArray() : Array.from(cursor || []);
+        return rows.map((r: any) => ({
+          filename: r.filename,
+          symbol: {
+            id: r.id,
+            kind: r.kind,
+            name: r.name,
+            code: r.code,
+            hash: r.hash,
+            dependencies: [],
+            order: Number(r.ord ?? 0),
+          } as SymbolNode,
+          lamport: Number(r.lamport ?? 0),
+          agentId: r.agent_id || '',
+        }));
+      } catch (e) {}
+    }
+
+    return Array.from(this.memoryTables.symbols.values()).map((row: any) => ({
+      filename: row.filename,
+      symbol: {
+        id: row.id,
+        kind: row.kind,
+        name: row.name,
+        code: row.code,
+        hash: row.hash,
+        dependencies: [],
+        order: Number(row.ord ?? 0),
+      } as SymbolNode,
+      lamport: Number(row.lamport ?? 0),
+      agentId: row.agent_id || '',
+    }));
+  }
+
+  /** Full provenance records for post-eviction rehydration (newest last). */
+  public getAllProvenance(): AgentProvenance[] {
+    if (this.driver) {
+      try {
+        const cursor: any = this.driver.exec(
+          `SELECT id, commit_id, symbol_id, agent_id, model, intent, payload, created_at FROM agent_provenance ORDER BY created_at ASC`
+        );
+        const rows = cursor?.toArray ? cursor.toArray() : Array.from(cursor || []);
+        const out: AgentProvenance[] = [];
+        for (const r of rows) {
+          if (r.payload) {
+            try {
+              out.push(JSON.parse(r.payload));
+              continue;
+            } catch {
+              /* fall through to legacy columns */
+            }
+          }
+          if (r.id || r.commit_id) {
+            out.push({
+              id: r.id,
+              commitId: r.commit_id,
+              symbolId: r.symbol_id,
+              agentId: r.agent_id,
+              model: r.model,
+              promptIntent: r.intent,
+              reasoningChain: [],
+              invariantsChecked: [],
+              tokenTelemetry: { promptTokens: 0, completionTokens: 0, latencyMs: 0 },
+              gitNotesRef: 'refs/notes/agent-provenance',
+              timestamp: Number(r.created_at ?? Date.now()),
+            });
+          }
+        }
+        return out;
+      } catch (e) {}
+    }
+
+    return Array.from(this.memoryTables.provenance.values());
   }
 
   public getStats() {

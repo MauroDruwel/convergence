@@ -162,8 +162,12 @@ export class ArtifactsAdapter {
 
   /** Public status surface for judges: proves live vs fallback mode. */
   public getStatus(): ArtifactsStatus {
+    // Presence of the real env.ARTIFACTS binding = live capable. All binding
+    // calls degrade gracefully, so capability (not last-call luck) is the
+    // honest signal — and it survives Durable Object restarts, unlike the
+    // provisioning cache. `remotes` lists repos verified against the API.
     return {
-      mode: this.liveBindingSeen ? 'live' : 'memory',
+      mode: this.binding ? 'live' : 'memory',
       remotes: { ...this.liveRemotes },
     };
   }

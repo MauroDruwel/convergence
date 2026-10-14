@@ -34,21 +34,26 @@ export interface RepoMetadata {
   updated_at: string;
 }
 
-const repoRegistry = new Map<string, RepoMetadata>([
-  [
-    'convergence-core',
-    {
-      name: 'convergence-core',
-      owner: 'mauro-druwel',
-      description: 'Autonomous Continuous Semantic Code Fabric for Cloudflare Challenge',
-      stars: 128,
-      forks: 14,
-      default_branch: 'main',
-      created_at: new Date(Date.now() - 86400000 * 14).toISOString(),
-      updated_at: new Date().toISOString(),
-    },
-  ],
-]);
+const repoRegistry = new Map<string, RepoMetadata>();
+
+/**
+ * Seeds the registry lazily on first REQUEST, never at module scope.
+ * Module-level `Date.now()` can evaluate before the isolate clock syncs
+ * (observed 1970 timestamps in production); request-time evaluation is safe.
+ */
+function ensureRegistrySeeded(): void {
+  if (repoRegistry.has('convergence-core')) return;
+  repoRegistry.set('convergence-core', {
+    name: 'convergence-core',
+    owner: 'mauro-druwel',
+    description: 'Autonomous Continuous Semantic Code Fabric for Cloudflare Challenge',
+    stars: 128,
+    forks: 14,
+    default_branch: 'main',
+    created_at: new Date(Date.now() - 86400000 * 14).toISOString(),
+    updated_at: new Date().toISOString(),
+  });
+}
 
 // In-memory fallback brains for local execution
 const localBrains = new Map<string, RepoBrain>();
@@ -59,6 +64,7 @@ export function getLocalBrain(env?: Env, repoKey: string = 'convergence-core'): 
     const brain = new RepoBrain(undefined, env);
     brain.setRepoName(normalizedKey);
     localBrains.set(normalizedKey, brain);
+    ensureRegistrySeeded();
     if (!repoRegistry.has(normalizedKey)) {
       repoRegistry.set(normalizedKey, {
         name: normalizedKey,
@@ -389,10 +395,17 @@ app.get('/api/symbols', async (c) => {
 /**
  * Repository Management Endpoints
  */
-app.get('/api/repos', (c) => c.json(Array.from(repoRegistry.values())));
-app.get('/api/v1/user/repos', (c) => c.json(Array.from(repoRegistry.values())));
+app.get('/api/repos', (c) => {
+  ensureRegistrySeeded();
+  return c.json(Array.from(repoRegistry.values()));
+});
+app.get('/api/v1/user/repos', (c) => {
+  ensureRegistrySeeded();
+  return c.json(Array.from(repoRegistry.values()));
+});
 
 async function handleCreateRepo(c: any) {
+  ensureRegistrySeeded();
   const body = await c.req.json().catch(() => ({}));
   const rawName = body.name || body.repo || `repo_${Date.now().toString(36)}`;
   const name = rawName.replace(/[^a-zA-Z0-9._-]/g, '-').toLowerCase();
@@ -438,6 +451,7 @@ app.post('/api/v1/user/repos', handleCreateRepo);
  * GitHub-Compatible REST API: Repository Metadata
  */
 app.get('/api/v1/repos/:owner/:repo', async (c) => {
+  ensureRegistrySeeded();
   const owner = c.req.param('owner');
   const repoName = c.req.param('repo');
   const brain = getRepoBrain(c, repoName);

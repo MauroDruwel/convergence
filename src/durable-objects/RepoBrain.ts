@@ -75,8 +75,29 @@ export class RepoBrain {
     this.provenance = new ProvenanceTracker();
     this.sqlite = new RepoSqliteStorage(state?.storage?.sql);
 
-    // Seed default starter codebase
-    this.seedRepository();
+    // Rehydrate persisted CRDT + provenance when the Durable Object restarts
+    // (eviction, redeploy). Without this, every idle period factory-resets
+    // the repo. Fresh instances (no rows) fall through to seeding.
+    const persisted = this.sqlite.getAllSymbolRecords();
+    if (persisted.length > 0) {
+      for (const rec of persisted) {
+        this.crdt.applyOperation({
+          id: `rehydrate_${rec.filename}_${rec.symbol.id}`,
+          type: 'upsert',
+          filename: rec.filename,
+          symbolId: rec.symbol.id,
+          symbol: rec.symbol,
+          agentId: rec.agentId || 'system_rehydrated',
+          lamport: rec.lamport,
+          wallClock: Date.now(),
+        });
+        this.leaseEngine.registerDependency(rec.symbol.id, 'interface:PaymentConfig');
+      }
+      this.provenance.restoreRecords(this.sqlite.getAllProvenance());
+    } else {
+      // Seed default starter codebase
+      this.seedRepository();
+    }
   }
 
   private seedRepository() {
@@ -360,7 +381,7 @@ Convergence records full agent provenance in \`refs/notes/agent-provenance\`:
           lamport: lamport++,
           wallClock: Date.now(),
         });
-        this.sqlite.upsertSymbol(file.name, symbol, lamport);
+        this.sqlite.upsertSymbol(file.name, symbol, lamport, 'system_init');
         this.leaseEngine.registerDependency(id, 'interface:PaymentConfig');
       }
     }
@@ -556,7 +577,7 @@ Convergence records full agent provenance in \`refs/notes/agent-provenance\`:
         });
 
         // Persist to SQLite
-        this.sqlite.upsertSymbol(req.filename, symNode, currentLamport);
+        this.sqlite.upsertSymbol(req.filename, symNode, currentLamport, req.agentId);
         // Release any edit lease held by agent
         this.leaseEngine.releaseLease(symId, req.agentId);
       }

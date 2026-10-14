@@ -67,6 +67,26 @@ export class ProvenanceTracker {
   }
 
   /**
+   * Restores previously persisted records (post-DO-eviction rehydration)
+   * WITHOUT regenerating ids or timestamps — history stays intact.
+   */
+  public restoreRecords(records: AgentProvenance[]): void {
+    for (const record of records) {
+      if (!record || !record.id) continue;
+      if (this.records.some((r) => r.id === record.id)) continue;
+      this.records.push(record);
+      if (!this.commitIndex.has(record.commitId)) {
+        this.commitIndex.set(record.commitId, []);
+      }
+      this.commitIndex.get(record.commitId)!.push(record);
+      if (!this.symbolIndex.has(record.symbolId)) {
+        this.symbolIndex.set(record.symbolId, []);
+      }
+      this.symbolIndex.get(record.symbolId)!.push(record);
+    }
+  }
+
+  /**
    * Serializes provenance into a standard Git Notes message payload.
    */
   public toGitNotesPayload(prov: AgentProvenance): string {

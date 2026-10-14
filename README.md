@@ -18,7 +18,7 @@
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-F38020?logo=cloudflare)](https://workers.cloudflare.com/)
 [![Cloudflare Artifacts](https://img.shields.io/badge/Storage-Cloudflare%20Artifacts%20(CAS)-06B6D4)](https://developers.cloudflare.com/)
 [![Durable Objects SQLite](https://img.shields.io/badge/Architecture-Durable%20Objects%20SQLite%20WAL-F59E0B)](https://developers.cloudflare.com/durable-objects/)
-[![Tests Passing](https://img.shields.io/badge/Tests-59%2F59%20Passing%20(100%25)-10B981)](#-verification--test-suite)
+[![Tests Passing](https://img.shields.io/badge/Tests-60%2F60%20Passing%20(100%25)-10B981)](#-verification--test-suite)
 [![Chromium E2E](https://img.shields.io/badge/Chromium%20E2E-14%2F14%20Verified-10B981)](#-verification--test-suite)
 [![Mauro Quality Gate](https://img.shields.io/badge/Mauro%20Quality%20Gate-100%25%20PASS-EC4899)](https://github.com/MauroDruwel/quality-gate)
 [![Merge Conflicts](https://img.shields.io/badge/Merge%20Conflicts-0.00%25%20(AST--CRDT)-10B981)](#-the-benchmark-showdown-genuine-gnu-diff3-vs-convergence)
@@ -118,7 +118,7 @@ npm run demo
 
 👉 Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 
-- Click through the **5 interactive levels with NOVA** (or hit **▶ Auto-Play Tour**).
+- Click through the **5 interactive levels with NOVA** (progress persists for the session; finishing all 5 unlocks the full platform).
 - **✨ Smooth Auto-Spawn**: The second you finish Level 5, the interface automatically transitions into the full **Convergence Platform** dashboard without button spam or UI clutter.
 
 ---
@@ -171,13 +171,13 @@ For in-depth architecture diagrams, CLI guides, benchmarks, and judge scoring de
 
 ## 🧪 Verification & Test Suite
 
-Convergence is strictly typed and covered by **59 automated tests** across 10 test suites:
+Convergence is strictly typed and covered by **60 automated tests** across 10 test suites:
 
 ```bash
 # 1. Strict TypeScript compilation check (0 errors)
 npm run typecheck
 
-# 2. Run the complete test suite (59/59 passing across 10 suites)
+# 2. Run the complete test suite (60/60 passing across 10 suites)
 npm test
 
 # 3. Run the Puppeteer Chromium browser E2E test suite (14/14 passing)
