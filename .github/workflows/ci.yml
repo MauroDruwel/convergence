@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  typescript-ci:
+    uses: MauroDruwel/quality-gate/.github/workflows/typescript-ci.yml@main
+    with:
+      node-version: '22'
+      package-manager: 'npm'
+      run-tests: true
+      strict: true
