@@ -14,10 +14,10 @@
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-F38020?logo=cloudflare)](https://workers.cloudflare.com/)
 [![Cloudflare Artifacts](https://img.shields.io/badge/Storage-Cloudflare%20Artifacts%20(CAS)-06B6D4)](https://developers.cloudflare.com/)
 [![Durable Objects SQLite](https://img.shields.io/badge/Architecture-Durable%20Objects%20SQLite%20WAL-F59E0B)](https://developers.cloudflare.com/durable-objects/)
-[![Tests Passing](https://img.shields.io/badge/Tests-51%2F51%20Passing%20(100%25)-10B981)](#-verification--test-suite)
+[![Tests Passing](https://img.shields.io/badge/Tests-59%2F59%20Passing%20(100%25)-10B981)](#-verification--test-suite)
 [![Chromium E2E](https://img.shields.io/badge/Chromium%20E2E-14%2F14%20Verified-10B981)](#-verification--test-suite)
 [![Merge Conflicts](https://img.shields.io/badge/Merge%20Conflicts-0.00%25%20(AST--CRDT)-10B981)](#-the-benchmark-showdown-genuine-gnu-diff3-vs-convergence)
-[![Claude Code MCP](https://img.shields.io/badge/Claude%20Code-MCP%20Native-8B5CF6)](#-connecting-claude-code--cursor-mcp-server)
+[![Cloudflare MCP](https://img.shields.io/badge/Cloudflare%20MCP-HTTP%20%2B%20SSE%20%2B%20stdio-8B5CF6)](#-cloudflare-mcp-server-architecture-antigravity--ai-agents)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ---
@@ -192,26 +192,63 @@ npx conv pull
 
 ---
 
-## 🤖 Connecting Claude Code & Cursor (MCP Server)
+## 🤖 Cloudflare MCP Server Architecture (Antigravity & AI Agents)
 
-Convergence is a native **Model Context Protocol (MCP)** server. You can plug Claude Code, Cursor, or any MCP-enabled agent directly into the Convergence edge brain with zero setup:
+Convergence implements the official **Cloudflare Workers Model Context Protocol (MCP)** architecture. Rather than locking agents into a single machine or vendor, Convergence supports **triple-mode transport**:
 
-### 1-Click Claude Code Setup
+```
+ [Google Antigravity Agents]   [Cloudflare Workers AI]    [Claude Code & Cursor]
+             │                            │                          │
+      HTTP POST /api/mcp           SSE /api/mcp/sse          stdio: conv mcp
+             │                            │                          │
+             └────────────────────────────┼──────────────────────────┘
+                                          ▼
+                      ┌───────────────────────────────────────┐
+                      │   Convergence Cloudflare MCP Router   │
+                      │        (JSON-RPC 2.0 Protocol)        │
+                      └──────────────────┬────────────────────┘
+                                         ▼
+                      ┌───────────────────────────────────────┐
+                      │  Durable Object Actor: RepoBrain.ts   │
+                      │   - AST-CRDT Commutative Lattice      │
+                      │   - Edit-Time Leases & Backpressure   │
+                      │   - Git Notes CoT (refs/notes/)       │
+                      │   - SQLite WAL & Artifacts CAS        │
+                      └───────────────────────────────────────┘
+```
+
+### 1. Web-Native Agents (Antigravity, Workers AI, LangChain)
+Connect directly to the Cloudflare Workers edge endpoint over HTTP JSON-RPC or Server-Sent Events (SSE):
+```bash
+# Standard JSON-RPC Endpoint
+POST http://localhost:3000/api/mcp
+POST https://convergence.edge/api/mcp
+
+# Streaming Server-Sent Events (SSE) Endpoint
+GET http://localhost:3000/api/mcp/sse
+```
+
+### 2. Local CLI Agents (Claude Code, Cursor, Cline)
+Plug into your local terminal in 1 command:
 ```bash
 claude mcp add convergence node ./bin/conv.mjs mcp
 ```
 
-### Supported MCP Tools for Agents
+### 🛠️ 11 Standardized MCP Tools for Autonomous Agents
 
-| MCP Tool | What the Agent Uses It For |
-| :--- | :--- |
-| `convergence_status` | Inspect repo status, active symbol leases, and Lamport logical clock. |
-| `convergence_read_file` | Read the latest verified codebase snapshot from Cloudflare Artifacts. |
-| `convergence_list_symbols` | Parse and inspect all AST symbols (functions, interfaces, types) in any file. |
-| `convergence_acquire_lease` | **Acquire an edit lock before generating code.** If another agent is editing the symbol, the agent immediately backs off, saving tokens. |
-| `convergence_release_lease` | Release the lock once edits are pushed. |
-| `convergence_push_symbol` | Graft an AST node into mainline with CRDT convergence + Git Notes Chain-of-Thought. |
-| `convergence_open_reverse_pr` | Ask the human architect for high-level steering when hitting design trade-offs. |
+| MCP Tool | Purpose | Autonomous Agent Workflow |
+| :--- | :--- | :--- |
+| `convergence_status` | Repo state, active leases, Lamport clock | Agent inspects live mainline state before planning. |
+| `convergence_read_file` | Read source from Artifacts CAS | Agent reads verified snapshot with zero clone overhead. |
+| `convergence_list_symbols` | Parse AST symbols (functions, types) | Agent identifies target functions without regex parsing. |
+| `convergence_acquire_lease` | **Acquire edit-time symbol lease** | **Prevents token waste.** If another agent holds the lock, immediate Semantic Backpressure triggers. |
+| `convergence_release_lease` | Release held symbol lease | Releases lock so subsequent agents can proceed. |
+| `convergence_push_symbol` | **Graft AST symbol into mainline** | Mathematical CRDT merge (0 conflicts) + writes Chain-of-Thought into `refs/notes/agent-provenance`. |
+| `convergence_open_reverse_pr` | **Open Reverse Pull Request** | Agent asks human architect for 1-click strategic direction when encountering design trade-offs. |
+| `convergence_create_repo` | Provision new edge repository | Agent initializes independent micro-repos on demand. |
+| `convergence_list_repos` | List all edge repositories | Swarm discovers peer microservices. |
+| `convergence_commit_file` | Direct full-file commit | Commits whole files with AST merge arbitration. |
+| `convergence_run_cli` | Execute arbitrary `conv` CLI command | Direct CLI execution gateway for terminal agents. |
 
 ---
 
@@ -295,19 +332,19 @@ Convergence was engineered from first principles for the **[Cloudflare Challenge
 | **Multi-Agent Concurrency** | 25+ simultaneous agent commits merged with 0 conflicts | ✅ Verified |
 | **License Requirement** | Licensed under MIT with `LICENSE` file included in root | ✅ Verified |
 | **Originality & Intellectual Property** | 100% original source code with zero third-party copyright assets | ✅ Verified |
-| **Comprehensive Test Suite** | 51 tests across 9 test suites passing (Vitest + Puppeteer) | ✅ Verified |
+| **Comprehensive Test Suite** | 59 tests across 10 test suites passing (Vitest + Puppeteer) | ✅ Verified |
 
 ---
 
 ## 🧪 Verification & Test Suite
 
-Convergence is strictly typed and covered by **51 automated tests** across 9 test suites:
+Convergence is strictly typed and covered by **59 automated tests** across 10 test suites:
 
 ```bash
 # 1. Strict TypeScript compilation check (0 errors)
 npm run typecheck
 
-# 2. Run the complete test suite (51/51 passing)
+# 2. Run the complete test suite (59/59 passing across 10 suites)
 npm test
 
 # 3. Run the Puppeteer Chromium browser E2E test suite (14/14 passing)

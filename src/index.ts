@@ -3,6 +3,7 @@ import { RepoBrain } from './durable-objects/RepoBrain.js';
 import { HeadToHeadBenchmark } from './benchmarks/comparator.js';
 import { ConvEngine } from './cli/conv-engine.js';
 import { parseSourceToSymbols } from './core/ast-engine.js';
+import { createCloudflareMcpRouter } from './mcp/cloudflare-mcp.js';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -84,6 +85,11 @@ export function getRepoBrain(c: any, repoKey?: string): RepoBrain | any {
   }
   return getLocalBrain(c.env, key);
 }
+
+// Cloudflare Workers MCP Server (HTTP JSON-RPC & SSE endpoints for AI agents)
+const mcpRouter = createCloudflareMcpRouter((repoKey) => getLocalBrain(undefined, repoKey));
+app.route('/api/mcp', mcpRouter);
+app.route('/mcp', mcpRouter);
 
 /**
  * Serves the interactive Swarm Dashboard
