@@ -592,6 +592,50 @@ copies or substantial portions of the Software.
     return true;
   }
 
+  public setRepoName(name: string) {
+    this.repoName = name;
+  }
+
+  public getRepoName(): string {
+    return this.repoName;
+  }
+
+  public initCustomRepo(name: string, description: string = 'Autonomous Edge Code Repository on Convergence') {
+    this.repoName = name;
+    this.crdt = new CodeCRDT();
+    this.events = [];
+    this.reversePRs.clear();
+
+    const readme = `# ${name}\n\n${description}\n\n## Convergence Autonomous Mainline\nThis repository is managed by Convergence AST-CRDT engine on Cloudflare Workers & Durable Objects.\n`;
+    const indexCode = `// ${name} — Autonomous edge application\nexport function main(): string {\n  return "Convergence repository '${name}' online.";\n}\n\nexport function getStatus(): { status: string; uptime: number } {\n  return { status: "healthy", uptime: Date.now() };\n}\n`;
+    const pkgCode = `{\n  "name": "${name}",\n  "version": "1.0.0",\n  "type": "module"\n}\n`;
+    const license = `MIT License\n\nCopyright (c) 2026 Mauro Druwel\n`;
+
+    const files = [
+      { name: 'README.md', code: readme },
+      { name: 'index.ts', code: indexCode },
+      { name: 'package.json', code: pkgCode },
+      { name: 'LICENSE', code: license },
+    ];
+
+    let lamport = 1;
+    for (const file of files) {
+      const parsed = parseSourceToSymbols(file.name, file.code);
+      for (const [id, symbol] of parsed.symbols.entries()) {
+        this.crdt.applyOperation({
+          id: `init_${id}`,
+          type: 'upsert',
+          filename: file.name,
+          symbolId: id,
+          symbol,
+          agentId: 'system_init',
+          lamport: lamport++,
+          wallClock: Date.now(),
+        });
+      }
+    }
+  }
+
   public getState() {
     return {
       repoName: this.repoName,

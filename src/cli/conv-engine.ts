@@ -52,7 +52,7 @@ export function parseArgs(commandStr: string): string[] {
 export class ConvEngine {
   constructor(private brain: RepoBrain) {}
 
-  public async execute(commandLine: string, defaultAgent: string = 'claude_local'): Promise<CliResult> {
+  public async execute(commandLine: string, defaultAgent: string = 'claude_local', targetRepo?: string): Promise<CliResult> {
     const trimmed = commandLine.trim();
     if (!trimmed) {
       return { success: true, stdout: '' };
@@ -67,6 +67,12 @@ export class ConvEngine {
       switch (subCommand) {
         case 'status':
           return await this.handleStatus(args.slice(1));
+        case 'init':
+          return await this.handleInit(args.slice(1));
+        case 'clone':
+          return await this.handleClone(args.slice(1));
+        case 'repo':
+          return await this.handleRepo(args.slice(1));
         case 'push':
           return await this.handlePush(args.slice(1), defaultAgent);
         case 'pull':
@@ -157,6 +163,92 @@ export class ConvEngine {
     };
   }
 
+  private async handleInit(args: string[]): Promise<CliResult> {
+    const repoName = args[0] || `repo_${Date.now().toString(36)}`;
+    const description = args.slice(1).join(' ') || 'Autonomous Edge Code Repository on Convergence';
+
+    if (this.brain.initCustomRepo) {
+      this.brain.initCustomRepo(repoName, description);
+    }
+
+    const lines = [
+      `✓ [CONVERGENCE INIT] Repository initialized: ${repoName}`,
+      `  Owner:       mauro-druwel`,
+      `  Branch:      ⎇ main (branchless AST-CRDT lattice)`,
+      `  Runtime:     Cloudflare Workers + Durable Object (RepoBrain)`,
+      `  Mainline:    https://convergence.edge/mauro-druwel/${repoName}`,
+      `  Files:       README.md, index.ts, package.json, LICENSE`,
+      `  Status:      Ready for Claude Code & agent synthesis ('conv clone ${repoName}')`,
+    ];
+
+    return {
+      success: true,
+      stdout: lines.join('\n'),
+      data: { repoName, branch: 'main' },
+    };
+  }
+
+  private async handleClone(args: string[]): Promise<CliResult> {
+    const repoName = args[0] || 'convergence-core';
+    const targetDir = args[1] || repoName;
+
+    const state = await this.brain.getState();
+    const files = state.files || {};
+    const fileEntries = Object.entries(files);
+
+    try {
+      const { mkdirSync, writeFileSync } = await import('node:fs');
+      const { dirname, join } = await import('node:path');
+
+      mkdirSync(targetDir, { recursive: true });
+      for (const [filepath, content] of fileEntries) {
+        const fullPath = join(targetDir, filepath);
+        mkdirSync(dirname(fullPath), { recursive: true });
+        writeFileSync(fullPath, content as string, 'utf8');
+      }
+
+      const lines = [
+        `Cloning into '${targetDir}'...`,
+        `Connected to RepoBrain Durable Object (Cloudflare Workers)...`,
+        ...fileEntries.map(([f, c]) => `  ✓ ${f} (${Buffer.byteLength(c as string, 'utf8')} bytes)`),
+        `✓ Successfully cloned ${fileEntries.length} files into ./${targetDir}`,
+        `  Run 'conv status' or 'conv push' inside the directory to collaborate!`,
+      ];
+
+      return {
+        success: true,
+        stdout: lines.join('\n'),
+        data: { targetDir, filesCount: fileEntries.length },
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        stdout: '',
+        stderr: `Failed to clone repository: ${err.message}`,
+      };
+    }
+  }
+
+  private async handleRepo(args: string[]): Promise<CliResult> {
+    const sub = args[0] || 'list';
+    if (sub === 'create' || sub === 'new' || sub === 'init') {
+      return this.handleInit(args.slice(1));
+    }
+    const state = await this.brain.getState();
+    const curRepo = state.repoName || 'convergence-core';
+    const lines = [
+      'CONVERGENCE EDGE REPOSITORIES:',
+      '────────────────────────────────────────────────────────────',
+      `  * mauro-druwel/${curRepo} (active mainline)`,
+      '────────────────────────────────────────────────────────────',
+      'Use "conv init <name>" to create a new autonomous edge repository.',
+    ];
+    return {
+      success: true,
+      stdout: lines.join('\n'),
+    };
+  }
+
   private async handlePush(args: string[], defaultAgent: string): Promise<CliResult> {
     const filename = args.find((a) => !a.startsWith('-')) || 'index.ts';
     let symbolId = '';
@@ -176,14 +268,25 @@ export class ConvEngine {
     const currentState = await this.brain.getState();
     const existingCode = currentState.files[filename] || '';
 
-    // If custom code was not supplied, synthesize an AST symbol function
-    let codeToGraft = customCode;
-    if (!codeToGraft) {
-      const cleanSym = symbolId ? symbolId.replace(/^[a-z]+:/i, '') : `agentFn_${Date.now().toString(36).slice(-4)}`;
-      codeToGraft = `\n// Pushed via conv CLI by ${agentId}\nexport function ${cleanSym}(): boolean {\n  // Invariant: constant-time verification\n  return true;\n}\n`;
-    }
+    let fullSource = '';
+    if (customCode) {
+      fullSource = existingCode ? `${existingCode}\n${customCode}` : customCode;
+    } else {
+      let fileReadFromDisk = false;
+      try {
+        const { existsSync, readFileSync } = await import('node:fs');
+        if (existsSync(filename)) {
+          fullSource = readFileSync(filename, 'utf8');
+          fileReadFromDisk = true;
+        }
+      } catch {}
 
-    const fullSource = existingCode + codeToGraft;
+      if (!fileReadFromDisk) {
+        const cleanSym = symbolId ? symbolId.replace(/^[a-z]+:/i, '') : `agentFn_${Date.now().toString(36).slice(-4)}`;
+        const codeToGraft = `\n// Pushed via conv CLI by ${agentId}\nexport function ${cleanSym}(): boolean {\n  // Invariant: constant-time verification\n  return true;\n}\n`;
+        fullSource = existingCode + codeToGraft;
+      }
+    }
 
     const commitRes = await this.brain.handleAgentCommit({
       agentId,
@@ -216,7 +319,8 @@ export class ConvEngine {
   }
 
   private async handlePull(args: string[]): Promise<CliResult> {
-    const filename = args[0] || 'index.ts';
+    const filename = args.find((a) => !a.startsWith('-')) || 'index.ts';
+    const shouldSave = args.includes('--save') || args.includes('-w') || args.includes('--write');
     const state = await this.brain.getState();
     const content = state.files[filename];
 
@@ -226,6 +330,26 @@ export class ConvEngine {
         stdout: '',
         stderr: `File '${filename}' not found in convergence mainline. Available: ${Object.keys(state.files).join(', ')}`,
       };
+    }
+
+    if (shouldSave) {
+      try {
+        const { writeFileSync, mkdirSync } = await import('node:fs');
+        const { dirname } = await import('node:path');
+        mkdirSync(dirname(filename), { recursive: true });
+        writeFileSync(filename, content, 'utf8');
+        return {
+          success: true,
+          stdout: `✓ Saved ${filename} (${Buffer.byteLength(content, 'utf8')} bytes) to local disk.`,
+          data: { filename, content },
+        };
+      } catch (err: any) {
+        return {
+          success: false,
+          stdout: '',
+          stderr: `Failed to write ${filename}: ${err.message}`,
+        };
+      }
     }
 
     return {
@@ -535,12 +659,15 @@ export class ConvEngine {
       '',
       'COMMANDS:',
       '  status [--json]                     Inspect repo state, Lamport clock & active leases',
+      '  init <reponame> [description]       Initialize a new autonomous edge repository',
+      '  clone <reponame> [targetDir]        Clone repository files to local directory',
+      '  repo [list|create <name>]           Inspect or create edge repositories',
       '  push <file> [options]               Push code or AST symbol with CRDT commutative merge',
       '     --symbol <symId>                    Target AST declaration (e.g. func:fastSettle)',
       '     --cot <message>                     Chain-of-Thought note for refs/notes/agent-provenance',
       '     --agent <agentId>                   Author agent ID',
       '     --code <snippet>                    Direct TypeScript snippet to graft',
-      '  pull [file]                         Fetch file from edge mainline (default: index.ts)',
+      '  pull [file] [--save]                Fetch file from edge mainline (use --save to write to disk)',
       '  symbols [file]                      Parse and list all AST symbol nodes in a file',
       '  tree                                Display current Merkle tree hierarchy',
       '  lease acquire <sym> [options]       Acquire edit-time symbol lease (locks AST node)',

@@ -167,6 +167,41 @@ function runMcpServer() {
       },
     },
     {
+      name: 'convergence_create_repo',
+      description: 'Create a new autonomous edge repository on Convergence with full AST-CRDT and Durable Object state.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          name: { type: 'string', description: 'Repository name (e.g. edge-agent-hub)' },
+          description: { type: 'string', description: 'Repository description' },
+        },
+        required: ['name'],
+      },
+    },
+    {
+      name: 'convergence_list_repos',
+      description: 'List all autonomous repositories on Convergence.',
+      inputSchema: {
+        type: 'object',
+        properties: {},
+      },
+    },
+    {
+      name: 'convergence_commit_file',
+      description: 'Commit an entire file directly into any Convergence repository with clean merge AST arbitration.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          repo: { type: 'string', description: 'Repository name (default convergence-core)' },
+          filename: { type: 'string', description: 'File path to commit (e.g. src/auth.ts)' },
+          content: { type: 'string', description: 'Full UTF-8 source code content' },
+          message: { type: 'string', description: 'Commit message' },
+          author: { type: 'string', description: 'Author name (e.g. claude_code)' },
+        },
+        required: ['filename', 'content', 'message'],
+      },
+    },
+    {
       name: 'convergence_run_cli',
       description: 'Execute any arbitrary Convergence CLI command (e.g. conv status, conv tree, conv notes).',
       inputSchema: {
@@ -275,6 +310,45 @@ function runMcpServer() {
             toolArgs.agentId ? `--agent ${toolArgs.agentId}` : '',
           ].filter(Boolean).join(' ');
           textResult = await executeCliRemote(opt);
+        } else if (name === 'convergence_create_repo') {
+          const res = await fetch(`${CONVERGENCE_URL}/api/repos`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: toolArgs.name, description: toolArgs.description }),
+          });
+          if (res.ok) {
+            const data = await res.json();
+            textResult = `✓ Successfully created repository '${data.name}'! HTML: ${data.html_url}`;
+          } else {
+            textResult = `Failed to create repo: ${await res.text()}`;
+          }
+        } else if (name === 'convergence_list_repos') {
+          const res = await fetch(`${CONVERGENCE_URL}/api/repos`);
+          if (res.ok) {
+            const data = await res.json();
+            textResult = JSON.stringify(data, null, 2);
+          } else {
+            textResult = `Failed to list repos: ${await res.text()}`;
+          }
+        } else if (name === 'convergence_commit_file') {
+          const repo = toolArgs.repo || 'convergence-core';
+          const path = toolArgs.filename || 'index.ts';
+          const res = await fetch(`${CONVERGENCE_URL}/api/v1/repos/mauro-druwel/${repo}/contents/${path}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              message: toolArgs.message || `feat: update ${path}`,
+              content: Buffer.from(toolArgs.content || '').toString('base64'),
+              encoding: 'base64',
+              author: { name: toolArgs.author || 'claude_code' },
+            }),
+          });
+          if (res.ok) {
+            const data = await res.json();
+            textResult = `✓ Committed ${path} to ${repo}! Commit: ${data.commit.sha}, CleanMerge: ${data.commit.cleanMerge}`;
+          } else {
+            textResult = `Failed to commit file: ${await res.text()}`;
+          }
         } else if (name === 'convergence_run_cli') {
           textResult = await executeCliRemote(toolArgs.command);
         } else {

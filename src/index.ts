@@ -24,13 +24,65 @@ function getDashboardHtml(): string {
   }
 }
 
-// In-memory fallback brain for local Node server execution
-let localBrain: RepoBrain | null = null;
-export function getLocalBrain(env?: Env): RepoBrain {
-  if (!localBrain) {
-    localBrain = new RepoBrain(undefined, env);
+export interface RepoMetadata {
+  name: string;
+  owner: string;
+  description: string;
+  stars: number;
+  forks: number;
+  default_branch: string;
+  created_at: string;
+  updated_at: string;
+}
+
+const repoRegistry = new Map<string, RepoMetadata>([
+  [
+    'convergence-core',
+    {
+      name: 'convergence-core',
+      owner: 'mauro-druwel',
+      description: 'Autonomous Continuous Semantic Code Fabric for Cloudflare Challenge',
+      stars: 128,
+      forks: 14,
+      default_branch: 'main',
+      created_at: new Date(Date.now() - 86400000 * 14).toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+  ],
+]);
+
+// In-memory fallback brains for local execution
+const localBrains = new Map<string, RepoBrain>();
+
+export function getLocalBrain(env?: Env, repoKey: string = 'convergence-core'): RepoBrain {
+  const normalizedKey = repoKey || 'convergence-core';
+  if (!localBrains.has(normalizedKey)) {
+    const brain = new RepoBrain(undefined, env);
+    brain.setRepoName(normalizedKey);
+    localBrains.set(normalizedKey, brain);
+    if (!repoRegistry.has(normalizedKey)) {
+      repoRegistry.set(normalizedKey, {
+        name: normalizedKey,
+        owner: 'mauro-druwel',
+        description: `Edge AST-CRDT Autonomous Repository (${normalizedKey})`,
+        stars: 1,
+        forks: 0,
+        default_branch: 'main',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      });
+    }
   }
-  return localBrain;
+  return localBrains.get(normalizedKey)!;
+}
+
+export function getRepoBrain(c: any, repoKey?: string): RepoBrain | any {
+  const key = repoKey || 'convergence-core';
+  if (c.env?.REPO_BRAIN) {
+    const id = c.env.REPO_BRAIN.idFromName(key);
+    return c.env.REPO_BRAIN.get(id);
+  }
+  return getLocalBrain(c.env, key);
 }
 
 /**
@@ -44,12 +96,9 @@ app.get('/', (c) => {
  * Returns current snapshot of repository state
  */
 app.get('/api/state', async (c) => {
-  if (c.env?.REPO_BRAIN) {
-    const id = c.env.REPO_BRAIN.idFromName('main-repo');
-    const stub = c.env.REPO_BRAIN.get(id) as any;
-    return c.json(await stub.getState());
-  }
-  return c.json(getLocalBrain(c.env).getState());
+  const repoName = c.req.query('repo') || 'convergence-core';
+  const brain = getRepoBrain(c, repoName);
+  return c.json(await brain.getState());
 });
 
 /**
@@ -57,13 +106,9 @@ app.get('/api/state', async (c) => {
  */
 app.post('/api/commit', async (c) => {
   const body = await c.req.json();
-  if (c.env?.REPO_BRAIN) {
-    const id = c.env.REPO_BRAIN.idFromName('main-repo');
-    const stub = c.env.REPO_BRAIN.get(id) as any;
-    const res = await stub.handleAgentCommit(body);
-    return c.json(res);
-  }
-  const res = await getLocalBrain(c.env).handleAgentCommit(body);
+  const repoName = body.repoName || body.repo || 'convergence-core';
+  const brain = getRepoBrain(c, repoName);
+  const res = await brain.handleAgentCommit(body);
   return c.json(res);
 });
 
@@ -264,13 +309,25 @@ app.get('/api/provenance', async (c) => {
  * Executes `conv` commands against the Durable Object RepoBrain.
  */
 app.post('/api/cli', async (c) => {
-  const { command, agentId } = await c.req.json();
-  const brain = c.env?.REPO_BRAIN
-    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
-    : getLocalBrain(c.env);
+  const { command, agentId, repo } = await c.req.json();
+  const rawTokens = (command || '').trim().split(/\s+/);
+  let targetRepo = repo;
 
+  // Auto-route repository for conv clone, conv init, or --repo
+  if (!targetRepo && rawTokens[0] === 'conv') {
+    if ((rawTokens[1] === 'clone' || rawTokens[1] === 'init') && rawTokens[2] && !rawTokens[2].startsWith('-')) {
+      targetRepo = rawTokens[2];
+    }
+  }
+  const repoIdx = rawTokens.indexOf('--repo');
+  if (repoIdx !== -1 && rawTokens[repoIdx + 1]) {
+    targetRepo = rawTokens[repoIdx + 1];
+  }
+
+  const repoName = targetRepo || 'convergence-core';
+  const brain = getRepoBrain(c, repoName);
   const engine = new ConvEngine(brain);
-  const result = await engine.execute(command || 'conv status', agentId || 'claude_local');
+  const result = await engine.execute(command || 'conv status', agentId || 'claude_local', repoName);
   return c.json(result);
 });
 
@@ -278,11 +335,9 @@ app.post('/api/cli', async (c) => {
  * Symbol extraction endpoint
  */
 app.get('/api/symbols', async (c) => {
-  const filename = c.req.query('file') || 'index.ts';
-  const brain = c.env?.REPO_BRAIN
-    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
-    : getLocalBrain(c.env);
-
+  const filename = c.req.query('file') || c.req.query('filename') || 'index.ts';
+  const repoName = c.req.query('repo') || 'convergence-core';
+  const brain = getRepoBrain(c, repoName);
   const state = await brain.getState();
   const content = state.files[filename] || '';
   const parsed = parseSourceToSymbols(filename, content);
@@ -294,28 +349,92 @@ app.get('/api/symbols', async (c) => {
 });
 
 /**
+ * Repository Management Endpoints
+ */
+app.get('/api/repos', (c) => c.json(Array.from(repoRegistry.values())));
+app.get('/api/v1/user/repos', (c) => c.json(Array.from(repoRegistry.values())));
+
+async function handleCreateRepo(c: any) {
+  const body = await c.req.json().catch(() => ({}));
+  const rawName = body.name || body.repo || `repo_${Date.now().toString(36)}`;
+  const name = rawName.replace(/[^a-zA-Z0-9._-]/g, '-').toLowerCase();
+  const description = body.description || 'Autonomous Edge Code Repository on Convergence';
+  const owner = body.owner || 'mauro-druwel';
+
+  const meta: RepoMetadata = {
+    name,
+    owner,
+    description,
+    stars: 1,
+    forks: 0,
+    default_branch: 'main',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  };
+  repoRegistry.set(name, meta);
+
+  const brain = getRepoBrain(c, name);
+  if (brain.initCustomRepo) {
+    brain.initCustomRepo(name, description);
+  } else if (c.env?.REPO_BRAIN) {
+    try {
+      await brain.initCustomRepo?.(name, description);
+    } catch {}
+  }
+
+  return c.json(
+    {
+      id: Date.now(),
+      name,
+      full_name: `${owner}/${name}`,
+      owner: { login: owner, id: 1 },
+      html_url: `https://convergence.edge/${owner}/${name}`,
+      description,
+      default_branch: 'main',
+      created_at: meta.created_at,
+      updated_at: meta.updated_at,
+      clone_url: `conv clone ${name}`,
+    },
+    201
+  );
+}
+
+app.post('/api/repos', handleCreateRepo);
+app.post('/api/v1/user/repos', handleCreateRepo);
+
+/**
  * GitHub-Compatible REST API: Repository Metadata
  */
 app.get('/api/v1/repos/:owner/:repo', async (c) => {
-  const brain = c.env?.REPO_BRAIN
-    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
-    : getLocalBrain(c.env);
-
+  const owner = c.req.param('owner');
+  const repoName = c.req.param('repo');
+  const brain = getRepoBrain(c, repoName);
   const state = await brain.getState();
+  const meta = repoRegistry.get(repoName) || {
+    name: repoName,
+    owner,
+    description: 'Next-Gen Autonomous Edge Git Platform — Built on Cloudflare Workers & Durable Objects',
+    stars: 1,
+    forks: 0,
+    default_branch: 'main',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  };
+
   return c.json({
     id: 10001,
-    name: 'convergence-core',
-    full_name: `${c.req.param('owner')}/${c.req.param('repo')}`,
+    name: repoName,
+    full_name: `${owner}/${repoName}`,
     private: false,
     default_branch: 'main',
-    description: 'Next-Gen Autonomous Edge Git Platform — Built on Cloudflare Workers & Durable Objects',
-    html_url: `https://convergence.edge/${c.req.param('owner')}/${c.req.param('repo')}`,
-    clone_url: `http://localhost:3000/convergence-core.git`,
+    description: meta.description,
+    html_url: `https://convergence.edge/${owner}/${repoName}`,
+    clone_url: `http://localhost:3000/${repoName}.git`,
     lamport_clock: state.lamportClock,
-    active_leases_count: Object.keys(state.activeLeases || {}).length,
+    active_leases_count: Array.isArray(state.activeLeases) ? state.activeLeases.length : Object.keys(state.activeLeases || {}).length,
     open_issues_count: 0,
     watchers_count: 8,
-    forks_count: 1,
+    forks_count: meta.forks || 1,
     subscribers_count: 8,
   });
 });
@@ -328,10 +447,7 @@ app.get('/api/repos/:owner/:repo', async (c) => {
  * GitHub-Compatible REST API: Contents (List files or get file)
  */
 app.get('/api/v1/repos/:owner/:repo/contents', async (c) => {
-  const brain = c.env?.REPO_BRAIN
-    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
-    : getLocalBrain(c.env);
-
+  const brain = getRepoBrain(c, c.req.param('repo'));
   const state = await brain.getState();
   const files = Object.keys(state.files || {}).map((filename) => {
     const content = state.files[filename] || '';
@@ -349,10 +465,7 @@ app.get('/api/v1/repos/:owner/:repo/contents', async (c) => {
 
 app.get('/api/v1/repos/:owner/:repo/contents/:path{.+}', async (c) => {
   const path = c.req.param('path');
-  const brain = c.env?.REPO_BRAIN
-    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
-    : getLocalBrain(c.env);
-
+  const brain = getRepoBrain(c, c.req.param('repo'));
   const state = await brain.getState();
   const content = state.files[path];
   if (content === undefined) {
@@ -377,9 +490,7 @@ app.get('/api/v1/repos/:owner/:repo/contents/:path{.+}', async (c) => {
 app.put('/api/v1/repos/:owner/:repo/contents/:path{.+}', async (c) => {
   const path = c.req.param('path');
   const body = await c.req.json();
-  const brain = c.env?.REPO_BRAIN
-    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
-    : getLocalBrain(c.env);
+  const brain = getRepoBrain(c, c.req.param('repo'));
 
   let rawContent = body.content || '';
   if (body.encoding === 'base64') {
@@ -417,10 +528,7 @@ app.put('/api/v1/repos/:owner/:repo/contents/:path{.+}', async (c) => {
  * GitHub-Compatible REST API: Commits
  */
 app.get('/api/v1/repos/:owner/:repo/commits', async (c) => {
-  const brain = c.env?.REPO_BRAIN
-    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
-    : getLocalBrain(c.env);
-
+  const brain = getRepoBrain(c, c.req.param('repo'));
   const state = await brain.getState();
   const provs = state.provenanceRecords || [];
   const events = (state.events || []).filter((e: any) => e.data?.commitId);
@@ -447,19 +555,14 @@ app.get('/api/v1/repos/:owner/:repo/commits', async (c) => {
  * GitHub-Compatible REST API: Pull Requests / Reverse PRs
  */
 app.get('/api/v1/repos/:owner/:repo/pulls', async (c) => {
-  const brain = c.env?.REPO_BRAIN
-    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
-    : getLocalBrain(c.env);
-
+  const brain = getRepoBrain(c, c.req.param('repo'));
   const state = await brain.getState();
   return c.json(state.reversePullRequests || []);
 });
 
 app.post('/api/v1/repos/:owner/:repo/pulls', async (c) => {
   const { title, body, options, agentId } = await c.req.json();
-  const brain = c.env?.REPO_BRAIN
-    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
-    : getLocalBrain(c.env);
+  const brain = getRepoBrain(c, c.req.param('repo'));
 
   const pr = brain.createReversePR(
     agentId || 'claude_architect',
@@ -474,9 +577,8 @@ app.post('/api/v1/repos/:owner/:repo/pulls', async (c) => {
  */
 app.get('/raw/:path{.+}', async (c) => {
   const path = c.req.param('path');
-  const brain = c.env?.REPO_BRAIN
-    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
-    : getLocalBrain(c.env);
+  const repoName = c.req.query('repo') || 'convergence-core';
+  const brain = getRepoBrain(c, repoName);
 
   const state = await brain.getState();
   const content = state.files[path];
@@ -486,7 +588,14 @@ app.get('/raw/:path{.+}', async (c) => {
 });
 
 app.get('/:owner/:repo/raw/main/:path{.+}', async (c) => {
-  return c.redirect(`/raw/${c.req.param('path')}`);
+  const repoName = c.req.param('repo');
+  const path = c.req.param('path');
+  const brain = getRepoBrain(c, repoName);
+  const state = await brain.getState();
+  const content = state.files[path];
+  if (content === undefined) return c.text(`File not found: ${path}`, 404);
+  c.header('Content-Type', 'text/plain; charset=utf-8');
+  return c.text(content);
 });
 
 export default app;

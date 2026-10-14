@@ -23,6 +23,39 @@ html = html.replace(
   '<span id="header-do-badge" class="hidden items-center',
   '<span id="header-do-badge" class="inline-flex items-center'
 );
+
+// Add Repository Switcher dropdown to header
+const repoSelectorHTML = `      </span>
+
+      <!-- Active Repository Selector & Creator Dropdown -->
+      <div class="relative inline-block text-left">
+        <button id="btn-repo-selector" onclick="toggleRepoDropdown()" class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded text-xs font-mono font-semibold bg-zinc-900 text-zinc-100 hover:bg-zinc-800 border border-zinc-700 transition">
+          <span class="text-[#F6821F]">⎇</span>
+          <span id="current-active-repo-name" class="truncate max-w-[140px]">convergence-core</span>
+          <span class="text-zinc-500 text-[10px]">▾</span>
+        </button>
+        <div id="repo-dropdown-menu" class="hidden absolute left-0 mt-1 w-64 rounded-lg bg-zinc-950 border border-zinc-800 shadow-xl z-50 p-2 font-mono text-xs space-y-1">
+          <div class="text-[10px] text-zinc-500 uppercase px-2 py-1 font-bold">Edge Repositories</div>
+          <div id="repo-dropdown-list" class="space-y-0.5 max-h-48 overflow-y-auto">
+            <!-- Dynamically populated -->
+          </div>
+          <div class="border-t border-zinc-800 pt-1 mt-1">
+            <button onclick="openNewRepoModal()" class="w-full text-left px-2 py-1.5 rounded hover:bg-zinc-800 text-[#F6821F] font-bold flex items-center space-x-1.5">
+              <span>+</span>
+              <span>New Repository...</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Header:`;
+
+html = html.replace(
+  '      </span>\n    </div>\n\n    <!-- Right Header:',
+  repoSelectorHTML
+);
+
 html = html.replace(
   '<span id="header-quest-progress" class="font-mono text-[10px] px-1.5 py-0.2 rounded bg-white/15 text-zinc-200">0/5</span>',
   '<span id="header-quest-progress" class="font-mono text-[10px] px-1.5 py-0.2 rounded bg-white/15 text-zinc-200">Quest: Level 1 of 5</span>'
@@ -401,6 +434,111 @@ const claudeCodeScript = `
     }
     window.executeInteractiveConvCli = executeInteractiveConvCli;
 
+    // =====================================================================
+    // REPOSITORY SWITCHER & CREATION ENGINE
+    // =====================================================================
+    let activeRepoName = 'convergence-core';
+
+    function toggleRepoDropdown() {
+      const menu = document.getElementById('repo-dropdown-menu');
+      if (menu) {
+        menu.classList.toggle('hidden');
+        if (!menu.classList.contains('hidden')) {
+          loadRepositoriesList();
+        }
+      }
+    }
+    window.toggleRepoDropdown = toggleRepoDropdown;
+
+    async function loadRepositoriesList() {
+      const listEl = document.getElementById('repo-dropdown-list');
+      if (!listEl) return;
+      try {
+        const res = await fetch('/api/repos');
+        if (!res.ok) return;
+        const repos = await res.json();
+        listEl.innerHTML = repos.map((r) => \`
+          <button onclick="switchActiveRepo('\${r.name}')" class="w-full text-left px-2 py-1.5 rounded hover:bg-zinc-800 text-zinc-300 font-mono text-[11px] flex items-center justify-between \${r.name === activeRepoName ? 'bg-zinc-800 text-white font-bold' : ''}">
+            <span class="truncate">\${r.owner}/\${r.name}</span>
+            \${r.name === activeRepoName ? '<span class="text-[#F6821F]">✓</span>' : ''}
+          </button>
+        \`).join('');
+      } catch (e) {}
+    }
+    window.loadRepositoriesList = loadRepositoriesList;
+
+    function openNewRepoModal() {
+      const modal = document.getElementById('modal-new-repo');
+      const menu = document.getElementById('repo-dropdown-menu');
+      if (menu) menu.classList.add('hidden');
+      if (modal) modal.classList.remove('hidden');
+    }
+    window.openNewRepoModal = openNewRepoModal;
+
+    function closeNewRepoModal() {
+      const modal = document.getElementById('modal-new-repo');
+      if (modal) modal.classList.add('hidden');
+    }
+    window.closeNewRepoModal = closeNewRepoModal;
+
+    async function submitCreateNewRepo() {
+      const inputName = document.getElementById('input-new-repo-name');
+      const inputDesc = document.getElementById('input-new-repo-desc');
+      const btn = document.getElementById('btn-submit-new-repo');
+      const name = inputName ? inputName.value.trim() : '';
+      const desc = inputDesc ? inputDesc.value.trim() : '';
+
+      if (!name) {
+        alert('Please enter a repository name.');
+        return;
+      }
+
+      if (btn) btn.innerText = 'Spawning Durable Object...';
+
+      try {
+        const res = await fetch('/api/repos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, description: desc, auto_init: true })
+        });
+
+        if (res.ok) {
+          const repo = await res.json();
+          closeNewRepoModal();
+          showToast('Repository Online', \`Durable Object for '\${repo.name}' deployed at edge.\`, 'success');
+          await switchActiveRepo(repo.name);
+        } else {
+          alert('Failed to create repository: ' + await res.text());
+        }
+      } catch (err) {
+        alert('Error creating repository: ' + err.message);
+      } finally {
+        if (btn) btn.innerText = 'Create Repository';
+      }
+    }
+    window.submitCreateNewRepo = submitCreateNewRepo;
+
+    async function switchActiveRepo(name) {
+      activeRepoName = name;
+      const label = document.getElementById('current-active-repo-name');
+      if (label) label.innerText = name;
+      const menu = document.getElementById('repo-dropdown-menu');
+      if (menu) menu.classList.add('hidden');
+
+      // Fetch state for target repository
+      try {
+        const res = await fetch(\`/api/state?repo=\${encodeURIComponent(name)}\`);
+        if (res.ok) {
+          const state = await res.json();
+          window.__lastState = state;
+          if (typeof renderPlatform === 'function') {
+            renderPlatform(state);
+          }
+        }
+      } catch (e) {}
+    }
+    window.switchActiveRepo = switchActiveRepo;
+
     // Initialize Claude Code multiplexer panes when DOM is ready
     window.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
@@ -408,6 +546,46 @@ const claudeCodeScript = `
       }, 200);
     });
 `;
+
+// Insert modal HTML before </body>
+const modalNewRepoHTML = `
+  <!-- NEW REPOSITORY MODAL -->
+  <div id="modal-new-repo" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-6 w-full max-w-md shadow-2xl space-y-4 font-mono text-xs">
+      <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+        <div class="flex items-center space-x-2">
+          <span class="text-base text-[#F6821F] font-bold">⚡</span>
+          <span class="text-sm font-bold text-zinc-100">Create New Edge Repository</span>
+        </div>
+        <button onclick="closeNewRepoModal()" class="text-zinc-400 hover:text-white text-base">✕</button>
+      </div>
+      <p class="text-zinc-400 text-[11px] leading-relaxed">
+        Spawns an isolated single-threaded <strong class="text-white">RepoBrain Durable Object</strong> co-located with embedded SQLite WAL and commutative AST-CRDT lattice.
+      </p>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-zinc-400 font-semibold mb-1 text-[10px] uppercase">Repository Name</label>
+          <input id="input-new-repo-name" type="text" placeholder="e.g. edge-agent-swarm" class="w-full px-3 py-2 rounded bg-zinc-900 border border-zinc-700 text-zinc-100 text-xs focus:outline-hidden focus:border-[#F6821F]" />
+        </div>
+        <div>
+          <label class="block text-zinc-400 font-semibold mb-1 text-[10px] uppercase">Description</label>
+          <input id="input-new-repo-desc" type="text" placeholder="Autonomous code fabric for agents" class="w-full px-3 py-2 rounded bg-zinc-900 border border-zinc-700 text-zinc-100 text-xs focus:outline-hidden focus:border-[#F6821F]" />
+        </div>
+        <div class="flex items-center space-x-2 text-zinc-300 text-[11px]">
+          <input id="check-new-repo-init" type="checkbox" checked class="rounded border-zinc-700" />
+          <label for="check-new-repo-init">Initialize with README, index.ts, and AST template</label>
+        </div>
+      </div>
+      <div class="flex justify-end space-x-2 pt-2 border-t border-zinc-800">
+        <button onclick="closeNewRepoModal()" class="px-3 py-1.5 rounded text-zinc-400 hover:text-white transition">Cancel</button>
+        <button id="btn-submit-new-repo" onclick="submitCreateNewRepo()" class="px-4 py-1.5 rounded bg-[#F6821F] hover:bg-orange-500 text-white font-bold transition flex items-center space-x-1.5">
+          <span>Create Repository</span>
+        </button>
+      </div>
+    </div>
+  </div>
+`;
+html = html.replace('</body>', `${modalNewRepoHTML}\n</body>`);
 
 // Insert the script right before </script>
 html = html.replace('</script>', `${claudeCodeScript}\n  </script>`);
