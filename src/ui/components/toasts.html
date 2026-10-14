@@ -1,0 +1,46 @@
+  <!-- FLOATING TOAST CONTAINER -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col space-y-2 pointer-events-none max-w-sm"></div>
+
+  <!-- MINIMIZED NOVA DOCK PILL -->
+  <div id="guide-minimized-pill" onclick="restoreGuide()" class="hidden fixed bottom-5 right-5 z-50 w-11 h-11 rounded-xl bg-zinc-950 border border-[#F6821F] text-[#F6821F] shadow-xl flex items-center justify-center cursor-pointer hover:scale-105 transition-all" title="Open NOVA Console">
+    <svg class="w-5 h-5" viewBox="0 0 28 28" fill="none">
+      <path d="M14 2.5L24 8.25V19.75L14 25.5L4 19.75V8.25L14 2.5Z" stroke="#F6821F" stroke-width="2"/>
+      <circle cx="14" cy="14" r="3.5" fill="#F6821F"/>
+    </svg>
+  </div>
+
+  <!-- NEW REPOSITORY MODAL -->
+  <div id="modal-new-repo" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-6 w-full max-w-md shadow-2xl space-y-4 font-mono text-xs">
+      <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+        <div class="flex items-center space-x-2">
+          <span class="text-base text-[#F6821F] font-bold">⚡</span>
+          <span class="text-sm font-bold text-zinc-100">Create New Edge Repository</span>
+        </div>
+        <button onclick="closeNewRepoModal()" class="text-zinc-400 hover:text-white text-base">✕</button>
+      </div>
+      <p class="text-zinc-400 text-[11px] leading-relaxed">
+        Spawns an isolated single-threaded <strong class="text-white">RepoBrain Durable Object</strong> co-located with embedded SQLite WAL and commutative AST-CRDT lattice.
+      </p>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-zinc-400 font-semibold mb-1 text-[10px] uppercase">Repository Name</label>
+          <input id="input-new-repo-name" type="text" placeholder="e.g. edge-agent-swarm" class="w-full px-3 py-2 rounded bg-zinc-900 border border-zinc-700 text-zinc-100 text-xs focus:outline-hidden focus:border-[#F6821F]" />
+        </div>
+        <div>
+          <label class="block text-zinc-400 font-semibold mb-1 text-[10px] uppercase">Description</label>
+          <input id="input-new-repo-desc" type="text" placeholder="Autonomous code fabric for agents" class="w-full px-3 py-2 rounded bg-zinc-900 border border-zinc-700 text-zinc-100 text-xs focus:outline-hidden focus:border-[#F6821F]" />
+        </div>
+        <div class="flex items-center space-x-2 text-zinc-300 text-[11px]">
+          <input id="check-new-repo-init" type="checkbox" checked class="rounded border-zinc-700" />
+          <label for="check-new-repo-init">Initialize with README, index.ts, and AST template</label>
+        </div>
+      </div>
+      <div class="flex justify-end space-x-2 pt-2 border-t border-zinc-800">
+        <button onclick="closeNewRepoModal()" class="px-3 py-1.5 rounded text-zinc-400 hover:text-white transition">Cancel</button>
+        <button id="btn-submit-new-repo" onclick="submitCreateNewRepo()" class="px-4 py-1.5 rounded bg-[#F6821F] hover:bg-orange-500 text-white font-bold transition flex items-center space-x-1.5">
+          <span>Create Repository</span>
+        </button>
+      </div>
+    </div>
+  </div>

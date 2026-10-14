@@ -8,6 +8,7 @@
   },
   "scripts": {
     "conv": "node ./bin/conv.mjs",
+    "build:ui": "tsx scripts/build-ui.ts",
     "test": "vitest run --sequence.concurrent=false",
     "test:watch": "vitest",
     "test:e2e": "vitest run tests/e2e-ui.test.ts",

@@ -1,0 +1,768 @@
+  <div id="quest-shell" class="flex-1 flex flex-col site-entrance-anim">
+
+    <!-- LAUNCHPAD HEADER MATRIX -->
+    <section id="launch-hero" class="quest-only border-b border-zinc-200 bg-white hairline-grid px-6 py-7">
+      <div class="max-w-[1220px] mx-auto space-y-6">
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+          <div class="space-y-2.5 max-w-2xl">
+            <div class="inline-flex items-center space-x-2 px-2.5 py-0.5 rounded bg-zinc-900 text-zinc-100 text-[11px] font-mono">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#F6821F]"></span>
+              <span>SYSTEMS ARCHITECTURE PROVING GROUND // MAURO DRUWEL</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-zinc-950 tracking-tight leading-tight">
+              What happens when 100,000 AI agents push to Git at the same millisecond?
+            </h1>
+            <p class="text-xs sm:text-sm text-zinc-600 leading-relaxed">
+              Git was architected in 2005 for human engineers emailing line-based text patches. Step through 5 live experiments below to see how traditional version control reacts under autonomous swarm load, and unlock the <strong>Convergence</strong> platform piece by piece.
+            </p>
+          </div>
+
+          <!-- Compact Telemetry Progress Box -->
+          <div class="w-full lg:w-72 flex-shrink-0 bg-zinc-950 text-white border border-zinc-800 rounded-xl p-4">
+            <div class="flex items-center justify-between mb-2.5 font-mono text-[11px]">
+              <span class="text-zinc-400 uppercase tracking-wider">ARCHITECTURE UNLOCKS</span>
+              <span id="quest-badge" class="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-700 text-[#F6821F] font-bold">
+                <span id="quest-completed-count">0</span> / 5 VERIFIED
+              </span>
+            </div>
+            <div class="grid grid-cols-5 gap-1.5 mb-2.5">
+              <div id="quest-seg-1" class="h-1.5 rounded-xs bg-zinc-800 transition-all"></div>
+              <div id="quest-seg-2" class="h-1.5 rounded-xs bg-zinc-800 transition-all"></div>
+              <div id="quest-seg-3" class="h-1.5 rounded-xs bg-zinc-800 transition-all"></div>
+              <div id="quest-seg-4" class="h-1.5 rounded-xs bg-zinc-800 transition-all"></div>
+              <div id="quest-seg-5" class="h-1.5 rounded-xs bg-zinc-800 transition-all"></div>
+              <div id="quest-progress-bar" class="hidden"></div>
+            </div>
+            <div class="text-[11px] font-mono text-zinc-400 flex items-center justify-between">
+              <span id="quest-next-hint" class="truncate">Use NOVA dock below to initialize</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5-STAGE ARCHITECTURAL STEPPER (PRESERVING ALL E2E IDS) -->
+        <div class="pt-2">
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+            <!-- Stage 1 -->
+            <button id="tab-btn-benchmark" onclick="switchLevel(1)" class="level-tab-btn p-3 rounded-lg border-2 border-[#F6821F] bg-white text-left transition flex flex-col justify-between">
+              <div class="flex items-center justify-between font-mono">
+                <span class="text-[10px] font-bold text-[#F6821F]">STAGE 01</span>
+                <span id="badge-level-1" class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-orange-50 text-[#F6821F] border border-orange-200">READY</span>
+              </div>
+              <div class="font-bold text-xs text-zinc-950 mt-1.5">Parallel File Appends</div>
+              <div class="text-[11px] text-zinc-500 font-mono mt-0.5">25 agents -> 1 file</div>
+            </button>
+
+            <!-- Stage 2 -->
+            <button id="tab-btn-overview" onclick="switchLevel(2)" class="level-tab-btn p-3 rounded-lg border border-zinc-200 bg-zinc-100/70 text-left transition flex flex-col justify-between opacity-50">
+              <div class="flex items-center justify-between font-mono">
+                <span class="text-[10px] font-bold text-zinc-400">STAGE 02</span>
+                <span id="badge-level-2" class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-zinc-200/70 text-zinc-500">LOCKED</span>
+              </div>
+              <div class="font-bold text-xs text-zinc-500 mt-1.5" id="title-level-2">🔒 Edge Actor Sequencer</div>
+              <div class="text-[11px] text-zinc-400 font-mono mt-0.5">8-agent wave</div>
+            </button>
+
+            <!-- Stage 3 -->
+            <button id="tab-btn-leases" onclick="switchLevel(3)" class="level-tab-btn p-3 rounded-lg border border-zinc-200 bg-zinc-100/70 text-left transition flex flex-col justify-between opacity-50">
+              <div class="flex items-center justify-between font-mono">
+                <span class="text-[10px] font-bold text-zinc-400">STAGE 03</span>
+                <span id="badge-level-3" class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-zinc-200/70 text-zinc-500">LOCKED</span>
+              </div>
+              <div class="font-bold text-xs text-zinc-500 mt-1.5" id="title-level-3">🔒 Same-Symbol Collision</div>
+              <div class="text-[11px] text-zinc-400 font-mono mt-0.5">Edit-time lease <span id="tab-leases-count" class="hidden">0</span></div>
+            </button>
+
+            <!-- Stage 4 -->
+            <button id="tab-btn-settings" onclick="switchLevel(4)" class="level-tab-btn p-3 rounded-lg border border-zinc-200 bg-zinc-100/70 text-left transition flex flex-col justify-between opacity-50">
+              <div class="flex items-center justify-between font-mono">
+                <span class="text-[10px] font-bold text-zinc-400">STAGE 04</span>
+                <span id="badge-level-4" class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-zinc-200/70 text-zinc-500">LOCKED</span>
+              </div>
+              <div class="font-bold text-xs text-zinc-500 mt-1.5" id="title-level-4">🔒 Semantic Logic Flaw</div>
+              <div class="text-[11px] text-zinc-400 font-mono mt-0.5">Pre-merge probe</div>
+            </button>
+
+            <!-- Stage 5 -->
+            <button id="tab-btn-provenance" onclick="switchLevel(5)" class="level-tab-btn p-3 rounded-lg border border-zinc-200 bg-zinc-100/70 text-left transition flex flex-col justify-between opacity-50">
+              <div class="flex items-center justify-between font-mono">
+                <span class="text-[10px] font-bold text-zinc-400">STAGE 05</span>
+                <span id="badge-level-5" class="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-zinc-200/70 text-zinc-500">LOCKED</span>
+              </div>
+              <div class="font-bold text-xs text-zinc-500 mt-1.5" id="title-level-5">🔒 Architectural Fork</div>
+              <div class="text-[11px] text-zinc-400 font-mono mt-0.5">Reverse PR &amp; CoT <span id="tab-notes-count" class="hidden">0</span></div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROVING GROUND MAIN STAGE -->
+    <main class="flex-1 max-w-[1220px] w-full mx-auto p-6 space-y-6">
+
+      <!-- SCREEN 0: INITIAL STANDBY LAUNCH CARD -->
+      <div id="launch-standby-card" class="quest-only border border-zinc-300 bg-white rounded-xl p-8 max-w-2xl mx-auto my-4 shadow-2xs space-y-5">
+        <div class="flex items-center justify-between border-b border-zinc-100 pb-4">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-lg bg-zinc-950 text-[#F6821F] flex items-center justify-center font-mono font-bold text-sm border border-zinc-800">
+              00
+            </div>
+            <div>
+              <div class="text-[11px] font-mono uppercase tracking-wider text-zinc-400">PROTOTYPE ENVIRONMENT // LOCKED STATE</div>
+              <h2 class="text-base font-bold text-zinc-950">Convergence Proving Ground Initialized</h2>
+            </div>
+          </div>
+          <span class="px-2.5 py-1 rounded bg-zinc-100 border border-zinc-200 font-mono text-[11px] text-zinc-600">0 / 5 Modules Active</span>
+        </div>
+
+        <p class="text-xs sm:text-sm text-zinc-600 leading-relaxed">
+          All telemetry modules and the full <strong>Convergence</strong> repository interface are currently locked. We will test 5 real-world multi-agent scenarios: first observing how each task is set up, how the agents execute it, and what happens inside the merge runtime.
+        </p>
+
+        <div class="grid sm:grid-cols-3 gap-3 pt-1 font-mono text-[11px]">
+          <div class="p-3 rounded-lg bg-zinc-50 border border-zinc-200">
+            <div class="text-zinc-400">01 // HYPOTHESIS</div>
+            <div class="text-zinc-900 font-semibold mt-0.5">Inspect Agent Task</div>
+          </div>
+          <div class="p-3 rounded-lg bg-zinc-50 border border-zinc-200">
+            <div class="text-zinc-400">02 // EXECUTION</div>
+            <div class="text-zinc-900 font-semibold mt-0.5">Observe Live Runtime</div>
+          </div>
+          <div class="p-3 rounded-lg bg-zinc-50 border border-zinc-200">
+            <div class="text-zinc-400">03 // FULL PLATFORM</div>
+            <div class="text-zinc-900 font-semibold mt-0.5">Unlock Convergence</div>
+          </div>
+        </div>
+
+        <div class="pt-2 flex items-center justify-between">
+          <span class="text-[11px] font-mono text-zinc-500">Use NOVA's icon bar below or initialize Stage 01 directly:</span>
+          <button onclick="switchLevel(1)" class="inline-flex items-center space-x-2 px-4 py-2 rounded-lg bg-zinc-950 hover:bg-[#F6821F] text-white text-xs font-semibold transition">
+            <span>Initialize Stage 01</span>
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- UNLOCKED BANNER WHEN ALL 5 LEVELS ARE COMPLETE -->
+      <div id="platform-zone" class="hidden bg-zinc-950 text-white border border-zinc-800 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="space-y-1">
+          <div class="text-[11px] font-mono text-[#F6821F] uppercase tracking-widest flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span>ALL 5 ARCHITECTURAL STAGES VERIFIED</span>
+          </div>
+          <h2 class="text-base font-bold tracking-tight">Convergence // Full Standalone Edge Platform Unlocked</h2>
+          <p class="text-xs text-zinc-400">Launch the full-screen repository interface to browse files, edit AST symbols live, inspect Git Notes provenance, and manage agent leases.</p>
+        </div>
+        <div class="flex items-center space-x-2.5 flex-shrink-0">
+          <button onclick="setView('platform');switchPTab('code')" class="px-4 py-2.5 rounded-lg bg-[#F6821F] hover:bg-[#EA580C] text-white text-xs font-bold transition flex items-center space-x-2 shadow-sm">
+            <span>Launch Convergence</span>
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- METRICS HUD (UNLOCKS AFTER LEVEL 1) -->
+      <div id="metrics-hud" class="hidden grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2.5">
+        <div class="p-3.5 bg-white border border-zinc-200 rounded-lg flex flex-col justify-between">
+          <span class="text-[10px] font-mono text-zinc-500 uppercase">AST Merge Rate</span>
+          <div class="mt-1.5 text-xl font-bold font-mono text-zinc-950" id="stat-clean-rate">100.0%</div>
+          <div class="text-[11px] text-zinc-500 font-mono mt-0.5"><span id="stat-clean">0</span> clean grafts</div>
+        </div>
+        <div class="p-3.5 bg-white border border-zinc-200 rounded-lg flex flex-col justify-between">
+          <span class="text-[10px] font-mono text-zinc-500 uppercase">AST Collisions</span>
+          <div class="mt-1.5 text-xl font-bold font-mono text-zinc-950" id="stat-conflicts">0</div>
+          <div class="text-[11px] text-zinc-500 font-mono mt-0.5">Symbol-addressed</div>
+        </div>
+        <div class="p-3.5 bg-white border border-zinc-200 rounded-lg flex flex-col justify-between">
+          <span class="text-[10px] font-mono text-zinc-500 uppercase">Active Leases</span>
+          <div class="mt-1.5 text-xl font-bold font-mono text-zinc-950" id="stat-leases">0</div>
+          <div class="text-[11px] text-zinc-500 font-mono mt-0.5">TTL symbol locks</div>
+        </div>
+        <div class="p-3.5 bg-white border border-zinc-200 rounded-lg flex flex-col justify-between">
+          <span class="text-[10px] font-mono text-zinc-500 uppercase">Provenance Notes</span>
+          <div class="mt-1.5 text-xl font-bold font-mono text-zinc-950" id="stat-notes">0</div>
+          <div class="text-[11px] text-zinc-500 font-mono mt-0.5">refs/notes/cot</div>
+        </div>
+        <div class="p-3.5 bg-white border border-zinc-200 rounded-lg flex flex-col justify-between">
+          <span class="text-[10px] font-mono text-zinc-500 uppercase">Lamport Clock</span>
+          <div class="mt-1.5 text-xl font-bold font-mono text-[#F6821F]" id="stat-lamport">L: 0</div>
+          <div class="text-[11px] text-zinc-500 font-mono mt-0.5">Causal scalar</div>
+        </div>
+        <div class="p-3.5 bg-white border border-zinc-200 rounded-lg flex flex-col justify-between">
+          <span class="text-[10px] font-mono text-zinc-500 uppercase">Edge Throughput</span>
+          <div class="mt-1.5 text-xl font-bold font-mono text-zinc-950" id="stat-throughput">96 ops/s</div>
+          <div class="text-[11px] text-zinc-500 font-mono mt-0.5">DO SQLite ~10ms</div>
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- STAGE 1: 25-AGENT CONCURRENCY EXPERIMENT (ZERO SPOILERS BEFORE RUN!)  -->
+      <!-- ===================================================================== -->
+      <div id="section-benchmark" style="display: none;" class="quest-only border border-zinc-200 bg-white rounded-xl overflow-hidden level-card">
+        <div class="p-6 border-b border-zinc-200">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="space-y-1 max-w-2xl">
+              <div class="flex items-center space-x-2 font-mono text-[11px]">
+                <span class="px-2 py-0.5 rounded bg-zinc-900 text-white font-bold">STAGE 01</span>
+                <span class="text-zinc-500">EXPERIMENT // 25 CONCURRENT AGENTS -> SINGLE FILE</span>
+              </div>
+              <h2 class="text-lg font-bold text-zinc-950">Experiment 01: 25 Autonomous Agents Appending to <code class="font-mono text-sm bg-zinc-100 px-1.5 py-0.5 rounded">index.ts</code></h2>
+            </div>
+            <div class="flex items-center space-x-3 flex-shrink-0">
+              <button id="btn-bench-l1" onclick="runBenchmark()" class="level-action-btn h-9 px-4 bg-zinc-950 hover:bg-[#F6821F] text-white text-xs font-semibold rounded-lg transition flex items-center space-x-2">
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span id="btn-bench-l1-text">Execute 25-Agent Test</span>
+              </button>
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded bg-zinc-100 border border-zinc-200 text-zinc-700 font-semibold flex items-center space-x-1.5" id="bench-status">
+                <span class="w-1.5 h-1.5 rounded-full bg-zinc-400"></span>
+                <span>AWAITING_RUN</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Structured 3-Column Briefing: Task / Agent Plan / Reaction -->
+          <div class="grid md:grid-cols-3 gap-3 mt-5 pt-4 border-t border-zinc-100 text-xs">
+            <div class="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200/80 space-y-1">
+              <div class="text-[10px] font-mono font-bold text-zinc-400 uppercase">01 // THE TASK</div>
+              <div class="font-semibold text-zinc-900">25 Independent Helper Functions</div>
+              <p class="text-zinc-600 text-[11px] leading-relaxed">
+                25 AI agents are assigned to add 25 completely separate TypeScript functions (<code class="font-mono">handleRefund_1</code> through <code class="font-mono">auditTransaction_25</code>) to <code class="font-mono">index.ts</code> at the exact same millisecond.
+              </p>
+            </div>
+            <div class="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200/80 space-y-1">
+              <div class="text-[10px] font-mono font-bold text-zinc-400 uppercase">02 // HOW AGENTS EXECUTE IT</div>
+              <div class="font-semibold text-zinc-900">Simultaneous Base Checkout</div>
+              <p class="text-zinc-600 text-[11px] leading-relaxed">
+                Every agent reads the exact same base file (<code class="font-mono">index.ts</code> ending at line 78), appends its new function at the bottom, and pushes its commit simultaneously.
+              </p>
+            </div>
+            <div class="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200/80 space-y-1">
+              <div class="text-[10px] font-mono font-bold text-zinc-400 uppercase">03 // RUNTIME COMPARISON</div>
+              <div class="font-semibold text-zinc-900">Engine A (diff3) vs Engine B (AST-CRDT)</div>
+              <p class="text-zinc-600 text-[11px] leading-relaxed">
+                Both engines receive the exact same 25 commits. Neither agent touched another agent's function. Run the test to see how both merge engines react.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Side-by-Side Comparison Grid (NEUTRAL BEFORE RUN - NO SPOILERS!) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-zinc-200">
+          <!-- Engine A: Traditional Git diff3 -->
+          <div id="l1-git-card" class="p-6 space-y-4 bg-white transition-colors duration-500">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-xs text-zinc-900 flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-zinc-400" id="l1-git-dot"></span>
+                <span>Engine A: Standard Git (GNU diff3)</span>
+              </span>
+              <span class="text-[11px] font-mono text-zinc-600 bg-zinc-100 px-2 py-0.5 rounded border border-zinc-200">3-Way Line Merge</span>
+            </div>
+            <div class="grid grid-cols-3 gap-2.5 text-center">
+              <div class="bg-zinc-50 p-3 border border-zinc-200 rounded-lg">
+                <div class="text-[10px] font-mono text-zinc-500 uppercase">Merge Rate</div>
+                <div class="text-xl font-bold font-mono text-zinc-800 mt-0.5" id="git-rate">..</div>
+              </div>
+              <div class="bg-zinc-50 p-3 border border-zinc-200 rounded-lg">
+                <div class="text-[10px] font-mono text-zinc-500 uppercase">Conflicts</div>
+                <div class="text-xl font-bold font-mono text-zinc-800 mt-0.5" id="git-conflicts">..</div>
+              </div>
+              <div class="bg-zinc-50 p-3 border border-zinc-200 rounded-lg">
+                <div class="text-[10px] font-mono text-zinc-500 uppercase">Halted Agents</div>
+                <div class="text-xl font-bold font-mono text-zinc-800 mt-0.5" id="git-stalled">..</div>
+              </div>
+            </div>
+            <div id="l1-git-verdict" class="p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-xs text-zinc-500 font-mono">
+              [STANDBY] Waiting for 25 parallel agent commits to evaluate line-anchor hunks...
+            </div>
+          </div>
+
+          <!-- Engine B: Convergence AST-CRDT -->
+          <div id="l1-conv-card" class="p-6 space-y-4 bg-white transition-colors duration-500">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-xs text-zinc-900 flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-zinc-400" id="l1-conv-dot"></span>
+                <span>Engine B: Convergence (AST-CRDT)</span>
+              </span>
+              <span class="text-[11px] font-mono text-zinc-600 bg-zinc-100 px-2 py-0.5 rounded border border-zinc-200">Symbol Lattice Merge</span>
+            </div>
+            <div class="grid grid-cols-3 gap-2.5 text-center">
+              <div class="bg-zinc-50 p-3 border border-zinc-200 rounded-lg">
+                <div class="text-[10px] font-mono text-zinc-500 uppercase">Merge Rate</div>
+                <div class="text-xl font-bold font-mono text-zinc-800 mt-0.5" id="conv-rate">..</div>
+              </div>
+              <div class="bg-zinc-50 p-3 border border-zinc-200 rounded-lg">
+                <div class="text-[10px] font-mono text-zinc-500 uppercase">Conflicts</div>
+                <div class="text-xl font-bold font-mono text-zinc-800 mt-0.5" id="conv-conflicts">..</div>
+              </div>
+              <div class="bg-zinc-50 p-3 border border-zinc-200 rounded-lg">
+                <div class="text-[10px] font-mono text-zinc-500 uppercase">DO Latency</div>
+                <div class="text-xl font-bold font-mono text-zinc-800 mt-0.5" id="conv-latency">..</div>
+              </div>
+            </div>
+            <div id="l1-conv-verdict" class="p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-xs text-zinc-500 font-mono">
+              [STANDBY] Waiting for 25 parallel agent commits to parse AST declaration nodes...
+            </div>
+          </div>
+        </div>
+
+        <!-- LIVE TELEMETRY EXECUTION LANES -->
+        <div id="duel-arena" class="p-6 bg-zinc-950 border-t border-zinc-200 space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs font-mono">
+            <div class="flex items-center space-x-2">
+              <span class="w-2 h-2 rounded-full bg-[#F6821F]"></span>
+              <span class="font-bold text-zinc-100 uppercase tracking-wider">LIVE COMMIT EVALUATION MATRIX (25 AGENTS)</span>
+            </div>
+            <div id="duel-live-ticker" class="text-[11px] text-zinc-400">
+              Standing by: press "Execute 25-Agent Test" to stream commits
+            </div>
+          </div>
+
+          <!-- Engine A Lane -->
+          <div class="space-y-1.5 bg-zinc-900/90 p-3.5 rounded-lg border border-zinc-800">
+            <div class="flex items-center justify-between text-[11px] font-mono">
+              <span class="text-zinc-200 font-semibold flex items-center space-x-2">
+                <span>ENGINE A // GNU diff3:</span>
+                <span id="duel-git-counter" class="text-zinc-400 font-normal">0 / 25 evaluated</span>
+              </span>
+              <span class="text-zinc-500 text-[10px]">LCS Line-Anchor Matcher</span>
+            </div>
+            <div id="duel-git-pips" class="flex flex-wrap gap-1 pt-1"></div>
+          </div>
+
+          <!-- Engine B Lane -->
+          <div class="space-y-1.5 bg-zinc-900/90 p-3.5 rounded-lg border border-zinc-800">
+            <div class="flex items-center justify-between text-[11px] font-mono">
+              <span class="text-zinc-200 font-semibold flex items-center space-x-2">
+                <span>ENGINE B // CONVERGENCE AST:</span>
+                <span id="duel-conv-counter" class="text-zinc-400 font-normal">0 / 25 evaluated</span>
+              </span>
+              <span class="text-zinc-500 text-[10px]">Durable Object CRDT Reconciler</span>
+            </div>
+            <div id="duel-conv-pips" class="flex flex-wrap gap-1 pt-1"></div>
+          </div>
+
+          <!-- Live Diagnostic Terminal -->
+          <div class="p-3 bg-black rounded-lg border border-zinc-800 font-mono text-[11px] space-y-1">
+            <div class="text-zinc-500 flex items-center space-x-1.5">
+              <span class="text-[#F6821F]">❯</span>
+              <span>MERGE_INSPECTOR_STDOUT:</span>
+            </div>
+            <div id="duel-terminal-log" class="text-zinc-300 pl-3">
+              Ready. Both engines initialized with identical 78-line index.ts snapshot.
+            </div>
+          </div>
+        </div>
+
+        <!-- POST-RUN DEEP DIVE DIFF INSPECTOR (REVEALS AFTER TEST) -->
+        <div id="deep-dive" class="hidden border-t border-zinc-200 bg-white">
+          <div class="px-6 pt-5 pb-3 flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div>
+              <h3 class="text-sm font-bold text-zinc-950">Post-Mortem Diff Inspector <span class="text-zinc-500 font-normal">// Why diff3 crashed vs how AST grafted</span></h3>
+              <p class="text-[11px] text-zinc-500 mt-0.5">Toggle between the 25 clean AST symbol grafts and the 24 GNU diff3 tail-anchor collisions.</p>
+            </div>
+            <div class="flex rounded-lg border border-zinc-300 overflow-hidden text-[11px] font-mono font-semibold flex-shrink-0">
+              <button id="deep-tab-conv" onclick="switchDeepTab('conv')" class="px-3 py-1.5 bg-zinc-950 text-white">Convergence (25 Clean)</button>
+              <button id="deep-tab-git" onclick="switchDeepTab('git')" class="px-3 py-1.5 bg-white text-zinc-600 hover:bg-zinc-50">Git diff3 (24 Conflicts)</button>
+            </div>
+          </div>
+          <div class="mx-6 mb-6 border border-zinc-200 rounded-lg overflow-hidden">
+            <div class="flex items-center justify-between px-4 py-2 bg-zinc-50 border-b border-zinc-200 font-mono text-xs">
+              <span class="font-bold text-zinc-900">index.ts</span>
+              <span id="deep-meta" class="text-zinc-500">25 agent commits</span>
+            </div>
+            <div id="deep-conv-body" class="max-h-[300px] overflow-auto bg-white font-mono text-[11px] leading-relaxed"></div>
+            <div id="deep-git-body" class="hidden max-h-[300px] overflow-auto bg-white font-mono text-[11px] leading-relaxed"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- STAGE 2: EDGE ACTOR SEQUENCER & SWARM RADAR                           -->
+      <!-- ===================================================================== -->
+      <div id="section-overview" style="display: none;" class="quest-only border border-zinc-200 bg-white rounded-xl overflow-hidden level-card">
+        <div class="p-6 border-b border-zinc-200">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="space-y-1 max-w-2xl">
+              <div class="flex items-center space-x-2 font-mono text-[11px]">
+                <span class="px-2 py-0.5 rounded bg-zinc-900 text-white font-bold">STAGE 02</span>
+                <span class="text-zinc-500">EXPERIMENT // SINGLE-THREADED DURABLE OBJECT SEQUENCER</span>
+              </div>
+              <h2 class="text-lg font-bold text-zinc-950">Experiment 02: 8 Specialized Agents Committing to One Edge Actor</h2>
+            </div>
+            <div>
+              <button id="btn-swarm-l2" onclick="triggerSwarmWave()" class="level-action-btn h-9 px-4 bg-zinc-950 hover:bg-[#F6821F] text-white text-xs font-semibold rounded-lg transition flex items-center space-x-2">
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span id="btn-swarm-l2-text">Dispatch 8-Agent Wave</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Structured 3-Column Briefing -->
+          <div class="grid md:grid-cols-3 gap-3 mt-5 pt-4 border-t border-zinc-100 text-xs">
+            <div class="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200/80 space-y-1">
+              <div class="text-[10px] font-mono font-bold text-zinc-400 uppercase">01 // THE TASK</div>
+              <div class="font-semibold text-zinc-900">Parallel Multi-Domain Feature Wave</div>
+              <p class="text-zinc-600 text-[11px] leading-relaxed">
+                8 specialist agents (<code class="font-mono">sentinel</code>, <code class="font-mono">payment</code>, <code class="font-mono">auth</code>, <code class="font-mono">optimizer</code>, etc.) must push production modules into mainline simultaneously without corrupting repository state.
+              </p>
+            </div>
+            <div class="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200/80 space-y-1">
+              <div class="text-[10px] font-mono font-bold text-zinc-400 uppercase">02 // HOW AGENTS EXECUTE IT</div>
+              <div class="font-semibold text-zinc-900">Zero-Copy Artifacts Worktrees</div>
+              <p class="text-zinc-600 text-[11px] leading-relaxed">
+                Instead of cloning 500MB Git repos, each agent branches a lightweight merkle pointer in <code class="font-mono">env.ARTIFACTS</code> and streams its AST mutation over a Hibernatable WebSocket.
+              </p>
+            </div>
+            <div class="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200/80 space-y-1">
+              <div class="text-[10px] font-mono font-bold text-zinc-400 uppercase">03 // EXPECTED REACTION</div>
+              <div class="font-semibold text-zinc-900">Atomic Lamport Ordering</div>
+              <p class="text-zinc-600 text-[11px] leading-relaxed">
+                The single-threaded <code class="font-mono">RepoBrain</code> Durable Object sequences every incoming beam in ~10ms, increments the Lamport clock, and synthesizes the live <code class="font-mono">index.ts</code> file below.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 space-y-4">
+          <!-- Stage 02 View Mode Switcher: Split View / 8x Claude Code CLI / Orbital Radar -->
+          <div class="flex flex-wrap items-center justify-between gap-3 bg-zinc-100/90 border border-zinc-200 rounded-lg px-3.5 py-2 text-xs font-mono">
+            <div class="flex items-center space-x-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="font-bold text-zinc-900">SWARM TELEMETRY VIEW:</span>
+              <span class="text-zinc-500 hidden sm:inline">Watch 8 concurrent Claude Code CLI sessions push via <code class="text-zinc-900 font-semibold">conv</code> CLI</span>
+            </div>
+            <div class="inline-flex rounded-md p-0.5 bg-white border border-zinc-300 text-[11px]">
+              <button id="s2view-split" onclick="setStage2View('split')" class="px-2.5 py-1 rounded bg-zinc-950 text-white font-semibold transition">⚡ Split (Radar + 8x Claude CLI)</button>
+              <button id="s2view-claude" onclick="setStage2View('claude')" class="px-2.5 py-1 rounded text-zinc-600 hover:text-zinc-950 font-semibold transition">🖥️ 8x Claude Code CLI</button>
+              <button id="s2view-radar" onclick="setStage2View('radar')" class="px-2.5 py-1 rounded text-zinc-600 hover:text-zinc-950 font-semibold transition">📡 Radar Only</button>
+            </div>
+          </div>
+
+          <div id="stage2-workspace-grid" class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+            <!-- Left / Top: Orbital Durable Object Radar -->
+            <div id="stage2-radar-col" class="lg:col-span-5 flex flex-col justify-between">
+              <div id="radar-wrap" class="relative w-full h-[320px] bg-zinc-950 rounded-lg overflow-hidden border border-zinc-800 flex-1">
+                <canvas id="swarm-canvas" class="w-full h-full block"></canvas>
+              </div>
+              <div class="mt-2 flex items-center justify-between text-[10px] text-zinc-500 font-mono">
+                <span class="flex items-center space-x-1.5">
+                  <span class="w-2 h-2 rounded-full bg-[#F6821F]"></span>
+                  <span>DO_SQLITE Sequencer + env.ARTIFACTS</span>
+                </span>
+                <span>~10ms Lamport ordering</span>
+              </div>
+            </div>
+
+            <!-- Right / Bottom: 8x Claude Code CLI Sessions (tmux Multiplexer) -->
+            <div id="stage2-claude-col" class="lg:col-span-7 flex flex-col justify-between bg-zinc-950 rounded-lg border border-zinc-800 overflow-hidden">
+              <div class="px-3.5 py-2 bg-zinc-900 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-2 font-mono text-[11px]">
+                <div class="flex items-center space-x-2">
+                  <span class="px-1.5 py-0.2 rounded bg-[#F6821F] text-zinc-950 font-extrabold text-[10px]">tmux</span>
+                  <span class="text-zinc-100 font-bold">8x Claude Code Sessions // <span class="text-emerald-400">conv CLI v2.4</span></span>
+                </div>
+                <div class="flex items-center space-x-2 text-[10px] text-zinc-400">
+                  <span>MCP: <code class="text-zinc-200">wss://convergence.edge/ws</code></span>
+                </div>
+              </div>
+
+              <!-- 8-Pane Mini Terminal Grid -->
+              <div id="stage2-claude-grid" class="p-2.5 grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-[310px] overflow-y-auto"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- STAGE 3: EDIT-TIME SYMBOL LEASES (ZERO SPOILERS BEFORE RUN!)          -->
+      <!-- ===================================================================== -->
+      <div id="section-leases" style="display: none;" class="quest-only border border-zinc-200 bg-white rounded-xl overflow-hidden level-card">
+        <div class="p-6 border-b border-zinc-200">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="space-y-1 max-w-2xl">
+              <div class="flex items-center space-x-2 font-mono text-[11px]">
+                <span class="px-2 py-0.5 rounded bg-zinc-900 text-white font-bold">STAGE 03</span>
+                <span class="text-zinc-500">EXPERIMENT // SAME-FUNCTION RACE CONDITION</span>
+              </div>
+              <h3 class="text-lg font-bold text-zinc-950">Experiment 03: Two Agents Attempting to Refactor <code class="font-mono text-sm bg-zinc-100 px-1.5 py-0.5 rounded">func:processOrder</code></h3>
+            </div>
+            <div class="flex items-center space-x-3 flex-shrink-0">
+              <button id="btn-lease-l3" onclick="testLeaseAcquire()" class="level-action-btn h-9 px-4 bg-zinc-950 hover:bg-[#F6821F] text-white text-xs font-semibold rounded-lg transition flex items-center space-x-2">
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span id="btn-lease-l3-text">Simulate Same-Symbol Race</span>
+              </button>
+              <span class="text-[11px] font-mono px-2.5 py-1 rounded bg-zinc-100 border border-zinc-200 text-zinc-700 font-semibold" id="table-leases-status">0 Active</span>
+            </div>
+          </div>
+
+          <!-- Structured 3-Column Briefing -->
+          <div class="grid md:grid-cols-3 gap-3 mt-5 pt-4 border-t border-zinc-100 text-xs">
+            <div class="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200/80 space-y-1">
+              <div class="text-[10px] font-mono font-bold text-zinc-400 uppercase">01 // THE TASK</div>
+              <div class="font-semibold text-zinc-900">Overlapping Function Refactor</div>
+              <p class="text-zinc-600 text-[11px] leading-relaxed">
+                What if two agents DO target the exact same function? <code class="font-mono">agent_security</code> and <code class="font-mono">agent_fraud</code> both wake up to rewrite <code class="font-mono">func:processOrder</code>.
+              </p>
+            </div>
+            <div class="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200/80 space-y-1">
+              <div class="text-[10px] font-mono font-bold text-zinc-400 uppercase">02 // HOW AGENTS EXECUTE IT</div>
+              <div class="font-semibold text-zinc-900">Pre-Generation Lease Handshake</div>
+              <p class="text-zinc-600 text-[11px] leading-relaxed">
+                Before calling the LLM to generate code, an agent sends <code class="font-mono">POST /api/leases/request</code> to claim a 12-second TTL lock on the target AST symbol.
+              </p>
+            </div>
+            <div class="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200/80 space-y-1">
+              <div class="text-[10px] font-mono font-bold text-zinc-400 uppercase">03 // EXPECTED REACTION</div>
+              <div class="font-semibold text-zinc-900">Watch What Happens at T+600ms</div>
+              <p class="text-zinc-600 text-[11px] leading-relaxed">
+                <code class="font-mono">agent_security</code> arrives at T+0ms. <code class="font-mono">agent_fraud</code> arrives 600ms later for the same symbol. Trigger the race to see how the Durable Object responds.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Backpressure Alert Banner (HIDDEN UNTIL T+600ms SURPRISE!) -->
+        <div id="backpressure-alert-banner" class="hidden mx-6 my-4 p-4 bg-amber-50 border border-amber-300 rounded-lg space-y-1.5 slide-down-fade">
+          <div class="flex items-center justify-between text-xs font-mono font-bold text-amber-950">
+            <div class="flex items-center space-x-2">
+              <span class="px-1.5 py-0.5 rounded bg-amber-200 text-amber-950">HTTP 423 LOCKED</span>
+              <span>SEMANTIC BACKPRESSURE ENGAGED AT T+600ms</span>
+            </div>
+            <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px]">1,420 LLM TOKENS SAVED</span>
+          </div>
+          <p class="text-xs text-amber-900 leading-relaxed">
+            <strong>Reaction:</strong> When <code class="font-mono font-bold">agent_fraud</code> requested <code class="font-mono font-bold">func:processOrder</code>, the Durable Object rejected the handshake <em>before</em> LLM inference began, returning the current holder (<code class="font-mono">agent_security</code>) and exact TTL wait time. Zero wasted compute.
+          </p>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs font-mono">
+            <thead class="bg-zinc-50 border-b border-zinc-200 text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">
+              <tr>
+                <th class="px-6 py-2.5">AST Symbol ID</th>
+                <th class="px-4 py-2.5">Lease Holder</th>
+                <th class="px-4 py-2.5">Lock Mode</th>
+                <th class="px-4 py-2.5">DO Alarm TTL</th>
+                <th class="px-4 py-2.5">Declared Intent</th>
+              </tr>
+            </thead>
+            <tbody id="leases-table-body" class="divide-y divide-zinc-200 text-xs">
+              <tr>
+                <td colspan="5" class="px-6 py-8 text-center text-zinc-400 font-mono">
+                  [LOCK_TABLE_EMPTY] Click "Simulate Same-Symbol Race" to observe edit-time lease arbitration.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- STAGE 4: CODE IMMUNE SYSTEM (ZERO SPOILERS BEFORE RUN!)               -->
+      <!-- ===================================================================== -->
+      <div id="section-immune" style="display: none;" class="quest-only border border-zinc-200 bg-white rounded-xl overflow-hidden level-card">
+        <div class="p-6 border-b border-zinc-200">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="space-y-1 max-w-2xl">
+              <div class="flex items-center space-x-2 font-mono text-[11px]">
+                <span class="px-2 py-0.5 rounded bg-zinc-900 text-white font-bold">STAGE 04</span>
+                <span class="text-zinc-500">EXPERIMENT // PRE-MERGE AST INVARIANT FUZZING</span>
+              </div>
+              <h3 class="text-lg font-bold text-zinc-950">Experiment 04: Agent Commits Compilable Code with a Missing Boundary Guard</h3>
+            </div>
+            <div class="flex items-center space-x-3 flex-shrink-0">
+              <button id="btn-immune-l4" onclick="testImmuneAttack()" class="level-action-btn h-9 px-4 bg-zinc-950 hover:bg-[#F6821F] text-white text-xs font-semibold rounded-lg transition flex items-center space-x-2">
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span id="btn-immune-l4-text">Push Unvalidated Commit</span>
+              </button>
+              <span id="immune-badge-status" class="text-[11px] font-mono px-2.5 py-1 rounded bg-zinc-100 text-zinc-700 border border-zinc-200 font-semibold flex items-center space-x-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                <span>SENTINEL_IDLE</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Structured 3-Column Briefing -->
+          <div class="grid md:grid-cols-3 gap-3 mt-5 pt-4 border-t border-zinc-100 text-xs">
+            <div class="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200/80 space-y-1">
+              <div class="text-[10px] font-mono font-bold text-zinc-400 uppercase">01 // THE TASK</div>
+              <div class="font-semibold text-zinc-900">Add <code class="font-mono">transferFunds(amount)</code></div>
+              <p class="text-zinc-600 text-[11px] leading-relaxed">
+                An agent pushes a new <code class="font-mono">transferFunds(amount: number)</code> function. It is 100% valid TypeScript, so standard <code class="font-mono">tsc</code> and ESLint pass it without warnings.
+              </p>
+            </div>
+            <div class="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200/80 space-y-1">
+              <div class="text-[10px] font-mono font-bold text-zinc-400 uppercase">02 // THE HIDDEN FLAW</div>
+              <div class="font-semibold text-zinc-900">Negative Withdrawal Exploit</div>
+              <p class="text-zinc-600 text-[11px] leading-relaxed">
+                The agent forgot to check <code class="font-mono">amount &lt;= 0</code>. Passing <code class="font-mono">-99999</code> would credit an attacker's account instead of debiting it.
+              </p>
+            </div>
+            <div class="p-3.5 rounded-lg bg-zinc-50 border border-zinc-200/80 space-y-1">
+              <div class="text-[10px] font-mono font-bold text-zinc-400 uppercase">03 // EXPECTED REACTION</div>
+              <div class="font-semibold text-zinc-900">Pre-Merge Sentinel &amp; Antibody</div>
+              <p class="text-zinc-600 text-[11px] leading-relaxed">
+                Push the commit to see how Convergence's Worker sandbox fuzzes the AST node pre-merge and reacts before the code reaches mainline.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 space-y-3">
+          <div id="immune-scanner-card" class="p-4 bg-zinc-50 border border-zinc-200 rounded-lg space-y-2.5 transition-all">
+            <div class="flex items-center justify-between font-mono">
+              <div class="text-xs font-bold text-zinc-900 flex items-center space-x-2">
+                <span id="immune-icon-dot" class="w-2 h-2 rounded-full bg-zinc-400"></span>
+                <span id="immune-scanner-title">PRE-MERGE AST SANDBOX // STANDBY</span>
+              </div>
+              <span id="immune-threat-count" class="text-[10px] px-2 py-0.5 rounded bg-zinc-200 text-zinc-700 font-bold">0 Invariant Violations</span>
+            </div>
+            <p id="immune-scanner-desc" class="text-xs text-zinc-600 leading-relaxed">
+              Awaiting incoming commit payload. Click "Push Unvalidated Commit" above to send the agent's <code class="font-mono">transferFunds</code> symbol into the pre-merge gate.
+            </p>
+
+            <!-- Revealed dynamically upon execution -->
+            <div id="immune-antibody-box" class="hidden pt-3 space-y-3 slide-down-fade">
+              <div class="grid md:grid-cols-2 gap-3">
+                <div class="space-y-1">
+                  <div class="text-[11px] font-mono font-bold text-rose-700">01 // INCOMING AGENT AST NODE (INTERCEPTED):</div>
+                  <pre class="bg-zinc-950 p-3 rounded-lg border border-rose-900/60 font-mono text-[11px] text-rose-300 overflow-x-auto leading-relaxed">export function transferFunds(amount: number): boolean {
+  // Fuzzer probe: transferFunds(-99999) -> RETURNED TRUE!
+  console.log("Transferring amount: " + amount);
+  return true;
+}</pre>
+                </div>
+                <div class="space-y-1">
+                  <div class="flex items-center justify-between text-[11px] font-mono font-bold text-emerald-700">
+                    <span>02 // SYNTHESIZED AST ANTIBODY (SPLICED IN 4ms):</span>
+                    <span class="px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800">AUTO-HEALED</span>
+                  </div>
+                  <pre id="immune-antibody-code" class="bg-zinc-950 p-3 rounded-lg border border-emerald-900/60 font-mono text-[11px] text-emerald-300 overflow-x-auto leading-relaxed">// Synthesizing AST runtime guard...</pre>
+                </div>
+              </div>
+              <div id="immune-patch-note" class="text-[11px] font-mono text-emerald-800 bg-emerald-50 border border-emerald-200 p-2.5 rounded-lg flex items-center space-x-2">
+                <span>✓</span>
+                <span>Reaction complete: The boundary antibody was spliced directly into the AST node prior to Durable Object commit.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- STAGE 5: REVERSE PULL REQUESTS & GIT NOTES PROVENANCE                 -->
+      <!-- ===================================================================== -->
+      <div id="level-5-grid" style="display: none;" class="quest-only space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+          <!-- REVERSE PULL REQUESTS -->
+          <div id="section-rpr" class="border border-zinc-200 bg-white rounded-xl overflow-hidden level-card flex flex-col justify-between">
+            <div>
+              <div class="p-6 border-b border-zinc-200">
+                <div class="flex items-center justify-between mb-2 font-mono text-[11px]">
+                  <span class="px-2 py-0.5 rounded bg-zinc-900 text-white font-bold">STAGE 05</span>
+                  <span class="text-zinc-500">INVERSION OF CONTROL // REVERSE PR</span>
+                </div>
+                <h3 class="text-base font-bold text-zinc-950">Experiment 05: Agent Hits an Architectural Trade-Off</h3>
+                <p class="text-xs text-zinc-600 mt-1.5 leading-relaxed">
+                  <strong>The Task &amp; Reaction:</strong> Agents merge routine functions automatically. When <code class="font-mono">agent_architect</code> encounters a system-wide storage trade-off, it pauses and opens a <strong>Reverse PR</strong> asking the human architect for a 1-click decision.
+                </p>
+                <div class="mt-4">
+                  <button id="btn-rpr-l5" onclick="triggerTestRPR()" class="level-action-btn h-9 px-4 bg-zinc-950 hover:bg-[#F6821F] text-white text-xs font-semibold rounded-lg transition flex items-center space-x-2">
+                    <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <span id="btn-rpr-l5-text">Simulate Agent Escalation (Reverse PR)</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="p-6">
+                <div id="rpr-container" class="space-y-3">
+                  <div class="text-xs font-mono text-zinc-500 bg-zinc-50 border border-zinc-200 p-4 rounded-lg">
+                    [QUEUE_CLEAR] Zero pending architectural inquiries. Click above to simulate an agent hitting a schema trade-off.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-4 bg-zinc-50 border-t border-zinc-200 text-[11px] font-mono text-zinc-500">
+              Human steers high-level architecture in 1 click; swarm executes the implementation.
+            </div>
+          </div>
+
+          <!-- GIT NOTES PROVENANCE INSPECTOR -->
+          <div id="section-provenance" class="border border-zinc-200 bg-white rounded-xl overflow-hidden level-card flex flex-col justify-between">
+            <div>
+              <div class="p-6 border-b border-zinc-200">
+                <div class="flex items-center justify-between mb-2 font-mono text-[11px]">
+                  <span class="px-2 py-0.5 rounded bg-zinc-100 text-zinc-800 border border-zinc-200 font-bold">PROVENANCE</span>
+                  <span id="table-notes-status" class="text-zinc-600 font-semibold">0 Logged</span>
+                </div>
+                <h3 class="text-base font-bold text-zinc-950">Chain-of-Thought Git Notes (<code class="font-mono text-xs">refs/notes/agent-provenance</code>)</h3>
+                <p class="text-xs text-zinc-600 mt-1.5 leading-relaxed">
+                  Every agent commit attaches structured reasoning, model ID, verified invariants, and token latency natively into Git object notes without mutating commit SHA hashes.
+                </p>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs font-mono">
+                  <thead class="bg-zinc-50 border-b border-zinc-200 text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">
+                    <tr>
+                      <th class="px-4 py-2.5">Symbol</th>
+                      <th class="px-4 py-2.5">Agent / Model</th>
+                      <th class="px-4 py-2.5">Intent &amp; Invariants</th>
+                      <th class="px-4 py-2.5 text-right">Telemetry</th>
+                    </tr>
+                  </thead>
+                  <tbody id="provenance-table-body" class="divide-y divide-zinc-200 text-xs">
+                    <tr>
+                      <td colspan="4" class="px-4 py-8 text-center text-zinc-400 font-mono">
+                        Awaiting agent commits to populate refs/notes/agent-provenance...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="p-4 bg-zinc-50 border-t border-zinc-200 text-[11px] font-mono text-zinc-500">
+              100% Git wire-compatible: <code class="text-zinc-800">git fetch origin refs/notes/*:refs/notes/*</code>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- LIVE CODEBASE & TELEMETRY STREAM (UNLOCKS AT STAGE 2) -->
+      <div id="live-code-telemetry-grid" style="display: none;" class="quest-only grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div id="section-code" class="border border-zinc-200 bg-white rounded-xl flex flex-col overflow-hidden">
+          <div class="px-5 py-3 border-b border-zinc-200 flex items-center justify-between bg-zinc-50">
+            <span class="text-xs font-mono font-bold text-zinc-900 uppercase">Mainline AST Synthesis (index.ts)</span>
+            <span class="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 font-semibold">CRDT ACTIVE</span>
+          </div>
+          <div class="px-5 py-2 border-b border-zinc-800 bg-zinc-950 flex items-center justify-between font-mono text-[11px]">
+            <span class="text-zinc-400">LATEST_DIFF: <span id="latest-diff-meta" class="text-zinc-500">awaiting commit...</span></span>
+          </div>
+          <div class="bg-zinc-950 max-h-[120px] overflow-auto border-b border-zinc-800">
+            <pre id="latest-diff" class="font-mono text-[11px] leading-relaxed text-zinc-300 px-4 py-2">..</pre>
+          </div>
+          <div class="p-4 bg-zinc-950 text-zinc-100 flex-1 max-h-[260px] overflow-auto">
+            <pre id="code-viewer" class="font-mono text-xs leading-relaxed text-zinc-200">// Loading unified source from Cloudflare Artifacts...</pre>
+          </div>
+        </div>
+
+        <div id="section-events" class="border border-zinc-200 bg-white rounded-xl flex flex-col overflow-hidden">
+          <div class="px-5 py-3 border-b border-zinc-200 flex items-center justify-between bg-zinc-50">
+            <div class="flex items-center space-x-2">
+              <span class="h-2 w-2 rounded-full bg-[#F6821F] animate-pulse"></span>
+              <span class="text-xs font-mono font-bold text-zinc-900 uppercase">Durable Object Event Stream</span>
+            </div>
+            <span class="text-[10px] font-mono text-zinc-500">WebSocket Hibernation</span>
+          </div>
+          <div id="event-stream" class="p-4 bg-zinc-950 text-zinc-200 flex-1 max-h-[380px] overflow-y-auto space-y-2 font-mono text-xs">
+            <div class="text-zinc-500">[SYSTEM] Connected to RepoBrain Durable Object sequencer.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hidden compatibility anchor for E2E tests -->
+  <div id="locked-systems-preview" class="hidden"></div>
+</main>
+  </div>

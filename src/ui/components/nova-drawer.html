@@ -1,0 +1,110 @@
+  <!-- TUTORIAL BACKDROP -->
+  <div id="game-backdrop" class="fixed inset-0 bg-zinc-950/20 backdrop-blur-[1px] z-40 transition-opacity duration-300 pointer-events-none hidden"></div>
+
+  <!-- NOVA: AUTONOMOUS PLATFORM ARCHITECT (CLEAN DEV CONSOLE HUD) -->
+  <div id="guide" class="fixed bottom-0 left-1/2 -translate-x-1/2 z-50 w-[min(920px,96vw)] max-w-5xl transition-all duration-300">
+    <div id="guide-shell-box" class="bg-zinc-950/95 backdrop-blur-md text-white rounded-t-xl border border-b-0 border-zinc-800 px-4 py-2.5 flex flex-col space-y-2 transition-all">
+      
+      <!-- Top Subtle Indicator Line -->
+      <div id="nova-top-signal-line" class="h-0.5 w-full bg-zinc-800 -mt-1 rounded-full transition-all"></div>
+
+      <!-- Header: Identity & Controls -->
+      <div class="flex items-center justify-between border-b border-zinc-800/80 pb-2">
+        <div class="flex items-center space-x-2.5 min-w-0">
+          <div class="w-6 h-6 rounded-md bg-zinc-900 border border-zinc-800 flex items-center justify-center text-[#F6821F] flex-shrink-0">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 28 28" fill="none">
+              <path d="M14 2.5L24 8.25V19.75L14 25.5L4 19.75V8.25L14 2.5Z" stroke="#F6821F" stroke-width="2"/>
+              <circle cx="14" cy="14" r="3" fill="#F6821F"/>
+            </svg>
+          </div>
+
+          <div class="flex items-center space-x-2 font-mono truncate">
+            <span class="text-xs font-semibold text-zinc-200">NOVA</span>
+
+            <!-- Live Voice Equalizer Bars (animating when speaking) -->
+            <div id="nova-voice-eq" class="flex items-center space-x-0.5 h-3.5 px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-800" title="NOVA Voice Telemetry">
+              <span class="eq-1 w-0.5 h-1.5 bg-zinc-600 rounded-full transition-all"></span>
+              <span class="eq-2 w-0.5 h-2.5 bg-zinc-600 rounded-full transition-all"></span>
+              <span class="eq-3 w-0.5 h-1.5 bg-zinc-600 rounded-full transition-all"></span>
+              <span class="eq-4 w-0.5 h-2 bg-zinc-600 rounded-full transition-all"></span>
+            </div>
+
+            <span id="guide-level" class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-400">STANDBY</span>
+            <span id="guide-step-tag" class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-[#F6821F] font-medium">STEP 1/2</span>
+            <span class="hidden lg:inline text-[10px] text-zinc-500 pl-1">· Click any <span class="border-b border-dashed border-[#F6821F] text-zinc-300">dashed term</span> for definition</span>
+          </div>
+
+          <!-- Hidden elements for script compatibility -->
+          <span id="nova-avatar-box" class="hidden"></span>
+          <span id="nova-speak-pill" class="hidden"></span>
+        </div>
+
+        <!-- Action Buttons Cluster -->
+        <div class="flex items-center space-x-1 flex-shrink-0">
+          <button id="guide-prev-btn" onclick="novaPrev()" data-tip="Previous Step" aria-label="Previous Step" class="nova-icon-btn w-7 h-7 rounded-md bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 flex items-center justify-center border border-zinc-800 transition disabled:opacity-30 disabled:pointer-events-none">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+
+          <button id="guide-replay-btn" onclick="novaReplay()" data-tip="Replay Step" aria-label="Replay Step" class="nova-icon-btn w-7 h-7 rounded-md bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 flex items-center justify-center border border-zinc-800 transition">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          </button>
+
+          <button id="guide-glossary-btn" onclick="openTermModal('ast-crdt')" data-tip="Glossary" aria-label="Tech Glossary" class="nova-icon-btn w-7 h-7 rounded-md bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-amber-400 flex items-center justify-center border border-zinc-800 transition font-mono text-xs">
+            ?
+          </button>
+
+          <button id="guide-deep-dive-btn" onclick="toggleDeepDive()" data-tip="Collapse Architecture Note (&lt;/&gt;)" aria-label="Architecture Deep Dive" class="nova-icon-btn w-7 h-7 rounded-md bg-[#F6821F] text-white border border-[#F6821F] flex items-center justify-center transition">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </button>
+
+          <button id="guide-next-btn" onclick="novaNext()" data-tip="Next Step" aria-label="Next Step" class="nova-icon-btn w-8 h-7 rounded-md bg-[#F6821F] hover:bg-[#EA580C] text-white flex items-center justify-center transition shadow-sm font-semibold">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+
+          <button id="guide-cta" onclick="novaRunOffered()" data-tip="Execute Experiment" aria-label="Execute Experiment" class="nova-icon-btn hidden w-8 h-7 rounded-md bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center transition shadow-sm">
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </button>
+
+          <button id="guide-dock-mode-btn" onclick="toggleNovaDockPosition()" data-tip="Dock Top / Float Bottom" aria-label="Toggle Dock Position" class="nova-icon-btn w-7 h-7 rounded-md bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 flex items-center justify-center border border-zinc-800 transition">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+          </button>
+
+          <button id="guide-toggle-btn" onclick="toggleGuideMinimize()" data-tip="Minimize / Expand" aria-label="Minimize / Expand" class="nova-icon-btn w-7 h-7 rounded-md bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 flex items-center justify-center border border-zinc-800 transition">
+            <svg id="guide-toggle-icon" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- The Single Box: Clean, Spacious, Professional Dev Console Card -->
+      <div id="guide-main" class="w-full min-w-full rounded-lg p-3 bg-zinc-900/60 border border-zinc-800 transition-colors">
+        <div class="flex items-center justify-between mb-1.5">
+          <div class="flex items-center space-x-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#F6821F]"></span>
+            <div id="guide-title" class="text-xs font-mono font-semibold text-zinc-300 tracking-wide uppercase">System Briefing</div>
+          </div>
+          <button onclick="toggleDeepDive()" class="text-[10px] font-mono text-zinc-400 hover:text-[#F6821F] transition flex items-center space-x-1">
+            <span>&lt;/&gt;</span>
+            <span>Architecture Note</span>
+          </button>
+        </div>
+
+        <!-- Plain Intuition Text (Full width, clear font, no clutter) -->
+        <div id="guide-text" class="text-xs sm:text-[13px] text-zinc-200 font-normal leading-relaxed font-sans">Initializing...</div>
+
+        <!-- Extended Technical Architecture Spec (Pops open in place, open by default) -->
+        <div id="guide-deep-dive-content"></div>
+
+        <!-- Hidden compatibility tags so existing scripts don't error -->
+        <div id="guide-eng-note" class="hidden"></div>
+        <span id="guide-cf-primitive-pill" class="hidden"></span>
+        <div id="nova-speech-line" class="hidden"></div>
+
+        <div id="guide-typing" class="hidden text-[#F6821F] font-bold tracking-widest text-xs mt-1">
+          <span style="animation:guideTyping 1s infinite">•</span>
+          <span style="animation:guideTyping 1s .2s infinite">•</span>
+          <span style="animation:guideTyping 1s .4s infinite">•</span>
+        </div>
+      </div>
+
+    </div>
+  </div>

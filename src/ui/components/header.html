@@ -1,0 +1,94 @@
+  <!-- TOP GLOBAL HEADER -->
+  <header class="h-14 border-b border-zinc-200 bg-white/95 backdrop-blur-xs px-5 flex items-center justify-between text-xs sticky top-0 z-50">
+    <div class="flex items-center space-x-3.5">
+      <!-- Custom Geometric Convergence Logo (Three parallel vectors converging into an AST node) -->
+      <a href="#" onclick="setView('quest');return false;" class="flex items-center space-x-2.5 text-zinc-950 hover:opacity-90 transition group" title="Convergence // Autonomous Edge Code Platform">
+        <div class="w-8 h-8 rounded-lg bg-zinc-950 flex items-center justify-center border border-zinc-800 shadow-2xs group-hover:border-[#F6821F] transition">
+          <svg class="w-5 h-5" viewBox="0 0 28 28" fill="none">
+            <!-- Outer precision hexagonal ring -->
+            <path d="M14 2.5L24 8.25V19.75L14 25.5L4 19.75V8.25L14 2.5Z" stroke="#3F3F46" stroke-width="1.4"/>
+            <!-- Three incoming agent vectors converging into center AST node -->
+            <path d="M6.5 9.5L14 14M6.5 18.5L14 14M21.5 14H14" stroke="#F6821F" stroke-width="2" stroke-linecap="round"/>
+            <!-- Satellite nodes -->
+            <circle cx="6.5" cy="9.5" r="1.8" fill="#FAFAFA"/>
+            <circle cx="6.5" cy="18.5" r="1.8" fill="#FAFAFA"/>
+            <circle cx="21.5" cy="14" r="1.8" fill="#F6821F"/>
+            <!-- Central verified AST CRDT core -->
+            <circle cx="14" cy="14" r="3.2" fill="#F6821F" stroke="#09090B" stroke-width="1.2"/>
+          </svg>
+        </div>
+        <div class="flex items-baseline space-x-2">
+          <span class="font-bold text-sm tracking-tight text-zinc-950">CONVERGENCE</span>
+          <span class="text-[10px] font-mono uppercase tracking-widest text-zinc-400 hidden sm:inline">v2.4 // EDGE-GIT</span>
+        </div>
+      </a>
+
+      <div class="h-4 w-[1px] bg-zinc-200 hidden sm:block"></div>
+
+      <!-- Runtime Architecture Pills -->
+      <span class="hidden md:inline-flex items-center space-x-1.5 px-2 py-0.5 rounded text-[11px] font-mono bg-zinc-100 text-zinc-700 border border-zinc-200">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#F6821F]"></span>
+        <span>Cloudflare Workers &amp; Artifacts</span>
+      </span>
+      <span id="header-do-badge" class="inline-flex items-center space-x-1.5 px-2 py-0.5 rounded text-[11px] font-mono bg-emerald-50 text-emerald-800 border border-emerald-200">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        <span>Durable Object (SQLite)</span>
+      </span>
+
+      <!-- Active Repository Selector & Creator Dropdown -->
+      <div class="relative inline-block text-left">
+        <button id="btn-repo-selector" onclick="toggleRepoDropdown()" class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded text-xs font-mono font-semibold bg-zinc-900 text-zinc-100 hover:bg-zinc-800 border border-zinc-700 transition">
+          <span class="text-[#F6821F]">⎇</span>
+          <span id="current-active-repo-name" class="truncate max-w-[140px]">convergence-core</span>
+          <span class="text-zinc-500 text-[10px]">▾</span>
+        </button>
+        <div id="repo-dropdown-menu" class="hidden absolute left-0 mt-1 w-64 rounded-lg bg-zinc-950 border border-zinc-800 shadow-xl z-50 p-2 font-mono text-xs space-y-1">
+          <div class="text-[10px] text-zinc-500 uppercase px-2 py-1 font-bold">Edge Repositories</div>
+          <div id="repo-dropdown-list" class="space-y-0.5 max-h-48 overflow-y-auto">
+            <!-- Dynamically populated -->
+          </div>
+          <div class="border-t border-zinc-800 pt-1 mt-1">
+            <button onclick="openNewRepoModal()" class="w-full text-left px-2 py-1.5 rounded hover:bg-zinc-800 text-[#F6821F] font-bold flex items-center space-x-1.5">
+              <span>+</span>
+              <span>New Repository...</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Header: Mode Switcher & GitHub Source -->
+    <div class="flex items-center space-x-2.5">
+      <div class="inline-flex rounded-lg p-0.5 bg-zinc-100 border border-zinc-200 text-[11px] font-medium">
+        <button id="viewbtn-quest" onclick="setView('quest')" class="px-2.5 py-1 rounded-md bg-zinc-900 text-white font-semibold transition flex items-center space-x-1.5">
+          <span>Proving Ground</span>
+          <span id="header-quest-progress" class="font-mono text-[10px] px-1.5 py-0.2 rounded bg-white/15 text-zinc-200">Quest: Level 1 of 5</span>
+        </button>
+        <button id="viewbtn-platform" onclick="tryOpenPlatformView()" class="px-2.5 py-1 rounded-md text-zinc-600 hover:text-zinc-950 font-semibold transition flex items-center space-x-1" title="Full Convergence Platform (Unlocks at 5/5)">
+          <span id="viewbtn-platform-icon">🔒</span>
+          <span>Convergence</span>
+        </button>
+      </div>
+
+      <button onclick="openTermModal('ast-crdt')" class="px-2.5 py-1.5 text-xs text-zinc-700 hover:text-[#F6821F] hover:border-[#F6821F] bg-zinc-50 hover:bg-orange-50/40 rounded-lg border border-zinc-200 transition flex items-center space-x-1.5 font-mono font-semibold" title="Interactive Engineering Glossary: Click any technical term to learn what it means">
+        <span class="text-[#F6821F] font-bold">?</span>
+        <span class="hidden sm:inline">Tech Glossary</span>
+      </button>
+
+      <a href="https://github.com/MauroDruwel/convergence" target="_blank" class="px-2.5 py-1.5 text-xs text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 rounded-lg border border-zinc-200 transition flex items-center space-x-1.5 font-mono" title="View Source Repository">
+        <svg class="w-3.5 h-3.5 text-zinc-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <span class="hidden sm:inline">GitHub</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- STICKY OBJECTIVE BAR (QUEST MODE ONLY) -->
+  <div id="objective-bar" class="quest-only hidden sticky top-14 z-40 bg-zinc-950 text-zinc-100 border-b border-zinc-800 px-5 py-2 items-center justify-between gap-3 text-xs">
+    <div class="flex items-center space-x-2.5 min-w-0 font-mono">
+      <span class="w-2 h-2 rounded-full bg-[#F6821F] animate-pulse flex-shrink-0"></span>
+      <span id="objective-text" class="truncate text-[11px] text-zinc-200">STAGE 01/05 · Execute 25-agent concurrency benchmark</span>
+    </div>
+    <div class="flex items-center space-x-3 flex-shrink-0 font-mono text-[11px]">
+      <span class="text-zinc-400">PROGRESS: <strong id="objective-count" class="text-white">0/5</strong></span>
+    </div>
+  </div>

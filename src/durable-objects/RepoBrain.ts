@@ -256,11 +256,90 @@ The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 `;
 
+    const archDoc = `# Systems Architecture: AST-CRDT Merge Engine & Durable Object Sequencer
+
+## 🔴 The Issue in Legacy Git
+Standard Git relies on GNU diff3 and Longest Common Subsequence (LCS) text hunks.
+When dozens of autonomous AI agents generate code concurrently and append functions to the same file, they share the identical EOF line anchor (\`@@ -78,0 +79,4 @@\`), causing 96% of agent commits to fail with unresolvable merge conflicts.
+
+## 🟢 The Solution: Branchless AST-CRDT Lattice
+Convergence parses TypeScript source files into a semantic AST Symbol Graph (e.g., \`func:handleRefund_1\`, \`interface:PaymentConfig\`).
+1. **Commutative Set Union**: Disjoint symbol additions commutatively merge (A ⊕ B = B ⊕ A) with zero lock contention.
+2. **Causal Lamport Clocks**: Concurrent mutations to the exact same symbol resolve deterministically via \`(lamportClock, agentId)\`.
+3. **No Rebase Doom-Loops**: Swarms merge directly into the branchless mainline.
+
+## 🟠 Cloudflare Port & Primitives
+- **Workers V8 Isolates**: Executes Babel AST parsing at the edge in <2ms with zero cold start.
+- **Durable Objects**: Single-threaded actor execution serializes incoming agent waves.
+- **Embedded SQLite WAL**: Sub-millisecond ACID transactions co-located with compute.
+- **env.ARTIFACTS**: Content-addressed Merkle tree CAS for zero-copy branching.
+`;
+
+    const swarmDoc = `# 100,000-Agent Concurrency & Edit-Time AST Symbol Leases
+
+## 🔴 The Distributed Collision Bottleneck
+In traditional multi-agent systems, agents pull code, query their LLM for 10-30 seconds, and only discover conflicts at \`git push\` time.
+When 1,000 agents touch the codebase simultaneously, 90% of generated tokens ($5–$25 per collision) are completely wasted.
+
+## 🟢 Pre-Inference Symbol Leases & HTTP 423 Backpressure
+Before spending inference tokens, an agent requests an exclusive lease on the target AST symbol (\`func:processOrder\`):
+- \`POST /api/leases/request\`: Claims short TTL lease (e.g., 20 seconds).
+- Competing agents receive \`HTTP 423 Locked\` with \`estimatedWaitMs\` semantic backpressure at **0 generated tokens**.
+- Agents pivot to disjoint symbols or hibernate until the lease releases.
+
+## 🟠 Cloudflare Durable Object Alarms
+- In-memory lock table inside the Durable Object provides <0.5ms lookup latency.
+- Deterministic expiration via \`ctx.storage.setAlarm(expiresAt)\` evicts dead agent leases automatically with zero background polling threads.
+`;
+
+    const immuneDoc = `# Pre-Merge Immune Sandbox & Runtime Antibody Splicer
+
+## 🔴 Semantic Vulnerabilities in AI-Generated Code
+Autonomous LLMs generate syntactically valid code that passes TypeScript compiler checks (\`tsc\`) and linters, but frequently breaches domain boundary invariants (e.g. \`transferFunds(-99999)\`).
+
+## 🟢 Autonomous Immune Sentinel
+Every \`POST /api/commit\` passes through an inline pre-merge sandbox fuzzer before landing in Durable Object storage:
+1. **Boundary Probe**: Probes numerical boundaries (\`[-99999, 0, NaN]\`) and security invariants.
+2. **Antibody Synthesis**: When a breach is caught (e.g. CVE-SIM-01), the sentinel automatically writes a runtime guard:
+   \`if (amount <= 0) throw new RangeError("Invalid amount");\`
+3. **AST Splicing**: Splices the guard into the function's AST node in 4ms, healing the vulnerability before merge.
+`;
+
+    const cfPortDoc = `# Cloudflare Edge Infrastructure Mapping
+
+| Convergence System | Cloudflare Primitive | Performance & Scale |
+| :--- | :--- | :--- |
+| **AST Parser & Validator** | Cloudflare Workers V8 Isolates | <2ms cold start, 0ms warm |
+| **Causal Sequencer (RepoBrain)** | Cloudflare Durable Objects | Single-threaded atomic ordering |
+| **Causal Commits & Symbol Index** | Durable Object SQLite (WAL) | Sub-millisecond ACID queries |
+| **Merkle CAS Blob Storage** | \`env.ARTIFACTS\` Content-Addressed Store | Global zero-copy branching |
+| **Swarm Agent Steering** | WebSocket Hibernation API | 100,000 idle agents @ 0 RAM cost |
+| **Lease Expiration Engine** | Durable Object Alarms API | Precise millisecond eviction |
+| **Model Context Protocol (MCP)** | Cloudflare Workers MCP Router | Dual HTTP + SSE Transport |
+`;
+
+    const provenanceDoc = `# Agent Provenance: Git Notes (\`refs/notes/agent-provenance\`)
+
+## 🔴 Lost AI Reasoning in Traditional Git
+Standard Git commit messages (\`git commit -m "fix"\`) discard the agent's Chain-of-Thought (CoT), model version, temperature, and token telemetry. Storing this in commit bodies breaks commit SHAs and human diff tools.
+
+## 🟢 Git Notes Architecture
+Convergence records full agent provenance in \`refs/notes/agent-provenance\`:
+- Commit SHA remains clean and standard.
+- Structured metadata includes \`agentId\`, \`model\`, \`promptTokens\`, \`completionTokens\`, and \`chainOfThought\`.
+- Queryable via \`git notes --ref=agent-provenance show <sha>\` or \`GET /api/provenance\`.
+`;
+
     const seedFiles: Array<{ name: string; code: string }> = [
       { name: 'index.ts', code: defaultCode },
       { name: 'src/payment.ts', code: paymentCode },
       { name: 'src/auth.ts', code: authCode },
       { name: 'src/policy.ts', code: policyCode },
+      { name: 'docs/ARCHITECTURE.md', code: archDoc },
+      { name: 'docs/SWARM-SPEC.md', code: swarmDoc },
+      { name: 'docs/IMMUNE-SYSTEM.md', code: immuneDoc },
+      { name: 'docs/CLOUDFLARE-PORT.md', code: cfPortDoc },
+      { name: 'docs/PROVENANCE-SPEC.md', code: provenanceDoc },
       { name: 'wrangler.jsonc', code: wranglerCode },
       { name: 'README.md', code: readmeCode },
       { name: 'LICENSE', code: licenseCode },

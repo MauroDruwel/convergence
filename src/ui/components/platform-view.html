@@ -1,0 +1,697 @@
+  <div id="platform-view" class="hidden flex-1 flex-col bg-white min-h-[calc(100vh-3.5rem)] site-entrance-anim">
+    
+    <!-- Repository Sub-Header -->
+    <div class="bg-[#FAFAFA] border-b border-zinc-200 px-6 pt-5 pb-0">
+      <div class="max-w-[1400px] mx-auto space-y-4">
+        
+        <!-- Top Repo Breadcrumb & Action Bar -->
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center space-x-2.5">
+            <div class="w-7 h-7 rounded-md bg-zinc-900 text-[#F6821F] flex items-center justify-center font-mono text-xs font-bold">
+              C
+            </div>
+            <div class="flex items-center space-x-1.5 text-sm">
+              <span class="text-zinc-500 font-medium">mauro-druwel</span>
+              <span class="text-zinc-300">/</span>
+              <span class="font-bold text-zinc-950">convergence-core</span>
+            </div>
+            <span class="px-2 py-0.5 rounded-full border border-zinc-300 bg-white text-[11px] font-mono text-zinc-700 font-medium">Public Edge Repo</span>
+            <span class="hidden sm:inline-flex items-center space-x-1 px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-[11px] font-mono text-emerald-800">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              <span>AST-CRDT Mainline</span>
+            </span>
+          </div>
+
+          <!-- Repo Controls & Quick Agent Sandbox -->
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <div class="hidden xl:flex items-center space-x-1 bg-white border border-zinc-200 rounded-lg px-2.5 py-1 font-mono text-[11px] text-zinc-600">
+              <span class="text-zinc-400">Simulate Agent Push:</span>
+              <button onclick="commitAgentSample('agent_payment')" class="px-1.5 py-0.5 rounded hover:bg-zinc-100 text-zinc-900 font-semibold transition">+payment</button>
+              <span class="text-zinc-300">|</span>
+              <button onclick="commitAgentSample('agent_sentinel')" class="px-1.5 py-0.5 rounded hover:bg-zinc-100 text-zinc-900 font-semibold transition">+sentinel</button>
+              <span class="text-zinc-300">|</span>
+              <button onclick="commitAgentSample('agent_auth')" class="px-1.5 py-0.5 rounded hover:bg-zinc-100 text-zinc-900 font-semibold transition">+auth</button>
+            </div>
+
+            <div id="repo-stats" class="px-3 py-1.5 rounded-lg bg-white border border-zinc-200 font-mono text-[11px] text-zinc-700">
+              7 files · 0 commits · L:0
+            </div>
+
+            <button onclick="switchPTab('connect')" class="px-3 py-1.5 rounded-lg bg-[#F6821F]/10 hover:bg-[#F6821F]/20 text-[#F6821F] border border-[#F6821F]/30 font-mono font-bold transition text-[11px] flex items-center space-x-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#F6821F] animate-ping"></span>
+              <span>Connect Agent</span>
+            </button>
+
+            <button onclick="setView('quest')" class="px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white font-semibold transition text-xs">
+              Back to Proving Ground
+            </button>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="flex space-x-1 text-xs font-semibold overflow-x-auto -mb-[1px]">
+          <button id="ptab-code" onclick="switchPTab('code')" class="px-3.5 py-2.5 border-b-2 border-[#F6821F] text-zinc-950 whitespace-nowrap flex items-center space-x-1.5">
+            <svg class="w-3.5 h-3.5 text-[#F6821F]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            <span>Code &amp; AST Tree</span>
+          </button>
+          <button id="ptab-claude" onclick="switchPTab('claude')" class="px-3.5 py-2.5 border-b-2 border-transparent text-zinc-500 hover:text-zinc-950 whitespace-nowrap flex items-center space-x-1.5">
+            <span class="w-2 h-2 rounded-full bg-[#F6821F] animate-pulse"></span>
+            <span>🖥️ 8x Claude Code Swarm (CLI)</span>
+          </button>
+          <button id="ptab-rpr" onclick="switchPTab('rpr')" class="px-3.5 py-2.5 border-b-2 border-transparent text-zinc-500 hover:text-zinc-950 whitespace-nowrap flex items-center space-x-1.5">
+            <span>⇄ Reverse PRs</span>
+            <span id="pr-tab-badge" class="px-1.5 py-0.2 rounded-full bg-zinc-200 text-zinc-800 font-mono text-[10px]">0</span>
+          </button>
+          <button id="ptab-leases" onclick="switchPTab('leases')" class="px-3.5 py-2.5 border-b-2 border-transparent text-zinc-500 hover:text-zinc-950 whitespace-nowrap flex items-center space-x-1.5">
+            <span>🔑 Symbol Leases</span>
+          </button>
+          <button id="ptab-security" onclick="switchPTab('security')" class="px-3.5 py-2.5 border-b-2 border-transparent text-zinc-500 hover:text-zinc-950 whitespace-nowrap flex items-center space-x-1.5">
+            <span>🛡️ Immune Sentinel</span>
+          </button>
+          <button id="ptab-commits" onclick="switchPTab('commits')" class="px-3.5 py-2.5 border-b-2 border-transparent text-zinc-500 hover:text-zinc-950 whitespace-nowrap flex items-center space-x-1.5">
+            <span>◉ Causal Commits &amp; CoT</span>
+            <span id="pcount" class="px-1.5 py-0.2 rounded-full bg-zinc-200 text-zinc-800 font-mono text-[10px]">0</span>
+          </button>
+          <button id="ptab-people" onclick="switchPTab('people')" class="px-3.5 py-2.5 border-b-2 border-transparent text-zinc-500 hover:text-zinc-950 whitespace-nowrap">
+            <span>◉ Agent Swarm Contributors</span>
+          </button>
+          <button id="ptab-connect" onclick="switchPTab('connect')" class="px-3.5 py-2.5 border-b-2 border-transparent text-zinc-500 hover:text-zinc-950 whitespace-nowrap flex items-center space-x-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>⚡ Agent SDK &amp; Endpoints</span>
+          </button>
+          <!-- Hidden compatibility tabs for switchLevel -->
+          <button id="ptab-arena" onclick="switchPTab('arena')" class="hidden">Arena</button>
+          <button id="ptab-radar" onclick="switchPTab('radar')" class="hidden">Swarm</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Workspace Body -->
+    <div class="flex-1 max-w-[1400px] w-full mx-auto px-6 py-6">
+
+      <!-- PANE 1: CODE & AST EXPLORER (FULL GITHUB-STYLE REPO VIEW) -->
+      <div id="ppane-code" class="space-y-6">
+
+        <!-- Branch / Merkle Bar + Quick Agent Push Bar -->
+        <div class="flex flex-wrap items-center justify-between gap-3 bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-2.5 text-xs">
+          <div class="flex items-center space-x-3">
+            <span class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-white border border-zinc-300 font-mono text-xs font-semibold text-zinc-900 shadow-2xs">
+              <span>⎇ main (branchless CRDT)</span>
+            </span>
+            <span class="text-zinc-500 font-mono text-[11px] hidden md:inline">env.ARTIFACTS Merkle CAS · Zero branch divergence</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="commitAgentSample('agent_payment')" class="px-2.5 py-1 bg-white hover:bg-zinc-100 border border-zinc-300 text-zinc-900 rounded-md transition font-mono text-[11px] font-semibold">
+              + Push agent_payment
+            </button>
+            <button onclick="commitAgentSample('agent_sentinel')" class="px-2.5 py-1 bg-white hover:bg-zinc-100 border border-zinc-300 text-zinc-900 rounded-md transition font-mono text-[11px] font-semibold">
+              + Push agent_sentinel
+            </button>
+            <button id="btn-new-file" onclick="startNewFile()" class="px-2.5 py-1 rounded-md bg-white border border-zinc-300 hover:border-zinc-900 text-zinc-900 text-[11px] font-semibold transition">
+              + New File
+            </button>
+            <button id="btn-edit-file" onclick="startCodeEdit()" class="px-3 py-1 rounded-md bg-zinc-950 hover:bg-[#F6821F] text-white text-[11px] font-semibold transition">
+              Edit AST File
+            </button>
+          </div>
+        </div>
+
+        <!-- 3-Column IDE & Repository Grid: File Tree | Code Viewer/Editor | Live AST Symbol Outline -->
+        <div class="grid lg:grid-cols-[240px_1fr_260px] border border-zinc-200 rounded-xl overflow-hidden bg-white shadow-2xs min-h-[480px]">
+          
+          <!-- Left: File Tree -->
+          <div class="border-b lg:border-b-0 lg:border-r border-zinc-200 bg-[#FAFAFA] p-3 flex flex-col justify-between">
+            <div>
+              <div class="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider px-2 pb-2">Repository Files</div>
+              <div id="pexplorer" class="space-y-0.5"></div>
+            </div>
+            <div class="p-2.5 mt-4 rounded-lg bg-zinc-100 border border-zinc-200 text-[11px] font-mono text-zinc-600 space-y-1">
+              <div class="font-bold text-zinc-900">Storage Engine</div>
+              <div>Cloudflare Artifacts CAS + Durable Object SQLite</div>
+            </div>
+          </div>
+
+          <!-- Center: Source Code & Live AST Editor -->
+          <div class="flex flex-col min-w-0 bg-white">
+            <!-- Editor File Tabs Strip -->
+            <div id="pfile-tabs" class="flex items-center bg-zinc-100/90 border-b border-zinc-200 px-2 pt-1.5 overflow-x-auto space-x-1 font-mono text-xs"></div>
+            <div class="flex items-center justify-between px-4 py-2.5 bg-zinc-50 border-b border-zinc-200 font-mono text-xs">
+              <div class="flex items-center space-x-2">
+                <span id="pfilename" class="font-bold text-zinc-950">index.ts</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">AST Verified</span>
+              </div>
+              <span id="pfile-loc" class="text-[11px] text-zinc-400">TypeScript · UTF-8</span>
+            </div>
+
+            <pre id="platform-file-view" class="font-mono text-xs leading-relaxed text-zinc-800 p-5 overflow-auto max-h-[520px] flex-1">Select a file...</pre>
+
+            <!-- Interactive AST Code Editor -->
+            <div id="platform-editor-wrap" class="hidden flex-col p-4 bg-zinc-950 text-white flex-1">
+              <div class="flex items-center justify-between mb-2 font-mono">
+                <span class="text-xs font-bold text-[#F6821F] flex items-center space-x-1.5">
+                  <span>AST_CRDT_EDITOR //</span>
+                  <span id="editor-active-filename" class="text-white">index.ts</span>
+                </span>
+                <span class="text-[10px] text-zinc-400">Parses top-level declarations into Lamport CRDT nodes</span>
+              </div>
+              <textarea id="code-editor-textarea" class="w-full h-72 font-mono text-xs text-emerald-300 bg-black p-3.5 rounded-lg border border-zinc-800 focus:border-[#F6821F] outline-none leading-relaxed resize-y" spellcheck="false"></textarea>
+              <div class="mt-3 p-3.5 bg-zinc-900 rounded-lg border border-zinc-800 flex flex-col space-y-2.5">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <span class="text-xs font-mono font-bold text-zinc-200">Commit AST mutation to <span class="text-[#F6821F]">main</span></span>
+                  <div class="flex items-center space-x-2">
+                    <span class="text-[11px] font-mono text-zinc-400">Author Identity:</span>
+                    <select id="commit-author-select" class="px-2.5 py-1 bg-zinc-950 border border-zinc-700 rounded text-xs font-mono text-white outline-none">
+                      <option value="Mauro Druwel (human_architect)">Mauro Druwel (Human Architect)</option>
+                      <option value="agent_payment">agent_payment (Payment Specialist)</option>
+                      <option value="agent_sentinel">agent_sentinel (Security Specialist)</option>
+                      <option value="agent_auth">agent_auth (Auth Specialist)</option>
+                    </select>
+                  </div>
+                </div>
+                <input id="commit-msg-input" type="text" placeholder="Commit intent (stored in refs/notes/agent-provenance)" class="px-3 py-1.5 bg-zinc-950 border border-zinc-800 focus:border-[#F6821F] rounded text-xs text-white outline-none font-mono" />
+                <div class="flex items-center justify-end space-x-2">
+                  <button onclick="cancelCodeEdit()" class="px-3 py-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-zinc-200 transition">Cancel</button>
+                  <button onclick="submitCodeCommit()" class="px-4 py-1.5 rounded bg-[#F6821F] hover:bg-[#EA580C] text-xs font-bold text-white transition">
+                    Commit &amp; Graft AST Symbol
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Live Parsed AST Symbol Outline -->
+          <div class="border-t lg:border-t-0 lg:border-l border-zinc-200 bg-[#FAFAFA] p-3 flex flex-col justify-between">
+            <div>
+              <div class="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider px-2 pb-2">AST Symbol Graph</div>
+              <div id="past-symbols" class="space-y-1 max-h-[420px] overflow-y-auto"></div>
+            </div>
+            <div class="p-2.5 mt-4 rounded-lg bg-white border border-zinc-200 text-[11px] font-mono text-zinc-500">
+              Each symbol above is independently addressable &amp; leaseable.
+            </div>
+          </div>
+        </div>
+
+        <!-- Repository README.md // Full 6-Function Architecture Matrix (Issue -> Solution -> Cloudflare Port) -->
+        <div class="border border-zinc-200 rounded-xl bg-white overflow-hidden shadow-2xs">
+          <div class="px-6 py-4 bg-zinc-950 text-white border-b border-zinc-800 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div class="text-[10px] font-mono text-[#F6821F] font-bold uppercase tracking-widest">📖 ARCHITECTURE BLUEPRINT // WHY EVERY MODULE WAS INTEGRATED</div>
+              <h3 class="text-sm font-bold text-white mt-0.5">The 6 Core Portal Functions: Legacy Issue → Convergence Solution → How Cloudflare Ports It</h3>
+            </div>
+            <span class="px-2.5 py-1 rounded bg-zinc-900 border border-zinc-700 font-mono text-[11px] text-zinc-300">mauro-druwel/convergence-core</span>
+          </div>
+
+          <div class="p-6 grid md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+            <!-- Module 1 -->
+            <div class="p-4 rounded-xl border border-zinc-200 bg-zinc-50/60 flex flex-col justify-between space-y-3 hover:border-zinc-400 transition">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between font-mono">
+                  <span class="font-bold text-zinc-950 text-xs">01 // AST-CRDT Symbol Graph</span>
+                  <span class="px-2 py-0.5 rounded bg-orange-50 text-[#F6821F] border border-orange-200 text-[10px] font-bold">env.ARTIFACTS</span>
+                </div>
+                <div class="p-2 rounded bg-rose-50/80 border border-rose-200/70 text-[11px] text-rose-950">
+                  <strong class="font-mono uppercase text-[10px] text-rose-700">The Issue:</strong> GNU <code class="font-mono">diff3</code> merges raw text lines; 25 agents appending to 1 file trigger 24 EOF line-anchor conflicts.
+                </div>
+                <div class="p-2 rounded bg-emerald-50/80 border border-emerald-200/70 text-[11px] text-emerald-950">
+                  <strong class="font-mono uppercase text-[10px] text-emerald-700">The Solution:</strong> Parse files into AST declaration nodes (<code class="font-mono">func:*</code>, <code class="font-mono">interface:*</code>) that merge commutatively with 0 line locks.
+                </div>
+                <div class="p-2 rounded bg-zinc-900 text-zinc-200 text-[11px]">
+                  <strong class="font-mono uppercase text-[10px] text-[#F6821F]">Cloudflare Port:</strong> <strong>Workers V8 Isolates</strong> parse ASTs in &lt;2ms and graft merkle pointers directly into <strong>Cloudflare Artifacts CAS</strong>.
+                </div>
+              </div>
+              <button onclick="switchPTab('code');window.scrollTo({top:0,behavior:'smooth'})" class="w-full py-1.5 rounded-lg bg-white hover:bg-zinc-900 hover:text-white border border-zinc-300 font-mono text-[11px] font-semibold transition">Inspect AST Graph Above ↑</button>
+            </div>
+
+            <!-- Module 2 -->
+            <div class="p-4 rounded-xl border border-zinc-200 bg-zinc-50/60 flex flex-col justify-between space-y-3 hover:border-zinc-400 transition">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between font-mono">
+                  <span class="font-bold text-zinc-950 text-xs">02 // RepoBrain Actor Sequencer</span>
+                  <span class="px-2 py-0.5 rounded bg-orange-50 text-[#F6821F] border border-orange-200 text-[10px] font-bold">DO SQLite</span>
+                </div>
+                <div class="p-2 rounded bg-rose-50/80 border border-rose-200/70 text-[11px] text-rose-950">
+                  <strong class="font-mono uppercase text-[10px] text-rose-700">The Issue:</strong> Centralized Postgres/Redis Git servers stall under distributed Two-Phase Commit (2PC) lock contention during swarm waves.
+                </div>
+                <div class="p-2 rounded bg-emerald-50/80 border border-emerald-200/70 text-[11px] text-emerald-950">
+                  <strong class="font-mono uppercase text-[10px] text-emerald-700">The Solution:</strong> A single-threaded causal sequencer that orders every agent mutation via monotonic Lamport timestamps (<code class="font-mono">L</code>).
+                </div>
+                <div class="p-2 rounded bg-zinc-900 text-zinc-200 text-[11px]">
+                  <strong class="font-mono uppercase text-[10px] text-[#F6821F]">Cloudflare Port:</strong> <strong>Durable Objects (<code class="font-mono">idFromName</code>)</strong> co-locate single-threaded compute with embedded <strong>SQLite WAL</strong> (~10ms commits).
+                </div>
+              </div>
+              <button onclick="switchPTab('people')" class="w-full py-1.5 rounded-lg bg-white hover:bg-zinc-900 hover:text-white border border-zinc-300 font-mono text-[11px] font-semibold transition">Open Swarm Sequencer Tab →</button>
+            </div>
+
+            <!-- Module 3 -->
+            <div class="p-4 rounded-xl border border-zinc-200 bg-zinc-50/60 flex flex-col justify-between space-y-3 hover:border-zinc-400 transition">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between font-mono">
+                  <span class="font-bold text-zinc-950 text-xs">03 // Edit-Time Symbol Leases</span>
+                  <span class="px-2 py-0.5 rounded bg-orange-50 text-[#F6821F] border border-orange-200 text-[10px] font-bold">DO Alarms + 423</span>
+                </div>
+                <div class="p-2 rounded bg-rose-50/80 border border-rose-200/70 text-[11px] text-rose-950">
+                  <strong class="font-mono uppercase text-[10px] text-rose-700">The Issue:</strong> Two agents refactoring the <em>exact same function</em> simultaneously waste thousands of LLM tokens before one gets overwritten.
+                </div>
+                <div class="p-2 rounded bg-emerald-50/80 border border-emerald-200/70 text-[11px] text-emerald-950">
+                  <strong class="font-mono uppercase text-[10px] text-emerald-700">The Solution:</strong> Pre-inference TTL symbol locks (<code class="font-mono">func:processOrder</code>) that return <code class="font-mono">HTTP 423</code> backpressure before token generation.
+                </div>
+                <div class="p-2 rounded bg-zinc-900 text-zinc-200 text-[11px]">
+                  <strong class="font-mono uppercase text-[10px] text-[#F6821F]">Cloudflare Port:</strong> <strong>DO In-Memory Lock Table + <code class="font-mono">ctx.storage.setAlarm()</code></strong> evict expired leases at the exact millisecond TTL ends.
+                </div>
+              </div>
+              <button onclick="switchPTab('leases')" class="w-full py-1.5 rounded-lg bg-white hover:bg-zinc-900 hover:text-white border border-zinc-300 font-mono text-[11px] font-semibold transition">Open Symbol Leases Tab →</button>
+            </div>
+
+            <!-- Module 4 -->
+            <div class="p-4 rounded-xl border border-zinc-200 bg-zinc-50/60 flex flex-col justify-between space-y-3 hover:border-zinc-400 transition">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between font-mono">
+                  <span class="font-bold text-zinc-950 text-xs">04 // Pre-Merge Immune Sentinel</span>
+                  <span class="px-2 py-0.5 rounded bg-orange-50 text-[#F6821F] border border-orange-200 text-[10px] font-bold">Worker Isolates</span>
+                </div>
+                <div class="p-2 rounded bg-rose-50/80 border border-rose-200/70 text-[11px] text-rose-950">
+                  <strong class="font-mono uppercase text-[10px] text-rose-700">The Issue:</strong> AI code often compiles cleanly (<code class="font-mono">tsc</code> passes) but lacks boundary guards (<code class="font-mono">amount &lt;= 0</code>), while traditional CI takes 5+ minutes.
+                </div>
+                <div class="p-2 rounded bg-emerald-50/80 border border-emerald-200/70 text-[11px] text-emerald-950">
+                  <strong class="font-mono uppercase text-[10px] text-emerald-700">The Solution:</strong> Inline pre-merge AST fuzzer that probes boundary vectors and auto-splices runtime <code class="font-mono">RangeError</code> antibodies.
+                </div>
+                <div class="p-2 rounded bg-zinc-900 text-zinc-200 text-[11px]">
+                  <strong class="font-mono uppercase text-[10px] text-[#F6821F]">Cloudflare Port:</strong> <strong>Dynamic Worker Isolates</strong> spin up in &lt;4ms with 0ms cold start to fuzz &amp; heal AST nodes inline during <code class="font-mono">POST /api/commit</code>.
+                </div>
+              </div>
+              <button onclick="switchPTab('security')" class="w-full py-1.5 rounded-lg bg-white hover:bg-zinc-900 hover:text-white border border-zinc-300 font-mono text-[11px] font-semibold transition">Open Immune Sentinel Tab →</button>
+            </div>
+
+            <!-- Module 5 -->
+            <div class="p-4 rounded-xl border border-zinc-200 bg-zinc-50/60 flex flex-col justify-between space-y-3 hover:border-zinc-400 transition">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between font-mono">
+                  <span class="font-bold text-zinc-950 text-xs">05 // Reverse Pull Requests</span>
+                  <span class="px-2 py-0.5 rounded bg-orange-50 text-[#F6821F] border border-orange-200 text-[10px] font-bold">WS Hibernation</span>
+                </div>
+                <div class="p-2 rounded bg-rose-50/80 border border-rose-200/70 text-[11px] text-rose-950">
+                  <strong class="font-mono uppercase text-[10px] text-rose-700">The Issue:</strong> Humans cannot review 5,000 routine agent PRs a day, yet agents shouldn't guess high-level schema/security trade-offs.
+                </div>
+                <div class="p-2 rounded bg-emerald-50/80 border border-emerald-200/70 text-[11px] text-emerald-950">
+                  <strong class="font-mono uppercase text-[10px] text-emerald-700">The Solution:</strong> Inversion of Control: routine functions auto-merge, while architectural forks open a 1-click Reverse PR for human steering.
+                </div>
+                <div class="p-2 rounded bg-zinc-900 text-zinc-200 text-[11px]">
+                  <strong class="font-mono uppercase text-[10px] text-[#F6821F]">Cloudflare Port:</strong> <strong>DO WebSocket Hibernation (<code class="font-mono">acceptWebSocket</code>)</strong> holds 10,000+ paused agent sockets at 0 memory cost until resolved.
+                </div>
+              </div>
+              <button onclick="switchPTab('rpr')" class="w-full py-1.5 rounded-lg bg-white hover:bg-zinc-900 hover:text-white border border-zinc-300 font-mono text-[11px] font-semibold transition">Open Reverse PRs Tab →</button>
+            </div>
+
+            <!-- Module 6 -->
+            <div class="p-4 rounded-xl border border-zinc-200 bg-zinc-50/60 flex flex-col justify-between space-y-3 hover:border-zinc-400 transition">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between font-mono">
+                  <span class="font-bold text-zinc-950 text-xs">06 // CoT Git Notes &amp; Agent SDK</span>
+                  <span class="px-2 py-0.5 rounded bg-orange-50 text-[#F6821F] border border-orange-200 text-[10px] font-bold">refs/notes/cot</span>
+                </div>
+                <div class="p-2 rounded bg-rose-50/80 border border-rose-200/70 text-[11px] text-rose-950">
+                  <strong class="font-mono uppercase text-[10px] text-rose-700">The Issue:</strong> Standard Git commits lose agent Chain-of-Thought, model IDs, and token telemetry—or mutate commit SHAs if injected into headers.
+                </div>
+                <div class="p-2 rounded bg-emerald-50/80 border border-emerald-200/70 text-[11px] text-emerald-950">
+                  <strong class="font-mono uppercase text-[10px] text-emerald-700">The Solution:</strong> Attach structured JSON provenance to <code class="font-mono">refs/notes/agent-provenance</code> and expose a 3-endpoint Agent SDK.
+                </div>
+                <div class="p-2 rounded bg-zinc-900 text-zinc-200 text-[11px]">
+                  <strong class="font-mono uppercase text-[10px] text-[#F6821F]">Cloudflare Port:</strong> <strong>DO SQLite + Artifacts Object Notes</strong> index CoT telemetry at the edge with 100% Git CLI compatibility.
+                </div>
+              </div>
+              <button onclick="switchPTab('connect')" class="w-full py-1.5 rounded-lg bg-white hover:bg-zinc-900 hover:text-white border border-zinc-300 font-mono text-[11px] font-semibold transition">Open Agent SDK &amp; Endpoints →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANE 2: COMMITS & GIT NOTES -->
+      <div id="ppane-commits" class="hidden space-y-5"></div>
+
+      <!-- PANE 3: CONTRIBUTORS -->
+      <div id="ppane-people" class="hidden space-y-5"></div>
+
+      <!-- PANE 4: REVERSE PRS -->
+      <div id="ppane-rpr" class="hidden space-y-5">
+        <div class="grid md:grid-cols-3 gap-3 bg-zinc-950 text-white p-4 rounded-xl border border-zinc-800 text-xs">
+          <div class="p-3 rounded-lg bg-zinc-900/90 border border-zinc-800 space-y-1">
+            <div class="text-[10px] font-mono font-bold text-rose-400 uppercase flex items-center justify-between">
+              <span>01 // THE ISSUE (PR BOTTLENECK)</span>
+              <span class="px-1.5 py-0.2 rounded bg-rose-950 text-rose-300 border border-rose-800/60">Human Fatigue</span>
+            </div>
+            <p class="text-zinc-300 text-[11px] leading-relaxed">Human engineers cannot review 5,000 routine AI Pull Requests per day without halting the swarm, yet letting agents guess core schema or security architecture is dangerous.</p>
+          </div>
+          <div class="p-3 rounded-lg bg-zinc-900/90 border border-zinc-800 space-y-1">
+            <div class="text-[10px] font-mono font-bold text-emerald-400 uppercase flex items-center justify-between">
+              <span>02 // THE SOLUTION (WHY INTEGRATED)</span>
+              <span class="px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-800/60">Inversion of Control</span>
+            </div>
+            <p class="text-zinc-300 text-[11px] leading-relaxed">Integrated <strong>Reverse Pull Requests</strong>: routine AST commits auto-merge via the Immune Sentinel, while agents that hit an architectural fork pause and ask YOU for a 1-click decision.</p>
+          </div>
+          <div class="p-3 rounded-lg bg-zinc-900/90 border border-[#F6821F]/40 space-y-1">
+            <div class="text-[10px] font-mono font-bold text-[#F6821F] uppercase flex items-center justify-between">
+              <span>03 // HOW CLOUDFLARE PORTS IT</span>
+              <span class="px-1.5 py-0.2 rounded bg-[#F6821F]/20 text-[#F6821F] border border-[#F6821F]/40">WS Hibernation</span>
+            </div>
+            <p class="text-zinc-300 text-[11px] leading-relaxed"><strong>Durable Object WebSocket Hibernation (<code class="font-mono text-amber-300">state.acceptWebSocket</code>)</strong> keeps 10,000+ waiting agent sockets open at 0 memory cost and broadcasts your 1-click choice in &lt;15ms.</p>
+          </div>
+        </div>
+        <div class="border border-zinc-200 rounded-xl bg-white p-6">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-zinc-200">
+          <div>
+            <h3 class="text-base font-bold text-zinc-950">Reverse Pull Requests (Swarm -> Human Architect)</h3>
+            <p class="text-xs text-zinc-500">Agents merge code autonomously and open Reverse PRs when human architectural direction is required.</p>
+          </div>
+          <button onclick="triggerTestRPR()" class="px-3.5 py-1.5 rounded-lg bg-zinc-950 hover:bg-[#F6821F] text-white text-xs font-semibold transition">
+            + Simulate Agent Escalation
+          </button>
+        </div>
+        <div id="platform-rpr-list" class="divide-y divide-zinc-100 mt-2"></div>
+        </div>
+      </div>
+
+      <!-- PANE 5: SYMBOL LEASES -->
+      <div id="ppane-leases" class="hidden space-y-5">
+        <div class="grid md:grid-cols-3 gap-3 bg-zinc-950 text-white p-4 rounded-xl border border-zinc-800 text-xs">
+          <div class="p-3 rounded-lg bg-zinc-900/90 border border-zinc-800 space-y-1">
+            <div class="text-[10px] font-mono font-bold text-rose-400 uppercase flex items-center justify-between">
+              <span>01 // THE ISSUE (LLM TOKEN BURN)</span>
+              <span class="px-1.5 py-0.2 rounded bg-rose-950 text-rose-300 border border-rose-800/60">Late Conflict</span>
+            </div>
+            <p class="text-zinc-300 text-[11px] leading-relaxed">If two agents simultaneously refactor the <em>exact same function</em> (<code class="font-mono">func:processOrder</code>), catching the collision at <code class="font-mono">git push</code> means both already wasted thousands of LLM tokens.</p>
+          </div>
+          <div class="p-3 rounded-lg bg-zinc-900/90 border border-zinc-800 space-y-1">
+            <div class="text-[10px] font-mono font-bold text-emerald-400 uppercase flex items-center justify-between">
+              <span>02 // THE SOLUTION (WHY INTEGRATED)</span>
+              <span class="px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-800/60">Edit-Time Lease</span>
+            </div>
+            <p class="text-zinc-300 text-[11px] leading-relaxed">Integrated <strong>Pre-Inference Symbol Leases</strong>: agents claim a short TTL lock on a target AST symbol <em>before</em> calling the LLM. Competing agents get <code class="font-mono text-emerald-300">HTTP 423</code> backpressure at 0 tokens spent.</p>
+          </div>
+          <div class="p-3 rounded-lg bg-zinc-900/90 border border-[#F6821F]/40 space-y-1">
+            <div class="text-[10px] font-mono font-bold text-[#F6821F] uppercase flex items-center justify-between">
+              <span>03 // HOW CLOUDFLARE PORTS IT</span>
+              <span class="px-1.5 py-0.2 rounded bg-[#F6821F]/20 text-[#F6821F] border border-[#F6821F]/40">DO Alarms API</span>
+            </div>
+            <p class="text-zinc-300 text-[11px] leading-relaxed"><strong>Durable Object In-Memory Lock Table + <code class="font-mono text-amber-300">ctx.storage.setAlarm(ttl)</code></strong> arbitrate locks in &lt;1ms globally and auto-evict expired leases at the exact millisecond TTL ends.</p>
+          </div>
+        </div>
+        <div class="border border-zinc-200 rounded-xl bg-white p-6">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-zinc-200">
+          <div>
+            <h3 class="text-base font-bold text-zinc-950">Active AST Symbol Leases (<code class="font-mono text-xs">HTTP 423</code> Backpressure Table)</h3>
+            <p class="text-xs text-zinc-500">Acquire an exclusive TTL write lock on any AST symbol to halt competing agents before they burn LLM tokens.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <select id="direct-lease-symbol" class="px-2.5 py-1.5 rounded-lg border border-zinc-300 bg-white font-mono text-[11px] outline-none">
+              <option value="func:processOrder">func:processOrder</option>
+              <option value="func:authorizePayment">func:authorizePayment</option>
+              <option value="func:validateAmount">func:validateAmount</option>
+              <option value="interface:PaymentConfig">interface:PaymentConfig</option>
+              <option value="interface:Transaction">interface:Transaction</option>
+            </select>
+            <select id="direct-lease-agent" class="px-2.5 py-1.5 rounded-lg border border-zinc-300 bg-white font-mono text-[11px] outline-none">
+              <option value="human_architect">Mauro Druwel (Human)</option>
+              <option value="agent_payment">agent_payment</option>
+              <option value="agent_sentinel">agent_sentinel</option>
+              <option value="agent_fraud">agent_fraud</option>
+            </select>
+            <button onclick="requestDirectLease()" class="px-3.5 py-1.5 rounded-lg bg-zinc-950 hover:bg-[#F6821F] text-white font-semibold transition text-xs">
+              Acquire Symbol Lease
+            </button>
+          </div>
+        </div>
+        <div id="platform-leases-list" class="mt-4"></div>
+        </div>
+      </div>
+
+      <!-- PANE 6: IMMUNE SECURITY SENTINEL -->
+      <div id="ppane-security" class="hidden space-y-5">
+        <div class="grid md:grid-cols-3 gap-3 bg-zinc-950 text-white p-4 rounded-xl border border-zinc-800 text-xs">
+          <div class="p-3 rounded-lg bg-zinc-900/90 border border-zinc-800 space-y-1">
+            <div class="text-[10px] font-mono font-bold text-rose-400 uppercase flex items-center justify-between">
+              <span>01 // THE ISSUE (SILENT LOGIC BUGS)</span>
+              <span class="px-1.5 py-0.2 rounded bg-rose-950 text-rose-300 border border-rose-800/60">Slow 5-Min CI</span>
+            </div>
+            <p class="text-zinc-300 text-[11px] leading-relaxed">LLMs generate code that compiles 100% cleanly (<code class="font-mono">tsc</code> passes) but forgets boundary guards like <code class="font-mono">amount &lt;= 0</code>. Traditional 5-minute GitHub Actions CI is 30,000x too slow for swarms.</p>
+          </div>
+          <div class="p-3 rounded-lg bg-zinc-900/90 border border-zinc-800 space-y-1">
+            <div class="text-[10px] font-mono font-bold text-emerald-400 uppercase flex items-center justify-between">
+              <span>02 // THE SOLUTION (WHY INTEGRATED)</span>
+              <span class="px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-800/60">AST Antibody</span>
+            </div>
+            <p class="text-zinc-300 text-[11px] leading-relaxed">Integrated an inline <strong>Pre-Merge Code Immune System</strong> that boundary-fuzzes AST parameters on push and auto-splices synthetic runtime guards (<code class="font-mono text-emerald-300">RangeError</code>) before merge.</p>
+          </div>
+          <div class="p-3 rounded-lg bg-zinc-900/90 border border-[#F6821F]/40 space-y-1">
+            <div class="text-[10px] font-mono font-bold text-[#F6821F] uppercase flex items-center justify-between">
+              <span>03 // HOW CLOUDFLARE PORTS IT</span>
+              <span class="px-1.5 py-0.2 rounded bg-[#F6821F]/20 text-[#F6821F] border border-[#F6821F]/40">Worker Isolates</span>
+            </div>
+            <p class="text-zinc-300 text-[11px] leading-relaxed"><strong>Dynamic Cloudflare Worker Isolates</strong> spin up in &lt;4ms with 0ms cold start to execute adversarial boundary probes inline during the <code class="font-mono text-amber-300">POST /api/commit</code> edge request.</p>
+          </div>
+        </div>
+        <div class="border border-zinc-200 rounded-xl bg-white p-6">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-zinc-200">
+          <div>
+            <h3 class="text-base font-bold text-zinc-950">Autonomous Code Immune System</h3>
+            <p class="text-xs text-zinc-500">Pre-merge AST invariant fuzzing &amp; automatic runtime antibody synthesis.</p>
+          </div>
+          <button onclick="testImmuneAttack();renderPlatform(window.__lastState||{});" class="px-3.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold transition">
+            Run Red-Team Boundary Probe
+          </button>
+        </div>
+        <div id="platform-immune-telemetry" class="mt-4 grid md:grid-cols-2 gap-4"></div>
+        </div>
+      </div>
+
+      <!-- PANE 7: EXTERNAL AGENT SDK, REST ENDPOINTS & WEBSOCKET STREAM -->
+      <div id="ppane-connect" class="hidden space-y-6">
+        <div class="border border-zinc-200 rounded-xl bg-white p-6 shadow-2xs">
+          <div class="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-zinc-200">
+            <div>
+              <div class="inline-flex items-center space-x-2 px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-800 font-mono text-[10px] font-bold mb-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                <span>READY FOR EXTERNAL AUTONOMOUS AGENTS // ZERO CONFIG</span>
+              </div>
+              <h3 class="text-base font-bold text-zinc-950">External Agent Integration Hub (REST + Hibernatable WebSocket + MCP)</h3>
+              <p class="text-xs text-zinc-500 mt-0.5">Any external coding agent (Claude Code, Cursor, custom Python/TS Workers) can connect directly to this <code class="font-mono text-zinc-800">RepoBrain</code> Durable Object instance.</p>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button onclick="copyAgentSdkSnippet()" class="px-3.5 py-2 rounded-lg bg-zinc-950 hover:bg-[#F6821F] text-white text-xs font-mono font-semibold transition flex items-center space-x-1.5">
+                <span>📋 Copy TypeScript Agent SDK</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 3 Step Connection Contract -->
+          <div class="grid md:grid-cols-3 gap-4 mt-5">
+            <div class="p-4 rounded-xl bg-zinc-50 border border-zinc-200 space-y-2">
+              <div class="flex items-center justify-between font-mono text-[11px]">
+                <span class="font-bold text-[#F6821F]">STEP 01 // LEASE HANDSHAKE</span>
+                <span class="px-1.5 py-0.5 rounded bg-zinc-200 text-zinc-800 text-[10px]">POST /api/leases/request</span>
+              </div>
+              <p class="text-xs text-zinc-600 leading-relaxed">Before generating LLM tokens, your agent locks its target AST symbol (<code class="font-mono">func:processOrder</code>). Returns <code class="font-mono text-emerald-700">200 Granted</code> or <code class="font-mono text-amber-700">423 Backpressure</code>.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-zinc-50 border border-zinc-200 space-y-2">
+              <div class="flex items-center justify-between font-mono text-[11px]">
+                <span class="font-bold text-[#F6821F]">STEP 02 // AST-CRDT GRAFT</span>
+                <span class="px-1.5 py-0.5 rounded bg-zinc-200 text-zinc-800 text-[10px]">POST /api/commit</span>
+              </div>
+              <p class="text-xs text-zinc-600 leading-relaxed">Push the updated source or symbol node with Chain-of-Thought metadata. The pre-merge Immune Sentinel fuzzes boundaries and grafts into <code class="font-mono">env.ARTIFACTS</code>.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-zinc-50 border border-zinc-200 space-y-2">
+              <div class="flex items-center justify-between font-mono text-[11px]">
+                <span class="font-bold text-[#F6821F]">STEP 03 // LIVE WS / RPR</span>
+                <span class="px-1.5 py-0.5 rounded bg-zinc-200 text-zinc-800 text-[10px]">WSS /ws</span>
+              </div>
+              <p class="text-xs text-zinc-600 leading-relaxed">Subscribe to real-time Lamport clock ticks, peer AST merges, and human architect resolutions for Reverse Pull Requests.</p>
+            </div>
+          </div>
+
+          <!-- Ready-to-Drop Agent Connector Code + Live Endpoint Tester -->
+          <div class="grid lg:grid-cols-2 gap-5 mt-5">
+            <div class="bg-zinc-950 rounded-xl border border-zinc-800 overflow-hidden flex flex-col">
+              <div class="px-4 py-2.5 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between font-mono text-[11px]">
+                <span class="text-zinc-200 font-bold">agent-connector.ts // Drop into your second agent</span>
+                <span class="text-emerald-400">Cloudflare Worker / Node / Bun</span>
+              </div>
+              <pre id="agent-sdk-code" class="p-4 font-mono text-[11px] text-zinc-300 overflow-x-auto leading-relaxed flex-1">const CONVERGENCE_URL = window.location.origin;
+
+export async function runAutonomousAgentTask(agentId: string, symbolId: string) {
+  // 1. Acquire Edit-Time AST Symbol Lease (prevents token burn)
+  const leaseRes = await fetch(`${CONVERGENCE_URL}/api/leases/request`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      agentId,
+      symbolId,
+      leaseType: "exclusive_write",
+      ttlMs: 15000,
+      intent: "Autonomous AST optimization & invariant hardening"
+    })
+  });
+
+  const lease = await leaseRes.json();
+  if (!lease.granted) {
+    console.warn(`[HTTP 423] Symbol locked by ${lease.backpressure?.holder}. Waiting...`);
+    return;
+  }
+
+  // 2. Push AST Symbol Mutation + Git Notes Provenance
+  const commitRes = await fetch(`${CONVERGENCE_URL}/api/commit`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      agentId,
+      filename: "index.ts",
+      sourceCode: "// Updated AST node grafted by " + agentId,
+      message: `feat(${symbolId}): autonomous CRDT symbol graft`
+    })
+  });
+
+  return await commitRes.json();
+}</pre>
+            </div>
+
+            <!-- Interactive Live API Handshake Tester -->
+            <div class="bg-zinc-50 rounded-xl border border-zinc-200 p-4 flex flex-col justify-between space-y-4">
+              <div class="space-y-2">
+                <div class="flex items-center justify-between font-mono text-xs">
+                  <span class="font-bold text-zinc-950">Live External Agent Handshake Simulator</span>
+                  <span id="sdk-ping-badge" class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">DO_ONLINE · ~9ms</span>
+                </div>
+                <p class="text-xs text-zinc-600">Test the exact 3-step REST &amp; WebSocket sequence your external agent will execute against this platform:</p>
+
+                <div class="space-y-2 pt-2 font-mono text-[11px]">
+                  <div class="p-2.5 rounded-lg bg-white border border-zinc-200 flex items-center justify-between">
+                    <span><strong class="text-zinc-900">GET /api/state</strong> · Fetch Merkle Tree &amp; AST Graph</span>
+                    <button onclick="testExternalAgentPing('state')" class="px-2.5 py-1 rounded bg-zinc-900 hover:bg-[#F6821F] text-white text-[10px] font-bold transition">Test GET</button>
+                  </div>
+                  <div class="p-2.5 rounded-lg bg-white border border-zinc-200 flex items-center justify-between">
+                    <span><strong class="text-zinc-900">POST /api/leases/request</strong> · Claim AST Lease</span>
+                    <button onclick="testExternalAgentPing('lease')" class="px-2.5 py-1 rounded bg-zinc-900 hover:bg-[#F6821F] text-white text-[10px] font-bold transition">Test Lock</button>
+                  </div>
+                  <div class="p-2.5 rounded-lg bg-white border border-zinc-200 flex items-center justify-between">
+                    <span><strong class="text-zinc-900">POST /api/commit</strong> · Graft New AST Function</span>
+                    <button onclick="testExternalAgentPing('commit')" class="px-2.5 py-1 rounded bg-zinc-900 hover:bg-[#F6821F] text-white text-[10px] font-bold transition">Test Graft</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-zinc-950 rounded-lg p-3 border border-zinc-800 font-mono text-[11px] space-y-1">
+                <div class="text-zinc-500 flex items-center justify-between">
+                  <span>❯ AGENT_WIRE_INSPECTOR</span>
+                  <span id="sdk-wire-status" class="text-emerald-400">200 OK</span>
+                </div>
+                <pre id="sdk-wire-output" class="text-emerald-300 text-[10px] overflow-x-auto max-h-28 leading-relaxed">{ "status": "ready", "durableObject": "RepoBrain", "protocol": "AST-CRDT/v2.4" }</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANE 8: 8x CLAUDE CODE SWARM MULTIPLEXER (LIVE CLI & TMUX SESSIONS) -->
+      <div id="ppane-claude" class="hidden space-y-5">
+        <!-- Architectural Rationale Strip -->
+        <div class="grid md:grid-cols-3 gap-3 bg-zinc-950 text-white p-4 rounded-xl border border-zinc-800 text-xs">
+          <div class="p-3 rounded-lg bg-zinc-900/90 border border-zinc-800 space-y-1">
+            <div class="text-[10px] font-mono font-bold text-rose-400 uppercase flex items-center justify-between">
+              <span>01 // THE ISSUE (LOCAL WORKTREES)</span>
+              <span class="px-1.5 py-0.2 rounded bg-rose-950 text-rose-300 border border-rose-800/60">Git Worktree Lock</span>
+            </div>
+            <p class="text-zinc-300 text-[11px] leading-relaxed">Running 8 concurrent Claude Code sessions against a standard Git repo requires 8 separate 500MB local worktrees and constantly halts on <code class="font-mono">index.lock</code> and <code class="font-mono">git pull --rebase</code> loops.</p>
+          </div>
+          <div class="p-3 rounded-lg bg-zinc-900/90 border border-zinc-800 space-y-1">
+            <div class="text-[10px] font-mono font-bold text-emerald-400 uppercase flex items-center justify-between">
+              <span>02 // THE SOLUTION (WHY INTEGRATED)</span>
+              <span class="px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-800/60">conv CLI + MCP</span>
+            </div>
+            <p class="text-zinc-300 text-[11px] leading-relaxed">Integrated the <strong><code class="font-mono text-emerald-300">conv</code> CLI &amp; MCP Server</strong>: Claude Code sessions acquire symbol leases (<code class="font-mono">conv lease acquire</code>) and push AST nodes (<code class="font-mono">conv push --symbol</code>) directly to the edge.</p>
+          </div>
+          <div class="p-3 rounded-lg bg-zinc-900/90 border border-[#F6821F]/40 space-y-1">
+            <div class="text-[10px] font-mono font-bold text-[#F6821F] uppercase flex items-center justify-between">
+              <span>03 // HOW CLOUDFLARE PORTS IT</span>
+              <span class="px-1.5 py-0.2 rounded bg-[#F6821F]/20 text-[#F6821F] border border-[#F6821F]/40">DO + WS + Artifacts</span>
+            </div>
+            <p class="text-zinc-300 text-[11px] leading-relaxed">All 8 Claude Code sessions stream over <strong>Hibernatable WebSockets</strong> into one <strong><code class="font-mono text-amber-300">RepoBrain</code> Durable Object</strong>, grafting AST symbols into <strong><code class="font-mono text-amber-300">env.ARTIFACTS</code></strong> in ~10ms.</p>
+          </div>
+        </div>
+
+        <!-- tmux Multiplexer Control Header -->
+        <div class="border border-zinc-800 rounded-xl bg-zinc-950 text-white overflow-hidden shadow-xl">
+          <div class="px-5 py-3.5 bg-zinc-900 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center space-x-3 font-mono">
+              <span class="px-2 py-0.5 rounded bg-[#F6821F] text-zinc-950 font-extrabold text-xs">tmux // 8 PANES</span>
+              <div>
+                <div class="text-xs font-bold text-white">Claude Code Autonomous Swarm Multiplexer (<code class="text-emerald-400">conv v2.4</code>)</div>
+                <div class="text-[10px] text-zinc-400">8 parallel Claude Code sessions pushing live AST symbols to <code class="text-zinc-200">mauro-druwel/convergence-core</code></div>
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="runClaudeCodeSwarmWave()" class="px-3.5 py-1.5 rounded-lg bg-[#F6821F] hover:bg-[#EA580C] text-white text-xs font-mono font-bold transition flex items-center space-x-1.5 shadow">
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span id="btn-claude-wave-text">Dispatch 8x Claude Code Push Wave</span>
+              </button>
+              <button onclick="runClaudeCommandPreset('conv status --json')" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-[11px] font-mono transition border border-zinc-700">
+                conv status
+              </button>
+              <button onclick="runClaudeCommandPreset('conv lease acquire func:processOrder --agent claude_local --ttl 12s')" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-[11px] font-mono transition border border-zinc-700">
+                conv lease acquire
+              </button>
+              <button onclick="runClaudeCommandPreset('conv push index.ts --symbol func:fastSettle --cot "Zero-copy batch settlement"')" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-[11px] font-mono transition border border-zinc-700">
+                conv push --symbol
+              </button>
+            </div>
+          </div>
+
+          <!-- 8-Pane Full Multiplexer Grid -->
+          <div id="platform-claude-grid" class="p-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 bg-black/90"></div>
+
+          <!-- Interactive conv CLI Command Bar -->
+          <div class="p-4 bg-zinc-900 border-t border-zinc-800 space-y-2.5 font-mono">
+            <div class="flex flex-wrap items-center justify-between gap-2 text-[11px]">
+              <span class="text-zinc-300 font-bold flex items-center space-x-2">
+                <span class="text-[#F6821F]">❯</span>
+                <span>INTERACTIVE CONVERGENCE CLI (<code class="text-emerald-400">conv</code>) // TRY REAL COMMANDS:</span>
+              </span>
+              <div class="flex flex-wrap gap-1.5 text-[10px]">
+                <button onclick="runClaudeCommandPreset('conv symbols index.ts')" class="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700">conv symbols index.ts</button>
+                <button onclick="runClaudeCommandPreset('conv notes show HEAD --ref refs/notes/agent-provenance')" class="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700">conv notes show HEAD</button>
+                <button onclick="runClaudeCommandPreset('conv rpr open --question "Use DO SQLite WAL or D1 read replicas?"')" class="px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700">conv rpr open</button>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <div class="flex-1 flex items-center bg-black border border-zinc-700 focus-within:border-[#F6821F] rounded-lg px-3 py-1.5">
+                <span class="text-[#F6821F] font-bold mr-2 text-xs">claude@edge:~/convergence-core$</span>
+                <input id="conv-cli-input" type="text" value="conv push index.ts --symbol func:verifyWebhook --cot 'Constant-time HMAC guard'" onkeydown="if(event.key==='Enter')executeInteractiveConvCli()" class="w-full bg-transparent text-xs text-emerald-300 outline-none font-mono" spellcheck="false" />
+              </div>
+              <button onclick="executeInteractiveConvCli()" class="px-4 py-1.5 rounded-lg bg-[#F6821F] hover:bg-[#EA580C] text-white text-xs font-bold transition">
+                Execute CLI
+              </button>
+            </div>
+            <pre id="conv-cli-stdout" class="p-3 rounded-lg bg-black border border-zinc-800 text-[11px] text-zinc-300 overflow-x-auto max-h-36 leading-relaxed">// Type or click any `conv` CLI command above to execute against the live RepoBrain Durable Object...</pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-zinc-200 bg-white py-4 px-6 text-xs text-zinc-500 mt-auto">
+    <div class="max-w-[1220px] mx-auto flex flex-col md:flex-row items-center justify-between gap-3 font-mono text-[11px]">
+      <div class="flex items-center space-x-3">
+        <span class="font-bold text-zinc-900">CONVERGENCE</span>
+        <span>·</span>
+        <span>Cloudflare Workers</span>
+        <span>·</span>
+        <span>Artifacts CAS</span>
+        <span>·</span>
+        <span>Durable Objects SQLite</span>
+      </div>
+      <div>
+        Architected by <strong class="text-zinc-900">Mauro Druwel</strong>
+      </div>
+    </div>
+  </footer>
