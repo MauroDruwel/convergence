@@ -2422,7 +2422,7 @@ export async function runAutonomousAgentTask(agentId: string, symbolId: string) 
       </div>
 
       <!-- Row 2: Deep Dive Systems Drawer (Toggled via < > icon) -->
-      <div id="guide-deep-dive-content" class="hidden bg-black border border-zinc-800 rounded-lg p-3 text-xs font-mono text-zinc-300 max-h-48 overflow-y-auto space-y-2"></div>
+      <div id="guide-deep-dive-content" class="hidden w-full min-w-full rounded-lg p-3 bg-zinc-900/90 border border-zinc-800 text-xs font-mono text-zinc-300 max-h-[26rem] overflow-y-auto transition-colors"></div>
 
       <!-- Row 3: Compact Dual-Column Briefing (Left: Plain Intuition w/ Animated Voice Line | Right: Labeled Edge Runtime Spec) -->
       <div id="guide-main" class="w-full min-w-full rounded-lg p-2 bg-zinc-900/85 border border-zinc-800 transition-colors">
@@ -2431,7 +2431,13 @@ export async function runAutonomousAgentTask(agentId: string, symbolId: string) 
             <span class="w-1.5 h-1.5 rounded-full bg-[#F6821F] animate-pulse"></span>
             <div id="guide-title" class="text-[11px] font-mono font-bold text-[#F6821F] tracking-wide uppercase">System Briefing</div>
           </div>
-          <button onclick="openTermModal('ast-crdt')" class="text-[10px] font-mono text-zinc-400 hover:text-[#F6821F] transition hidden sm:inline">📚 Click any dashed term for plain-English definition</button>
+          <div class="flex items-center space-x-2">
+            <button onclick="toggleDeepDive()" class="text-[10px] font-mono text-[#F6821F] hover:underline transition flex items-center space-x-1" title="Open complete systems architecture blueprint">
+              <span>⚡</span>
+              <span>Full Blueprint (&lt;/&gt;)</span>
+            </button>
+            <button onclick="openTermModal('ast-crdt')" class="text-[10px] font-mono text-zinc-400 hover:text-[#F6821F] transition hidden sm:inline">📚 Click any dashed term for plain-English definition</button>
+          </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-12 gap-2.5 items-stretch">
@@ -3249,15 +3255,26 @@ function escapeHtml(s) {
     function toggleDeepDive() {
       isDeepDiveOpen = !isDeepDiveOpen;
       const contentEl = document.getElementById('guide-deep-dive-content');
+      const mainEl = document.getElementById('guide-main');
       const btn = document.getElementById('guide-deep-dive-btn');
       if (!contentEl) return;
       if (isDeepDiveOpen) {
         contentEl.classList.remove('hidden');
-        if (btn) btn.classList.add('bg-[#F6821F]', 'text-white');
+        if (mainEl) mainEl.classList.add('hidden');
+        if (btn) {
+          btn.classList.add('bg-[#F6821F]', 'text-white');
+          btn.classList.remove('bg-zinc-900', 'text-[#F6821F]');
+          btn.setAttribute('data-tip', 'Switch to Compact Briefing');
+        }
         renderDeepDive();
       } else {
         contentEl.classList.add('hidden');
-        if (btn) btn.classList.remove('bg-[#F6821F]', 'text-white');
+        if (mainEl) mainEl.classList.remove('hidden');
+        if (btn) {
+          btn.classList.remove('bg-[#F6821F]', 'text-white');
+          btn.classList.add('bg-zinc-900', 'text-[#F6821F]');
+          btn.setAttribute('data-tip', 'Systems Architecture Blueprint');
+        }
       }
     }
 
@@ -3267,24 +3284,106 @@ function escapeHtml(s) {
       const lvl = (typeof currentChapterKey === 'number') ? currentChapterKey : (payoffLevel || 1);
       const spec = NOVA_DEEP_DIVES[lvl] || NOVA_DEEP_DIVES[1];
       if (!spec) return;
-      let html = `
-        <div class="border-b border-zinc-800 pb-1.5 mb-2 flex items-center justify-between">
-          <div>
-            <div class="text-[#F6821F] font-bold text-xs uppercase">${escapeHtml(spec.title)} · Systems Architecture</div>
-            <div class="text-[10px] text-zinc-400">Target Runtime: <span class="text-emerald-400 font-semibold">${escapeHtml(spec.runtime)} · Cloudflare Workers · AST CRDT</span></div>
-          </div>
-        </div>
-        <div class="space-y-1.5">
-      `;
-      (spec.sections || []).forEach(sec => {
-        html += `
-          <div class="bg-zinc-900/90 p-2.5 rounded border border-zinc-800">
-            <div class="text-zinc-100 font-semibold text-[11px] mb-0.5">${escapeHtml(sec.heading)}</div>
-            <div class="text-zinc-400 text-[11px] leading-relaxed font-sans">${escapeHtml(sec.detail)}</div>
+
+      // Extract current step's title and intuition text for seamless combination
+      let intuitionTitle = 'THE INTUITION';
+      let intuitionText = '';
+      if (isShowingPayoff && payoffLevel) {
+        const payoff = NOVA_PAYOFFS[payoffLevel];
+        intuitionTitle = payoff?.title || `Stage 0${payoffLevel} Payoff`;
+        intuitionText = payoff?.text || '';
+      } else {
+        const chapter = NOVA_DECKS[currentChapterKey] || [];
+        const step = chapter[currentChapterStep];
+        intuitionTitle = step?.title || (typeof currentChapterKey === 'number' ? `Stage 0${currentChapterKey}` : 'Autonomous Agent Platform');
+        intuitionText = step?.text || '';
+      }
+      if (!intuitionText) {
+        const textEl = document.getElementById('guide-text');
+        intuitionText = textEl ? textEl.innerHTML : 'Convergence replaces line-based Git with commutative AST-CRDT symbol trees.';
+      }
+
+      // Build technical sections grid
+      const sections = spec.sections || [];
+      let sectionsHtml = '';
+      sections.forEach((sec, idx) => {
+        let badgeColor = 'text-sky-400 border-sky-800/60 bg-sky-950/40';
+        const headingText = sec.heading || '';
+        if (headingText.includes('THE ISSUE')) {
+          badgeColor = 'text-rose-400 border-rose-800/60 bg-rose-950/40';
+        } else if (headingText.includes('THE SOLUTION')) {
+          badgeColor = 'text-emerald-400 border-emerald-800/60 bg-emerald-950/40';
+        } else if (headingText.includes('CLOUDFLARE PORT')) {
+          badgeColor = 'text-[#F6821F] border-[#F6821F]/40 bg-amber-950/40';
+        } else if (headingText.includes('COMPETITOR')) {
+          badgeColor = 'text-purple-400 border-purple-800/60 bg-purple-950/40';
+        }
+
+        const spanClass = (sections.length === 3 && idx === 2) ? 'md:col-span-2' : 'col-span-1';
+
+        sectionsHtml += `
+          <div class="${spanClass} bg-black/90 p-2.5 rounded-lg border border-zinc-800 flex flex-col justify-start hover:border-zinc-700 transition">
+            <div class="inline-flex items-center space-x-1.5 px-2 py-0.5 rounded border ${badgeColor} text-[10px] font-mono font-bold uppercase tracking-wide mb-1.5 self-start">
+              <span>${escapeHtml(sec.heading)}</span>
+            </div>
+            <div class="text-zinc-300 text-[11px] leading-relaxed font-sans mt-0.5">
+              ${linkifyTerms(escapeHtml(sec.detail))}
+            </div>
           </div>
         `;
       });
-      html += `</div>`;
+
+      const html = `
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-800/90 pb-2 mb-2.5">
+          <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-[#F6821F] animate-pulse"></span>
+            <div>
+              <div class="text-[#F6821F] font-mono font-bold text-xs uppercase tracking-wide">
+                ${escapeHtml(spec.title)} · Systems Architecture
+              </div>
+              <div class="text-[10px] font-mono text-zinc-400 mt-0.5">
+                Target Runtime: <span class="text-emerald-400 font-semibold">${escapeHtml(spec.runtime)}</span> · <span class="text-sky-400">Cloudflare Workers</span> · <span class="text-[#F6821F]">AST CRDT</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="toggleDeepDive()" class="text-[10px] font-mono text-zinc-300 hover:text-white px-2.5 py-1 rounded-md bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 transition flex items-center space-x-1" title="Switch back to compact briefing">
+              <span>✕</span>
+              <span>Compact View</span>
+            </button>
+            <button onclick="openTermModal('ast-crdt')" class="text-[10px] font-mono text-zinc-400 hover:text-[#F6821F] px-2 py-1 rounded bg-zinc-900 border border-zinc-800 transition hidden sm:inline">
+              📚 Term Glossary
+            </button>
+          </div>
+        </div>
+
+        <!-- Part 1: Unified Intuition (Plain English) -->
+        <div class="relative pl-3.5 pr-3 py-2 bg-zinc-950/90 rounded-lg border border-[#F6821F]/30 mb-2.5 shadow-inner">
+          <div class="absolute left-0 top-1.5 bottom-1.5 w-[3px] bg-gradient-to-b from-[#F6821F] via-amber-400 to-[#F6821F] rounded-full"></div>
+          <div class="flex items-center justify-between mb-1">
+            <div class="text-[9px] font-mono uppercase tracking-widest text-[#F6821F] font-bold flex items-center space-x-1.5">
+              <span>💡</span>
+              <span>01 // THE INTUITION (PLAIN ENGLISH)</span>
+            </div>
+            <span class="text-[9px] font-mono text-zinc-400 uppercase tracking-wider">${escapeHtml(intuitionTitle)}</span>
+          </div>
+          <div class="text-xs text-zinc-100 font-medium leading-relaxed font-sans">
+            ${linkifyTerms(intuitionText)}
+          </div>
+        </div>
+
+        <!-- Part 2: Systems Architecture Specification (Issue -> Solution -> Cloudflare Port) -->
+        <div class="space-y-1.5">
+          <div class="text-[9px] font-mono uppercase tracking-widest text-zinc-400 font-bold flex items-center justify-between">
+            <span>⚡ 02 // SYSTEMS ARCHITECTURE &amp; EDGE SPECIFICATION</span>
+            <span class="text-zinc-500 text-[9px] hidden sm:inline">Click any dashed term for plain-English definition</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+            ${sectionsHtml}
+          </div>
+        </div>
+      `;
+
       contentEl.innerHTML = html;
     }
 
@@ -3540,6 +3639,11 @@ function escapeHtml(s) {
 
       if (isDeepDiveOpen) {
         try { renderDeepDive(); } catch (e) {}
+        const mainEl = document.getElementById('guide-main');
+        if (mainEl) mainEl.classList.add('hidden');
+      } else {
+        const mainEl = document.getElementById('guide-main');
+        if (mainEl) mainEl.classList.remove('hidden');
       }
 
       pulseNovaSpeaking();
