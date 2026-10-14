@@ -1,0 +1,185 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" width="1200" height="420">
+  <defs>
+    <!-- Background Gradients -->
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#050508"/>
+      <stop offset="50%" stop-color="#09090c"/>
+      <stop offset="100%" stop-color="#0d0d14"/>
+    </linearGradient>
+
+    <!-- Cloudflare Neon Orange Glow -->
+    <radialGradient id="cf-glow" cx="15%" cy="30%" r="55%">
+      <stop offset="0%" stop-color="#F6821F" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#F6821F" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Cyber Cyan Glow -->
+    <radialGradient id="cyan-glow" cx="85%" cy="35%" r="50%">
+      <stop offset="0%" stop-color="#06B6D4" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#06B6D4" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Violet Center Glow -->
+    <radialGradient id="violet-glow" cx="50%" cy="80%" r="45%">
+      <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Linear Accents -->
+    <linearGradient id="brand-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="45%" stop-color="#FFFFFF"/>
+      <stop offset="85%" stop-color="#F6821F"/>
+      <stop offset="100%" stop-color="#FB923C"/>
+    </linearGradient>
+
+    <linearGradient id="line-grad-left" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F6821F" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#F6821F" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0.9"/>
+    </linearGradient>
+
+    <linearGradient id="line-grad-right" x1="100%" y1="0%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#06B6D4" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0.9"/>
+    </linearGradient>
+
+    <linearGradient id="badge-border" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3f3f46"/>
+      <stop offset="100%" stop-color="#18181b"/>
+    </linearGradient>
+
+    <filter id="neon-bloom" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="soft-shadow">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+
+    <!-- Pattern Grid -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#27272a" stroke-width="0.75" stroke-opacity="0.3"/>
+    </pattern>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1200" height="420" fill="url(#bg-grad)"/>
+  <rect width="1200" height="420" fill="url(#grid)"/>
+
+  <!-- Radial Glow Layers -->
+  <circle cx="180" cy="120" r="320" fill="url(#cf-glow)"/>
+  <circle cx="1020" cy="140" r="300" fill="url(#cyan-glow)"/>
+  <circle cx="600" cy="340" r="280" fill="url(#violet-glow)"/>
+
+  <!-- Top Accent Horizon Line -->
+  <line x1="0" y1="2" x2="1200" y2="2" stroke="url(#line-grad-left)" stroke-width="2"/>
+
+  <!-- Geometric Circuit Lines -->
+  <g opacity="0.4" stroke-width="1.2">
+    <path d="M 80 80 L 220 80 L 280 140" fill="none" stroke="#F6821F" stroke-dasharray="4 4"/>
+    <circle cx="80" cy="80" r="3" fill="#F6821F"/>
+    <circle cx="280" cy="140" r="3" fill="#8B5CF6"/>
+
+    <path d="M 1120 80 L 980 80 L 920 140" fill="none" stroke="#06B6D4" stroke-dasharray="4 4"/>
+    <circle cx="1120" cy="80" r="3" fill="#06B6D4"/>
+    <circle cx="920" cy="140" r="3" fill="#8B5CF6"/>
+
+    <path d="M 360 360 L 460 360 L 520 320" fill="none" stroke="#F6821F" stroke-opacity="0.6"/>
+    <path d="M 840 360 L 740 360 L 680 320" fill="none" stroke="#06B6D4" stroke-opacity="0.6"/>
+  </g>
+
+  <!-- Center AST Nexus Node Structure -->
+  <g transform="translate(600, 185)" filter="url(#soft-shadow)">
+    <!-- Converging Flow Lines -->
+    <path d="M -320 -40 Q -160 -40 -60 0" fill="none" stroke="url(#line-grad-left)" stroke-width="2.5" opacity="0.8"/>
+    <path d="M 320 -40 Q 160 -40 60 0" fill="none" stroke="url(#line-grad-right)" stroke-width="2.5" opacity="0.8"/>
+    <path d="M 0 -80 L 0 -35" fill="none" stroke="#A78BFA" stroke-width="2" stroke-dasharray="3 3"/>
+
+    <!-- Left Agent Pill -->
+    <g transform="translate(-320, -40)">
+      <rect x="-90" y="-18" width="180" height="36" rx="8" fill="#18181b" stroke="#F6821F" stroke-width="1.2"/>
+      <circle cx="-68" cy="0" r="4" fill="#F6821F" filter="url(#neon-bloom)"/>
+      <text x="-52" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace" font-size="11" font-weight="700" fill="#F4F4F5">AGENT ALPHA: AST</text>
+    </g>
+
+    <!-- Right Agent Pill -->
+    <g transform="translate(320, -40)">
+      <rect x="-90" y="-18" width="180" height="36" rx="8" fill="#18181b" stroke="#06B6D4" stroke-width="1.2"/>
+      <circle cx="-68" cy="0" r="4" fill="#06B6D4" filter="url(#neon-bloom)"/>
+      <text x="-52" y="5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace" font-size="11" font-weight="700" fill="#F4F4F5">AGENT BETA: AST</text>
+    </g>
+
+    <!-- Central Commutative Nexus Hexagon -->
+    <polygon points="0,-36 32,-18 32,18 0,36 -32,18 -32,-18" fill="#18181b" stroke="#8B5CF6" stroke-width="2.5" filter="url(#neon-bloom)"/>
+    <text x="0" y="5" text-anchor="middle" font-family="monospace" font-size="14" font-weight="bold" fill="#C4B5FD">CRDT</text>
+  </g>
+
+  <!-- Typography Section -->
+  <!-- Cloudflare Submission Badge -->
+  <g transform="translate(600, 52)">
+    <rect x="-210" y="-14" width="420" height="28" rx="14" fill="#18181b" stroke="#27272a" stroke-width="1"/>
+    <circle cx="-192" cy="0" r="4" fill="#F6821F"/>
+    <text x="-178" y="4" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" fill="#A1A1AA" letter-spacing="0.5">
+      CLOUDFLARE CHALLENGE // NEXT-GEN GIT PLATFORM
+    </text>
+    <rect x="135" y="-9" width="60" height="18" rx="9" fill="#F6821F" fill-opacity="0.15"/>
+    <text x="165" y="4" text-anchor="middle" font-family="monospace" font-size="9" font-weight="800" fill="#F6821F">PROTOTYPE</text>
+  </g>
+
+  <!-- Main Hero Brand Name -->
+  <text x="600" y="128" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif" font-size="54" font-weight="900" letter-spacing="4" fill="url(#brand-grad)">
+    CONVERGENCE
+  </text>
+
+  <!-- Subtitle / Positioning -->
+  <text x="600" y="162" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace" font-size="14" font-weight="600" fill="#71717A" letter-spacing="2">
+    THE AUTONOMOUS CONTINUOUS SEMANTIC CODE FABRIC
+  </text>
+
+  <!-- Key Capability Badges at Bottom -->
+  <g transform="translate(600, 320)">
+    <!-- Badge 1: 0.00% Conflicts -->
+    <g transform="translate(-380, 0)">
+      <rect x="-75" y="-16" width="150" height="32" rx="16" fill="#18181b" stroke="#10B981" stroke-width="1.2"/>
+      <circle cx="-56" cy="0" r="3.5" fill="#10B981"/>
+      <text x="-44" y="4" font-family="monospace" font-size="11" font-weight="700" fill="#34D399">0.00% CONFLICTS</text>
+    </g>
+
+    <!-- Badge 2: Durable Objects SQLite -->
+    <g transform="translate(-190, 0)">
+      <rect x="-85" y="-16" width="170" height="32" rx="16" fill="#18181b" stroke="#F59E0B" stroke-width="1.2"/>
+      <circle cx="-66" cy="0" r="3.5" fill="#F59E0B"/>
+      <text x="-54" y="4" font-family="monospace" font-size="11" font-weight="700" fill="#FBBF24">DO SQLITE WAL</text>
+    </g>
+
+    <!-- Badge 3: Cloudflare Artifacts -->
+    <g transform="translate(10, 0)">
+      <rect x="-85" y="-16" width="170" height="32" rx="16" fill="#18181b" stroke="#06B6D4" stroke-width="1.2"/>
+      <circle cx="-66" cy="0" r="3.5" fill="#06B6D4"/>
+      <text x="-54" y="4" font-family="monospace" font-size="11" font-weight="700" fill="#38BDF8">ARTIFACTS (CAS)</text>
+    </g>
+
+    <!-- Badge 4: Cloudflare MCP -->
+    <g transform="translate(200, 0)">
+      <rect x="-75" y="-16" width="150" height="32" rx="16" fill="#18181b" stroke="#8B5CF6" stroke-width="1.2"/>
+      <circle cx="-56" cy="0" r="3.5" fill="#8B5CF6"/>
+      <text x="-44" y="4" font-family="monospace" font-size="11" font-weight="700" fill="#A78BFA">CLOUDFLARE MCP</text>
+    </g>
+
+    <!-- Badge 5: Mauro Quality Gate 100% -->
+    <g transform="translate(380, 0)">
+      <rect x="-75" y="-16" width="150" height="32" rx="16" fill="#18181b" stroke="#EC4899" stroke-width="1.2"/>
+      <circle cx="-56" cy="0" r="3.5" fill="#EC4899"/>
+      <text x="-44" y="4" font-family="monospace" font-size="11" font-weight="700" fill="#F472B6">MQG 100% PASS</text>
+    </g>
+  </g>
+
+  <!-- Bottom Border Line -->
+  <line x1="0" y1="418" x2="1200" y2="418" stroke="url(#line-grad-left)" stroke-width="2"/>
+</svg>

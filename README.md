@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/convergence-banner.svg" alt="Convergence Banner" width="100%" />
+</p>
+
 # ⚡ CONVERGENCE (`conv`)
 
 > **The Autonomous Semantic Code Fabric for 100,000+ Concurrent AI Agents**  
@@ -16,6 +20,7 @@
 [![Durable Objects SQLite](https://img.shields.io/badge/Architecture-Durable%20Objects%20SQLite%20WAL-F59E0B)](https://developers.cloudflare.com/durable-objects/)
 [![Tests Passing](https://img.shields.io/badge/Tests-59%2F59%20Passing%20(100%25)-10B981)](#-verification--test-suite)
 [![Chromium E2E](https://img.shields.io/badge/Chromium%20E2E-14%2F14%20Verified-10B981)](#-verification--test-suite)
+[![Mauro Quality Gate](https://img.shields.io/badge/Mauro%20Quality%20Gate-100%25%20PASS-EC4899)](https://github.com/MauroDruwel/quality-gate)
 [![Merge Conflicts](https://img.shields.io/badge/Merge%20Conflicts-0.00%25%20(AST--CRDT)-10B981)](#-the-benchmark-showdown-genuine-gnu-diff3-vs-convergence)
 [![Cloudflare MCP](https://img.shields.io/badge/Cloudflare%20MCP-HTTP%20%2B%20SSE%20%2B%20stdio-8B5CF6)](#-cloudflare-mcp-server-architecture-antigravity--ai-agents)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -54,6 +59,29 @@ In real benchmarks testing 25 concurrent AI agents against genuine `GNU diff3`:
 - 24 agents get stalled in an infinite rebase queue.
 - Your agents burn **thousands of dollars in LLM tokens** rewriting rejected diffs that shouldn't have conflicted in the first place.
 - It’s like 50 hyper-caffeinated engineers all trying to squeeze through a single turnstile at 8:59 AM while holding hot coffee.
+
+---
+
+## 🥊 The Fatal Flaw of Other AI Git Platforms: Why "Branch-per-Task" Still Breaks
+
+Most other prototypes tackling AI code collaboration make the exact same naive architectural assumption:
+> *"Every time an agent receives a prompt, we'll spawn an isolated Git branch or repository fork for that task."*
+
+On paper, this sounds clean. In reality, **it only DELAYS the inevitable collision until pull request merge time.**
+
+| The "Branch-per-Task" Failure Mode | What Happens When 50 AI Agents Run Concurrently |
+| :--- | :--- |
+| **The PR Merge Avalanche** | 50 agents finish their tasks and open 50 pull requests. The moment Agent #1 merges into `main`, the remaining 49 branches are instantly stale and trigger line-based `diff3` merge conflicts. |
+| **The Rebase Doom-Loop** | Agents get trapped in endless rebase cycles, spending hundreds of dollars in LLM tokens rewriting rejected diffs against a moving mainline. |
+| **Zero Edit-Time Awareness** | Because branches are isolated, Agent Beta has no idea Agent Alpha has rewritten `processPayment()` until 20 minutes later when their PRs collide. |
+| **Branch Sprawl & Lock Contention** | Spawning 100 branches per hour creates massive git index lock contention and thousands of dead branches cluttering the remote. |
+
+### How Convergence Wins: The Branchless AST-CRDT Lattice
+
+Convergence discards the "branch per task" illusion entirely:
+1. **Mathematical Commutativity**: Code edits graft directly into the semantic symbol graph at the edge. If two functions are independent, their merge order does not matter: $\text{Merge}(A, B) = \text{Merge}(B, A)$.
+2. **Proactive Symbol Leases**: Instead of isolating agents on blind islands, Convergence gives them **Edit-Time Symbol Leases**. If Agent Alpha is working on `func:processPayment`, Agent Beta receives immediate **Semantic Backpressure** *before* invoking its LLM.
+3. **Zero Rebase Waste**: No stale branches, no rebase storms, and zero wasted LLM tokens.
 
 ---
 

@@ -3159,6 +3159,10 @@ export function processOrder(orderId: string, amount: number): boolean {
           {
             heading: "🟠 THE CLOUDFLARE PORT: How Workers & env.ARTIFACTS Power It",
             detail: "Cloudflare Workers V8 Isolates execute the AST parser at the edge in <2ms with zero cold start, while `env.ARTIFACTS` stores content-addressed merkle trees so agents branch worktrees via zero-copy pointers instead of cloning 500MB repos."
+          },
+          {
+            heading: "🥊 THE COMPETITOR FLAW: Why 'Branch-per-Task' Still Collapses",
+            detail: "Other agent prototypes isolate each task into a temporary Git branch or fork. This only delays the collision: when 50 branches merge back into main, diff3 triggers the exact same merge avalanche and rebase doom-loop. Convergence solves this at the root by making the mainline a branchless, commutative AST-CRDT lattice."
           }
         ]
       },
