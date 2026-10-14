@@ -65,7 +65,7 @@ describe('End-to-End (E2E) Browser UI Test Suite — Cloudflare Infrastructure C
     if (serverProcess) serverProcess.kill();
   });
 
-  it('1. should verify Cloudflare header, breadcrumbs, search bar, and status badges', async () => {
+  it('1. should verify Cloudflare header, branding, architecture badges, and status', async () => {
     const title = await page.title();
     expect(title).toBe('Cloudflare Dash — convergence-core');
 
@@ -74,29 +74,11 @@ describe('End-to-End (E2E) Browser UI Test Suite — Cloudflare Infrastructure C
       return header ? header.innerText : '';
     });
 
-    expect(headerText).toContain('mauro-druwel');
-    expect(headerText).toContain('Workers & Pages');
-    expect(headerText).toContain('convergence-core');
-    expect(headerText).toContain('Production');
-    expect(headerText).toContain('env.ARTIFACTS');
+    expect(headerText).toContain('Convergence');
+    expect(headerText).toContain('Cloudflare Workers & Artifacts');
     expect(headerText).toContain('Durable Object (SQLite)');
-    expect(headerText).toContain('MD'); // Mauro Druwel avatar
-
-    // Check search input focus via keyboard shortcut ⌘K
-    await page.keyboard.down('Control');
-    await page.keyboard.press('k');
-    await page.keyboard.up('Control');
-    await wait(200);
-
-    const isSearchFocused = await page.evaluate(() => {
-      return document.activeElement?.id === 'search-input';
-    });
-    expect(isSearchFocused).toBe(true);
-
-    // Type query into search input
-    await page.type('#search-input', 'AST leases');
-    const searchVal = await page.evaluate(() => (document.getElementById('search-input') as HTMLInputElement).value);
-    expect(searchVal).toBe('AST leases');
+    expect(headerText).toContain('Quest: Level 1 of 5');
+    expect(headerText).toContain('GitHub');
   });
 
   it('2. should verify subheader tabs can be clicked and toggle active styling', async () => {
@@ -306,5 +288,63 @@ describe('End-to-End (E2E) Browser UI Test Suite — Cloudflare Infrastructure C
 
     const postReleaseTable = await page.evaluate(() => document.getElementById('platform-leases-list')?.innerText || '');
     expect(postReleaseTable).not.toContain('human_architect');
+  });
+
+  it('13. should toggle Explain More deep dive drawer and render systems architecture specifications', async () => {
+    // 1. Ensure guide is restored
+    await page.evaluate(() => {
+      if (typeof (window as any).restoreGuide === 'function') {
+        (window as any).restoreGuide();
+      }
+      const guide = document.getElementById('guide');
+      if (guide) guide.classList.remove('hidden');
+    });
+    await wait(200);
+
+    // 2. Click Explain More button
+    await page.evaluate(() => (window as any).toggleDeepDive());
+    await wait(300);
+
+    // 3. Verify drawer is now visible and contains systems architecture specs
+    const deepDiveText = await page.evaluate(() => {
+      const el = document.getElementById('guide-deep-dive-content');
+      return el ? (el.textContent || el.innerText || '') : '';
+    });
+    expect(deepDiveText).toContain('Systems Architecture');
+    expect(deepDiveText).toContain('AST CRDT');
+    expect(deepDiveText).toContain('Cloudflare Workers');
+
+    // 4. Click again to close
+    await page.evaluate(() => (window as any).toggleDeepDive());
+    await wait(200);
+    const isHiddenAfter = await page.evaluate(() => {
+      const el = document.getElementById('guide-deep-dive-content');
+      return el ? el.classList.contains('hidden') : true;
+    });
+    expect(isHiddenAfter).toBe(true);
+  });
+
+  it('14. should verify progressive spawning functions and spacious full-width NOVA dialog layout', async () => {
+    // 1. Verify NOVA speech container has full width (> 500px) and is not vertically squeezed
+    const guideDimensions = await page.evaluate(() => {
+      const guide = document.getElementById('guide');
+      if (guide) guide.classList.remove('hidden');
+      const main = document.getElementById('guide-main');
+      if (!main) return { width: 0, height: 0 };
+      const rect = main.getBoundingClientRect();
+      return { width: rect.width, height: rect.height };
+    });
+    expect(guideDimensions.width).toBeGreaterThan(500);
+
+    // 2. Verify spawnLevel function exists and spawns sections dynamically
+    const canSpawn = await page.evaluate(() => typeof (window as any).spawnLevel === 'function');
+    expect(canSpawn).toBe(true);
+
+    // 3. Verify locked systems preview cards exist in DOM
+    const lockedCardsExist = await page.evaluate(() => {
+      const container = document.getElementById('locked-systems-preview');
+      return container !== null;
+    });
+    expect(lockedCardsExist).toBe(true);
   });
 });

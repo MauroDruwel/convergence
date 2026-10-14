@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "Convergence: The Autonomous Continuous Semantic Code Fabric for Cloudflare Challenge",
   "type": "module",
+  "bin": {
+    "conv": "./bin/conv.mjs"
+  },
   "scripts": {
+    "conv": "node ./bin/conv.mjs",
     "test": "vitest run --sequence.concurrent=false",
     "test:watch": "vitest",
     "test:e2e": "vitest run tests/e2e-ui.test.ts",

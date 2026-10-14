@@ -1,6 +1,8 @@
 import { Hono } from 'hono';
 import { RepoBrain } from './durable-objects/RepoBrain.js';
 import { HeadToHeadBenchmark } from './benchmarks/comparator.js';
+import { ConvEngine } from './cli/conv-engine.js';
+import { parseSourceToSymbols } from './core/ast-engine.js';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -255,6 +257,236 @@ app.get('/api/provenance', async (c) => {
 
   const state = await brain.getState();
   return c.json(state.provenanceRecords || []);
+});
+
+/**
+ * Interactive Convergence CLI Endpoint
+ * Executes `conv` commands against the Durable Object RepoBrain.
+ */
+app.post('/api/cli', async (c) => {
+  const { command, agentId } = await c.req.json();
+  const brain = c.env?.REPO_BRAIN
+    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
+    : getLocalBrain(c.env);
+
+  const engine = new ConvEngine(brain);
+  const result = await engine.execute(command || 'conv status', agentId || 'claude_local');
+  return c.json(result);
+});
+
+/**
+ * Symbol extraction endpoint
+ */
+app.get('/api/symbols', async (c) => {
+  const filename = c.req.query('file') || 'index.ts';
+  const brain = c.env?.REPO_BRAIN
+    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
+    : getLocalBrain(c.env);
+
+  const state = await brain.getState();
+  const content = state.files[filename] || '';
+  const parsed = parseSourceToSymbols(filename, content);
+  return c.json({
+    filename,
+    symbols: Array.from(parsed.symbols.values()),
+    count: parsed.symbols.size,
+  });
+});
+
+/**
+ * GitHub-Compatible REST API: Repository Metadata
+ */
+app.get('/api/v1/repos/:owner/:repo', async (c) => {
+  const brain = c.env?.REPO_BRAIN
+    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
+    : getLocalBrain(c.env);
+
+  const state = await brain.getState();
+  return c.json({
+    id: 10001,
+    name: 'convergence-core',
+    full_name: `${c.req.param('owner')}/${c.req.param('repo')}`,
+    private: false,
+    default_branch: 'main',
+    description: 'Next-Gen Autonomous Edge Git Platform — Built on Cloudflare Workers & Durable Objects',
+    html_url: `https://convergence.edge/${c.req.param('owner')}/${c.req.param('repo')}`,
+    clone_url: `http://localhost:3000/convergence-core.git`,
+    lamport_clock: state.lamportClock,
+    active_leases_count: Object.keys(state.activeLeases || {}).length,
+    open_issues_count: 0,
+    watchers_count: 8,
+    forks_count: 1,
+    subscribers_count: 8,
+  });
+});
+
+app.get('/api/repos/:owner/:repo', async (c) => {
+  return c.redirect(`/api/v1/repos/${c.req.param('owner')}/${c.req.param('repo')}`);
+});
+
+/**
+ * GitHub-Compatible REST API: Contents (List files or get file)
+ */
+app.get('/api/v1/repos/:owner/:repo/contents', async (c) => {
+  const brain = c.env?.REPO_BRAIN
+    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
+    : getLocalBrain(c.env);
+
+  const state = await brain.getState();
+  const files = Object.keys(state.files || {}).map((filename) => {
+    const content = state.files[filename] || '';
+    return {
+      name: filename,
+      path: filename,
+      sha: `sha_${Buffer.from(filename).toString('hex').slice(0, 10)}`,
+      size: Buffer.byteLength(content, 'utf8'),
+      type: 'file',
+      download_url: `/raw/${filename}`,
+    };
+  });
+  return c.json(files);
+});
+
+app.get('/api/v1/repos/:owner/:repo/contents/:path{.+}', async (c) => {
+  const path = c.req.param('path');
+  const brain = c.env?.REPO_BRAIN
+    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
+    : getLocalBrain(c.env);
+
+  const state = await brain.getState();
+  const content = state.files[path];
+  if (content === undefined) {
+    return c.json({ message: `Not Found: ${path}` }, 404);
+  }
+
+  return c.json({
+    name: path,
+    path: path,
+    sha: `sha_${Buffer.from(path).toString('hex').slice(0, 10)}`,
+    size: Buffer.byteLength(content, 'utf8'),
+    encoding: 'base64',
+    content: Buffer.from(content, 'utf8').toString('base64'),
+    type: 'file',
+    download_url: `/raw/${path}`,
+  });
+});
+
+/**
+ * GitHub-Compatible REST API: Create or update file (commits code)
+ */
+app.put('/api/v1/repos/:owner/:repo/contents/:path{.+}', async (c) => {
+  const path = c.req.param('path');
+  const body = await c.req.json();
+  const brain = c.env?.REPO_BRAIN
+    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
+    : getLocalBrain(c.env);
+
+  let rawContent = body.content || '';
+  if (body.encoding === 'base64') {
+    rawContent = Buffer.from(rawContent, 'base64').toString('utf8');
+  }
+
+  const author = body.author?.name || body.committer?.name || 'claude_architect';
+  const message = body.message || `chore: update ${path}`;
+
+  const res = await brain.handleAgentCommit({
+    agentId: author,
+    filename: path,
+    sourceCode: rawContent,
+    message,
+    promptIntent: message,
+  });
+
+  return c.json({
+    content: {
+      name: path,
+      path: path,
+      sha: res.commitId,
+      size: Buffer.byteLength(rawContent, 'utf8'),
+    },
+    commit: {
+      sha: res.commitId,
+      message,
+      cleanMerge: res.cleanMerge,
+      author: { name: author },
+    },
+  });
+});
+
+/**
+ * GitHub-Compatible REST API: Commits
+ */
+app.get('/api/v1/repos/:owner/:repo/commits', async (c) => {
+  const brain = c.env?.REPO_BRAIN
+    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
+    : getLocalBrain(c.env);
+
+  const state = await brain.getState();
+  const provs = state.provenanceRecords || [];
+  const events = (state.events || []).filter((e: any) => e.data?.commitId);
+
+  const commits = provs.map((p: any) => {
+    const matchingEvt = events.find((e: any) => e.data?.commitId === p.commitId);
+    return {
+      sha: p.commitId,
+      commit: {
+        author: { name: p.agentId, date: new Date(p.timestamp || Date.now()).toISOString() },
+        message: matchingEvt?.data?.message || p.promptIntent || `commit ${p.commitId}`,
+      },
+      cleanMerges: 1,
+      conflicts: 0,
+      targetSymbol: p.symbolId,
+      reasoningChain: p.reasoningChain,
+      lamport: state.lamportClock,
+    };
+  });
+  return c.json(commits);
+});
+
+/**
+ * GitHub-Compatible REST API: Pull Requests / Reverse PRs
+ */
+app.get('/api/v1/repos/:owner/:repo/pulls', async (c) => {
+  const brain = c.env?.REPO_BRAIN
+    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
+    : getLocalBrain(c.env);
+
+  const state = await brain.getState();
+  return c.json(state.reversePullRequests || []);
+});
+
+app.post('/api/v1/repos/:owner/:repo/pulls', async (c) => {
+  const { title, body, options, agentId } = await c.req.json();
+  const brain = c.env?.REPO_BRAIN
+    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
+    : getLocalBrain(c.env);
+
+  const pr = brain.createReversePR(
+    agentId || 'claude_architect',
+    title || body || 'Architectural steering inquiry',
+    options || ['Accept Proposed Implementation', 'Reject with Constraint', 'Alternative Approach']
+  );
+  return c.json(pr, 201);
+});
+
+/**
+ * Raw File Serving
+ */
+app.get('/raw/:path{.+}', async (c) => {
+  const path = c.req.param('path');
+  const brain = c.env?.REPO_BRAIN
+    ? (c.env.REPO_BRAIN.get(c.env.REPO_BRAIN.idFromName('main-repo')) as any)
+    : getLocalBrain(c.env);
+
+  const state = await brain.getState();
+  const content = state.files[path];
+  if (content === undefined) return c.text(`File not found: ${path}`, 404);
+  c.header('Content-Type', 'text/plain; charset=utf-8');
+  return c.text(content);
+});
+
+app.get('/:owner/:repo/raw/main/:path{.+}', async (c) => {
+  return c.redirect(`/raw/${c.req.param('path')}`);
 });
 
 export default app;
