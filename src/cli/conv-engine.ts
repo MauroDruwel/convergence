@@ -168,7 +168,7 @@ export class ConvEngine {
     const description = args.slice(1).join(' ') || 'Autonomous Edge Code Repository on Convergence';
 
     if (this.brain.initCustomRepo) {
-      this.brain.initCustomRepo(repoName, description);
+      await this.brain.initCustomRepo(repoName, description);
     }
 
     const lines = [
@@ -414,7 +414,7 @@ export class ConvEngine {
         else if (args[i] === '--intent' && args[i + 1]) intent = args[++i];
       }
 
-      const res = this.brain.requestSymbolLease(symbolId, agentId, 'exclusive_write', ttlSec * 1000, intent);
+      const res = await this.brain.requestSymbolLease(symbolId, agentId, 'exclusive_write', ttlSec * 1000, intent);
       if (res.granted) {
         return {
           success: true,
@@ -437,7 +437,7 @@ export class ConvEngine {
         if (args[i] === '--agent' && args[i + 1]) agentId = args[++i];
       }
 
-      const ok = this.brain.releaseSymbolLease(symbolId, agentId);
+      const ok = await this.brain.releaseSymbolLease(symbolId, agentId);
       return {
         success: ok,
         stdout: ok
@@ -528,7 +528,7 @@ export class ConvEngine {
         else if (args[i] === '--agent' && args[i + 1]) agentId = args[++i];
       }
 
-      const pr = this.brain.createReversePR(agentId, question, options);
+      const pr = await this.brain.createReversePR(agentId, question, options);
       return {
         success: true,
         stdout: `✓ [REVERSE PR OPENED] PR #${pr.id} by ${agentId}\n  Question: ${question}\n  Options:\n${options.map((o, idx) => `    [${idx + 1}] ${o}`).join('\n')}\n  Awaiting human architect 1-click direction in console or via 'conv rpr resolve ${pr.id} --choice "<option>"'`,
@@ -579,7 +579,7 @@ export class ConvEngine {
         };
       }
 
-      const ok = this.brain.resolveReversePR(prId, choice);
+      const ok = await this.brain.resolveReversePR(prId, choice);
       return {
         success: ok,
         stdout: ok

@@ -220,7 +220,7 @@ export async function executeMcpMethod(
 
         case 'convergence_read_file': {
           const filename = args.filename || 'index.ts';
-          const content = brain.getState().files[filename];
+          const content = (await brain.getState()).files[filename];
           if (content === undefined) {
             outputText = `Error: File ${filename} not found in repository ${targetRepo}.`;
           } else {
@@ -272,7 +272,7 @@ export async function executeMcpMethod(
             `Commit SHA:   ${commitRes.commitId}\n` +
             `Status:       Clean Merge (0 Conflicts)\n` +
             `Git Notes:    refs/notes/agent-provenance recorded CoT: "${cot}"\n` +
-            `Lamport L:    ${brain.getState().lamportClock}`;
+            `Lamport L:    ${(await brain.getState()).lamportClock}`;
           break;
         }
 

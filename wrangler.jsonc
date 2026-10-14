@@ -15,7 +15,7 @@
   "migrations": [
     {
       "tag": "v1",
-      "new_classes": ["RepoBrain"]
+      "new_sqlite_classes": ["RepoBrain"]
     }
   ],
   "ai": {

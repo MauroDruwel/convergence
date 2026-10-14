@@ -75,13 +75,40 @@ export function getLocalBrain(env?: Env, repoKey: string = 'convergence-core'): 
   return localBrains.get(normalizedKey)!;
 }
 
-export function getRepoBrain(c: any, repoKey?: string): RepoBrain | any {
+export function getRepoBrain(c: any, repoKey?: string): any {
   const key = repoKey || 'convergence-core';
   if (c.env?.REPO_BRAIN) {
     const id = c.env.REPO_BRAIN.idFromName(key);
-    return c.env.REPO_BRAIN.get(id);
+    return createStubProxy(c.env.REPO_BRAIN.get(id), key);
   }
   return getLocalBrain(c.env, key);
+}
+
+/**
+ * Forwards brain method calls to the Durable Object over HTTP (`/rpc`).
+ * Every method becomes `async (...args) => result`, so ALL call sites must
+ * `await` brain calls (awaiting a local sync value is harmless, so local
+ * dev behavior is unchanged).
+ */
+function createStubProxy(stub: any, repoKey: string): any {
+  return new Proxy(
+    {},
+    {
+      get(_target, prop: string | symbol) {
+        if (prop === 'then' || typeof prop !== 'string') return undefined;
+        return async (...args: any[]) => {
+          const res = await stub.fetch('https://convergence-do/rpc', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ method: prop, args, repo: repoKey }),
+          });
+          const data = (await res.json()) as any;
+          if (data && data.error) throw new Error(`RepoBrain RPC ${prop} failed: ${data.error}`);
+          return data?.result;
+        };
+      },
+    }
+  );
 }
 
 // Cloudflare Workers MCP Server (HTTP JSON-RPC & SSE endpoints for AI agents)
@@ -240,7 +267,7 @@ app.post('/api/reverse-pr/trigger', async (c) => {
   const body = await c.req.json().catch(() => ({} as any));
   const brain = getRepoBrain(c, body.repoName || body.repo || 'convergence-core');
 
-  const pr = brain.createReversePR(
+  const pr = await brain.createReversePR(
     'agent_architect',
     'Database schema tradeoff: migrate to distributed SQLite (D1) or keep in-memory Durable Object state?',
     ['Migrate to D1 SQLite', 'Keep DO memory with write-ahead log', 'Hybrid cache tier']
@@ -289,7 +316,7 @@ app.post('/api/leases/request', async (c) => {
   const { symbolId, agentId, leaseType, ttlMs, intent, repoName, repo } = await c.req.json();
   const brain = getRepoBrain(c, repoName || repo || 'convergence-core');
 
-  const res = brain.requestSymbolLease(symbolId, agentId, leaseType, ttlMs, intent);
+  const res = await brain.requestSymbolLease(symbolId, agentId, leaseType, ttlMs, intent);
   return c.json(res);
 });
 
@@ -300,7 +327,7 @@ app.post('/api/leases/release', async (c) => {
   const { symbolId, agentId, repoName, repo } = await c.req.json();
   const brain = getRepoBrain(c, repoName || repo || 'convergence-core');
 
-  const ok = brain.releaseSymbolLease(symbolId, agentId);
+  const ok = await brain.releaseSymbolLease(symbolId, agentId);
   return c.json({ success: ok, symbolId });
 });
 
@@ -385,13 +412,7 @@ async function handleCreateRepo(c: any) {
   repoRegistry.set(name, meta);
 
   const brain = getRepoBrain(c, name);
-  if (brain.initCustomRepo) {
-    brain.initCustomRepo(name, description);
-  } else if (c.env?.REPO_BRAIN) {
-    try {
-      await brain.initCustomRepo?.(name, description);
-    } catch {}
-  }
+  await (brain as any).initCustomRepo?.(name, description);
 
   return c.json(
     {
@@ -575,7 +596,7 @@ app.post('/api/v1/repos/:owner/:repo/pulls', async (c) => {
   const { title, body, options, agentId } = await c.req.json();
   const brain = getRepoBrain(c, c.req.param('repo'));
 
-  const pr = brain.createReversePR(
+  const pr = await brain.createReversePR(
     agentId || 'claude_architect',
     title || body || 'Architectural steering inquiry',
     options || ['Accept Proposed Implementation', 'Reject with Constraint', 'Alternative Approach']

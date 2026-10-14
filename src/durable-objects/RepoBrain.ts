@@ -791,22 +791,60 @@ Convergence records full agent provenance in \`refs/notes/agent-provenance\`:
     }
   }
 
-  // Cloudflare Durable Object WebSocket Hibernation Handlers
+  // Cloudflare Durable Object entrypoint.
+  // - WebSocket upgrades -> hibernated live telemetry sockets.
+  // - POST /rpc { method, args, repo } -> JSON-RPC dispatch to brain methods.
+  //   (This class intentionally does NOT `extends DurableObject` so the same
+  //   code runs unmodified in local Node dev; production callers reach it
+  //   through this fetch router instead of stub-RPC.)
   public async fetch(request: Request): Promise<Response> {
-    const webSocketPair = new (globalThis as any).WebSocketPair();
-    const [client, server] = [webSocketPair[0], webSocketPair[1]];
+    const url = new URL(request.url);
 
-    if (this.ctx?.acceptWebSocket) {
-      this.ctx.acceptWebSocket(server);
-    } else {
-      server.accept();
+    if (request.headers.get('Upgrade') === 'websocket') {
+      const webSocketPair = new (globalThis as any).WebSocketPair();
+      const [client, server] = [webSocketPair[0], webSocketPair[1]];
+
+      if (this.ctx?.acceptWebSocket) {
+        this.ctx.acceptWebSocket(server);
+      } else {
+        server.accept();
+      }
+      this.registerSocket(server);
+
+      return new Response(null, {
+        status: 101,
+        webSocket: client,
+      });
     }
-    this.registerSocket(server);
 
-    return new Response(null, {
-      status: 101,
-      webSocket: client,
-    });
+    if (url.pathname === '/rpc' && request.method === 'POST') {
+      const RPC_METHODS = new Set([
+        'getState',
+        'handleAgentCommit',
+        'requestSymbolLease',
+        'releaseSymbolLease',
+        'createReversePR',
+        'resolveReversePR',
+        'chronoRevertSymbol',
+        'initCustomRepo',
+        'getProvenance',
+        'setRepoName',
+        'getRepoName',
+      ]);
+      try {
+        const body = (await request.json()) as { method?: string; args?: any[]; repo?: string };
+        if (body?.repo) this.repoName = body.repo;
+        if (!body?.method || !RPC_METHODS.has(body.method)) {
+          return Response.json({ error: `unknown RPC method: ${body?.method}` }, { status: 404 });
+        }
+        const result = await (this as any)[body.method](...(body.args || []));
+        return Response.json({ result: result ?? null });
+      } catch (err: any) {
+        return Response.json({ error: err?.message || String(err) }, { status: 500 });
+      }
+    }
+
+    return Response.json({ error: 'not found (use /rpc or WebSocket upgrade)' }, { status: 404 });
   }
 
   public webSocketMessage(ws: any, message: string) {
