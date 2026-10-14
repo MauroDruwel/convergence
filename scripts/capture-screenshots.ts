@@ -94,7 +94,26 @@ async function main() {
   await page.evaluate(() => (window as any).runBenchmark());
   await wait(2200);
 
-  // 3. Capture Full Page Document with Duel & Swarm Active
+  // 3. Switch to standalone platform view and capture Claude Code swarm multiplexer
+  console.log('Switching to standalone platform view...');
+  await page.evaluate(() => {
+    if (typeof (window as any).setView === 'function') {
+      (window as any).setView('platform');
+    }
+  });
+  await wait(1500);
+
+  const platformPath = path.join(assetsDir, 'dashboard-platform.png');
+  await page.screenshot({ path: platformPath, fullPage: false });
+  console.log(`✓ Real high-res platform screenshot saved: ${platformPath}`);
+
+  // 4. Capture Full Page Document with Duel & Swarm Active
+  await page.evaluate(() => {
+    if (typeof (window as any).setView === 'function') {
+      (window as any).setView('quest');
+    }
+  });
+  await wait(500);
   const fullPagePath = path.join(assetsDir, 'dashboard-full.png');
   await page.screenshot({ path: fullPagePath, fullPage: true });
   console.log(`✓ Full-page document screenshot saved: ${fullPagePath}`);
