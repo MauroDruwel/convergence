@@ -22,7 +22,7 @@
 [![Chromium E2E](https://img.shields.io/badge/Chromium%20E2E-14%2F14%20Verified-10B981)](#-verification--test-suite)
 [![Mauro Quality Gate](https://img.shields.io/badge/Mauro%20Quality%20Gate-100%25%20PASS-EC4899)](https://github.com/MauroDruwel/quality-gate)
 [![Merge Conflicts](https://img.shields.io/badge/Merge%20Conflicts-0.00%25%20(AST--CRDT)-10B981)](#-the-benchmark-showdown-genuine-gnu-diff3-vs-convergence)
-[![Cloudflare MCP](https://img.shields.io/badge/Cloudflare%20MCP-HTTP%20%2B%20SSE%20%2B%20stdio-8B5CF6)](#-cloudflare-mcp-server-architecture-antigravity--ai-agents)
+[![Cloudflare MCP](https://img.shields.io/badge/Cloudflare%20MCP-HTTP%20%2B%20SSE%20%2B%20stdio-8B5CF6)](docs/CLI-AND-MCP.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ---
@@ -62,33 +62,10 @@ In real benchmarks testing 25 concurrent AI agents against genuine `GNU diff3`:
 
 ---
 
-## 🥊 The Fatal Flaw of Other AI Git Platforms: Why "Branch-per-Task" Still Breaks
-
-Most other prototypes tackling AI code collaboration make the exact same naive architectural assumption:
-> *"Every time an agent receives a prompt, we'll spawn an isolated Git branch or repository fork for that task."*
-
-On paper, this sounds clean. In reality, **it only DELAYS the inevitable collision until pull request merge time.**
-
-| The "Branch-per-Task" Failure Mode | What Happens When 50 AI Agents Run Concurrently |
-| :--- | :--- |
-| **The PR Merge Avalanche** | 50 agents finish their tasks and open 50 pull requests. The moment Agent #1 merges into `main`, the remaining 49 branches are instantly stale and trigger line-based `diff3` merge conflicts. |
-| **The Rebase Doom-Loop** | Agents get trapped in endless rebase cycles, spending hundreds of dollars in LLM tokens rewriting rejected diffs against a moving mainline. |
-| **Zero Edit-Time Awareness** | Because branches are isolated, Agent Beta has no idea Agent Alpha has rewritten `processPayment()` until 20 minutes later when their PRs collide. |
-| **Branch Sprawl & Lock Contention** | Spawning 100 branches per hour creates massive git index lock contention and thousands of dead branches cluttering the remote. |
-
-### How Convergence Wins: The Branchless AST-CRDT Lattice
-
-Convergence discards the "branch per task" illusion entirely:
-1. **Mathematical Commutativity**: Code edits graft directly into the semantic symbol graph at the edge. If two functions are independent, their merge order does not matter: $\text{Merge}(A, B) = \text{Merge}(B, A)$.
-2. **Proactive Symbol Leases**: Instead of isolating agents on blind islands, Convergence gives them **Edit-Time Symbol Leases**. If Agent Alpha is working on `func:processPayment`, Agent Beta receives immediate **Semantic Backpressure** *before* invoking its LLM.
-3. **Zero Rebase Waste**: No stale branches, no rebase storms, and zero wasted LLM tokens.
-
----
-
 ## ⚡ The Solution: Convergence (`conv`)
 
 **Convergence throws away line-based diffs.**  
-Instead of treating code as dumb text lines, Convergence parses your TypeScript and JavaScript into an **Abstract Syntax Tree (AST)** using `@babel/parser` and coordinates edits as a **Conflict-Free Replicated Data Type (CRDT)** with Lamport causal timestamps.
+Instead of treating code as dumb text lines, Convergence parses your TypeScript and JavaScript into an **Abstract Syntax Tree (AST)** using `@babel/parser` and coordinates edits as a **Conflict-Free Replicated Data Type (CRDT)** with Lamport causal timestamps:
 
 ```
        [AST Symbol Root: index.ts]
@@ -106,9 +83,9 @@ When 25 agents append functions or mutate interfaces in the same file:
 - **Git:** 24 conflicts, 4% success rate, developer tears.
 - **Convergence:** **0 conflicts, 100% success rate, 10ms merge latency.**
 
-Everything runs natively on **Cloudflare's Global Network**:
-- **Cloudflare Workers**: Sub-millisecond routing and duplex WebSocket swarm streaming.
-- **Durable Objects with SQLite WAL**: The transactional actor (`RepoBrain`) keeping ACID symbol graphs, Lamport clocks, and live agent leases.
+Everything runs natively on **Cloudflare's Global Edge Network**:
+- **Cloudflare Workers**: Global routing and duplex WebSocket streaming.
+- **Durable Objects (SQLite WAL)**: The transactional actor (`RepoBrain`) keeping ACID symbol graphs, Lamport clocks, and live agent leases.
 - **Cloudflare Artifacts (`env.ARTIFACTS`)**: High-throughput content-addressed snapshot & object storage.
 
 ---
@@ -116,19 +93,12 @@ Everything runs natively on **Cloudflare's Global Network**:
 ## 📸 Real System Screenshots
 
 ### 1. The Proving Ground Console & Live Swarm Radar
-*The 5-stage interactive engineering quest with NOVA, visualizing active agent orbits, real-time Lamport clocks, and the AST-CRDT merge pipeline:*
-
+*The 5-stage interactive engineering quest with NOVA, visualizing active agent orbits and the AST-CRDT pipeline:*
 ![Convergence Console](assets/dashboard-console.png)
 
-### 2. The Standalone Convergence Platform & Claude Code Multiplexer
-*Direct access to the full edge Git platform: 8-pane Claude Code tmux multiplexer, live Merkle tree, interactive `conv` CLI bar, and multi-repo switcher:*
-
+### 2. The Standalone Convergence Platform & Claude Multiplexer
+*8-pane Claude Code tmux multiplexer, live Merkle tree, interactive `conv` CLI bar, and multi-repo switcher:*
 ![Convergence Platform](assets/dashboard-platform.png)
-
-### 3. Architecture & Edge Storage Topology
-*How Cloudflare Workers, Durable Objects SQLite, and Artifacts form an autonomous semantic code fabric:*
-
-![Convergence Architecture](assets/architecture-diagram.svg)
 
 ---
 
@@ -149,142 +119,29 @@ npm run demo
 👉 Open **[http://localhost:3000](http://localhost:3000)** in your browser.
 
 - Click through the **5 interactive levels with NOVA** (or hit **▶ Auto-Play Tour**).
-- Level 1: Watch 25 concurrent agents crush Git diff3 while Convergence merges them seamlessly.
-- Level 2: Inspect real-time agent telemetry and Artifacts CAS snapshots.
-- Level 3: Trigger **Semantic Backpressure** via edit-time symbol leases.
-- Level 4: Fire an adversarial probe into the **Code Immune System** and watch it auto-patch boundary guards.
-- Level 5: Resolve a **Reverse Pull Request** where AI agents ask you for 1-click architectural guidance.
-- **✨ Smooth Auto-Spawn**: The second you finish Level 5, the interface automatically transitions into the full **Convergence Platform** dashboard without button spam or UI clutter. Minimal blud, as requested.
+- **✨ Smooth Auto-Spawn**: The second you finish Level 5, the interface automatically transitions into the full **Convergence Platform** dashboard without button spam or UI clutter.
 
 ---
 
-## 💻 The `conv` CLI Cheat Sheet
-
-Convergence ships with its own Git-compatible CLI tool (`bin/conv.mjs`) that communicates directly with the Cloudflare edge runtime over HTTP or stdio MCP:
-
-```bash
-# Check repository health, active leases, and Lamport scalar clock
-npx conv status
-
-# Initialize a new edge repository on Cloudflare
-npx conv init my-agent-microservice
-
-# List all parsed AST symbols (functions, interfaces, classes)
-npx conv symbols index.ts
-
-# Acquire an edit-time symbol lease before coding (prevents wasted LLM tokens!)
-npx conv lease func:calculateTax --agent claude_worker_01 --ttl 15
-
-# Push a code snippet or AST symbol directly into mainline (0 merge conflicts)
-npx conv push --file index.ts --msg "feat: add high-speed tax engine" --agent claude_worker_01
-
-# Inspect active Reverse Pull Requests (where agents ask the human architect for steering)
-npx conv rpr list
-
-# Approve an architectural direction with 1 click
-npx conv rpr approve rpr-101 optionA
-
-# Pull the latest snapshot from Cloudflare Artifacts
-npx conv pull
-```
-
----
-
-## ⚔️ `git` vs. `conv`: Side-by-Side Comparison
-
-| Dimension | Traditional `git` (2005) | Convergence `conv` (2026) | Why It Matters |
-| :--- | :--- | :--- | :--- |
-| **Core Abstraction** | Flat byte arrays & line numbers | **Abstract Syntax Tree (AST)** symbol nodes | Code is a tree, not a grocery list. Line 42 is meaningless. |
-| **Merge Engine** | GNU `diff3` text heuristic | **Commutative AST-CRDT** lattice | Independent functions never conflict, even in the same file. |
-| **Conflict Handling** | Post-hoc merge hell (`<<<<<<< HEAD`) | **Proactive Symbol Leases** + Semantic Backpressure | Agents know a symbol is locked *before* wasting tokens. |
-| **Agent Concurrency** | 1–3 humans pushing per hour | **100,000+ autonomous AI agents** streaming commits | Scales to swarms without deadlocks or rebase queues. |
-| **State & Coordination** | Dumb file server with repo lockfile | **Active Durable Object (SQLite WAL)** actor | Sub-millisecond ACID transactions at the edge. |
-| **Snapshot Storage** | Loose `.git/objects` packfiles on disk | **Cloudflare Artifacts (`env.ARTIFACTS`)** CAS | Global edge distribution with zero storage bottlenecks. |
-| **Code Verification** | Blind commits (human must run tests) | **Autonomous Code Immune System** (AST Fuzzing) | Auto-synthesizes runtime boundary guards on merge. |
-| **AI Provenance** | Lost in git commit squash / log noise | **Native Git Notes (`refs/notes/`)** Chain-of-Thought | Stores model IDs, prompts, and reasoning without hash churn. |
-| **Human In The Loop** | 50 PRs rotting in GitHub review backlog | **Reverse Pull Requests (RPR)** | Agents review routine code, but ask you for 1-click strategic guidance. |
-
-### 🔄 Command Translation Table
+## 🔄 `git` vs. `conv` in 30 Seconds
 
 | What You Want to Do | Traditional `git` | Convergence `conv` |
 | :--- | :--- | :--- |
-| **Check repository state** | `git status` | `conv status` *(returns active leases & Lamport clock)* |
+| **Check repository state** | `git status` | `conv status` *(also returns active leases & Lamport clock)* |
 | **Create a new repository** | `git init` | `conv init <repo-name>` *(provisions edge DO actor)* |
 | **Download repository** | `git clone <url>` | `conv clone <repo-name>` *(hydrates from Artifacts CAS)* |
 | **Inspect symbols / functions**| `grep -rn "function" .` | `conv symbols <file>` *(parses live AST nodes & hashes)* |
 | **Start working on a feature** | `git checkout -b feat/tax` | `conv lease func:calcTax` *(locks symbol, zero branch sprawl)* |
 | **Commit & push changes** | `git add . && git commit && git push` | `conv push --file index.ts --msg "feat" --symbol "func:calcTax"` |
-| **Merge parallel work** | `git merge` / `git rebase` *(praying for no conflict)* | **Automatic & Commutative** *(0 conflicts at edge)* |
+| **Merge parallel work** | `git merge` / `git rebase` *(conflict hell)* | **Automatic & Commutative** *(0 conflicts at edge)* |
 | **Ask architect for steering**| Open a Slack thread / wait 2 days | `conv rpr list` & `conv rpr approve <id> <choice>` |
 | **Pull verified code** | `git pull origin main` | `conv pull` *(pulls latest verified CAS snapshot)* |
 
 ---
 
-## 🤖 Cloudflare MCP Server Architecture (Antigravity & AI Agents)
+## 📊 The Benchmark in 10 Seconds: Genuine diff3 vs. Convergence
 
-Convergence implements the official **Cloudflare Workers Model Context Protocol (MCP)** architecture. Rather than locking agents into a single machine or vendor, Convergence supports **triple-mode transport**:
-
-```
- [Google Antigravity Agents]   [Cloudflare Workers AI]    [Claude Code & Cursor]
-             │                            │                          │
-      HTTP POST /api/mcp           SSE /api/mcp/sse          stdio: conv mcp
-             │                            │                          │
-             └────────────────────────────┼──────────────────────────┘
-                                          ▼
-                      ┌───────────────────────────────────────┐
-                      │   Convergence Cloudflare MCP Router   │
-                      │        (JSON-RPC 2.0 Protocol)        │
-                      └──────────────────┬────────────────────┘
-                                         ▼
-                      ┌───────────────────────────────────────┐
-                      │  Durable Object Actor: RepoBrain.ts   │
-                      │   - AST-CRDT Commutative Lattice      │
-                      │   - Edit-Time Leases & Backpressure   │
-                      │   - Git Notes CoT (refs/notes/)       │
-                      │   - SQLite WAL & Artifacts CAS        │
-                      └───────────────────────────────────────┘
-```
-
-### 1. Web-Native Agents (Antigravity, Workers AI, LangChain)
-Connect directly to the Cloudflare Workers edge endpoint over HTTP JSON-RPC or Server-Sent Events (SSE):
-```bash
-# Standard JSON-RPC Endpoint
-POST http://localhost:3000/api/mcp
-POST https://convergence.edge/api/mcp
-
-# Streaming Server-Sent Events (SSE) Endpoint
-GET http://localhost:3000/api/mcp/sse
-```
-
-### 2. Local CLI Agents (Claude Code, Cursor, Cline)
-Plug into your local terminal in 1 command:
-```bash
-claude mcp add convergence node ./bin/conv.mjs mcp
-```
-
-### 🛠️ 11 Standardized MCP Tools for Autonomous Agents
-
-| MCP Tool | Purpose | Autonomous Agent Workflow |
-| :--- | :--- | :--- |
-| `convergence_status` | Repo state, active leases, Lamport clock | Agent inspects live mainline state before planning. |
-| `convergence_read_file` | Read source from Artifacts CAS | Agent reads verified snapshot with zero clone overhead. |
-| `convergence_list_symbols` | Parse AST symbols (functions, types) | Agent identifies target functions without regex parsing. |
-| `convergence_acquire_lease` | **Acquire edit-time symbol lease** | **Prevents token waste.** If another agent holds the lock, immediate Semantic Backpressure triggers. |
-| `convergence_release_lease` | Release held symbol lease | Releases lock so subsequent agents can proceed. |
-| `convergence_push_symbol` | **Graft AST symbol into mainline** | Mathematical CRDT merge (0 conflicts) + writes Chain-of-Thought into `refs/notes/agent-provenance`. |
-| `convergence_open_reverse_pr` | **Open Reverse Pull Request** | Agent asks human architect for 1-click strategic direction when encountering design trade-offs. |
-| `convergence_create_repo` | Provision new edge repository | Agent initializes independent micro-repos on demand. |
-| `convergence_list_repos` | List all edge repositories | Swarm discovers peer microservices. |
-| `convergence_commit_file` | Direct full-file commit | Commits whole files with AST merge arbitration. |
-| `convergence_run_cli` | Execute arbitrary `conv` CLI command | Direct CLI execution gateway for terminal agents. |
-
----
-
-## 📊 The Benchmark Showdown: Genuine GNU diff3 vs. Convergence
-
-We benchmarked 25 autonomous AI agents making simultaneous additions, modifications, and structural refactors to the exact same codebase:
-
-![Benchmark Chart](assets/benchmark-chart.svg)
+Tested with 25 concurrent autonomous agents making simultaneous refactors to the same codebase:
 
 | Metric | Traditional Git (GNU `diff3`) | Convergence (Cloudflare Edge) | The Verdict |
 | :--- | :---: | :---: | :--- |
@@ -295,72 +152,20 @@ We benchmarked 25 autonomous AI agents making simultaneous additions, modificati
 | **LLM Token Waste** | Up to \$50/hr in rebase loops | **\$0.00** (clean AST union) | Infinite money saved |
 
 ```bash
-# Run the genuine GNU diff3 vs Convergence benchmark in your terminal
+# Run the genuine GNU diff3 vs Convergence benchmark locally
 npm run bench
 ```
 
-### 100,000 Agent Scale Harness
-We built an extreme concurrency harness (`src/benchmarks/stress-100k.ts`) to stress test swarms scaling toward 100,000 agents:
-- **5,000 concurrent agents verified**: 60 commits/sec throughput, 86 MB settled memory, 100% clean AST merges, verified 100% syntactically valid TypeScript via `@babel/parser`.
-
-```bash
-# Run default 5,000-agent stress test
-npm run bench:100k
-
-# Scale to 100,000 agents
-AGENTS=100000 npm run bench:100k
-```
-
 ---
 
-## 🛡️ The 5 Core Architectural Innovations
+## 📚 Deep Dive Documentation
 
-### 1. AST-CRDT Conflict-Free Engine
-Traditional Git compares line text. Convergence parses code into an Abstract Syntax Tree (AST). Edits are decomposed into atomic symbol mutations stamped with Lamport logical scalar clocks. If two agents touch different functions in the same file, the union is mathematically commutative:
-$$\text{Merge}(A, B) = A \cup B = \text{Merge}(B, A)$$
+For in-depth architecture diagrams, CLI guides, benchmarks, and judge scoring details:
 
-### 2. Edit-Time Symbol Leases & Semantic Backpressure
-Why wait until merge time to find out someone else rewritten the same function 10 seconds ago? When an agent begins editing `func:processPayment`, it grabs a 15-second TTL lease from the Durable Object. Any competing agent immediately receives **Semantic Backpressure** *before* generating 400 lines of code.
-
-### 3. Autonomous Code Immune System & Chrono-Revert
-Agents frequently write code that compiles cleanly but misses critical edge cases (e.g. allowing negative withdrawals).
-- **Immune Defense**: An autonomous red-team fuzzer probes newly merged AST nodes and automatically synthesizes runtime boundary guards (`if (amount <= 0) throw new RangeError(...)`) before code reaches production.
-- **Chrono-Revert**: Surgically rolls back an offending symbol in the AST graph without disturbing any other agent's concurrent work.
-
-### 4. Reverse Pull Requests (RPR)
-Humans cannot review 5,000 PRs per hour. But AI agents shouldn't make unilateral database migrations or auth changes either.
-- Agents review each other's AST changes autonomously.
-- When an agent encounters an architectural dilemma (e.g., SQLite vs Redis caching), it opens a **Reverse Pull Request**, presenting the human with 2 clear options. The human clicks one button and the swarm proceeds.
-
-### 5. Native Git Notes Chain-of-Thought Provenance (`refs/notes/`)
-Where did this code come from? Which model wrote it? What was its prompt?
-Instead of polluting commit SHA hashes or file headers, Convergence writes full agent telemetry, reasoning steps, and model IDs into standard Git Notes under `refs/notes/agent-provenance`. It is 100% native to Git, accessible via standard `git notes show`.
-
----
-
-## 🏆 Cloudflare Challenge Submission & Judges' Scoring Matrix
-
-Convergence was engineered from first principles for the **[Cloudflare Challenge: Build the Next Git Platform](https://www.cloudflare.com/git-competition/)**, strictly adhering to the Official Rules and scored directly against the criteria in **Section 6**:
-
-### 🎯 Official Scoring Breakdown (Section 6)
-
-| Judging Criterion | Weight | How Convergence Scores 5/5 |
-| :--- | :---: | :--- |
-| **1. Originality & Quality of Prototype for Agent-Oriented Collaboration** *(Official Tie-Breaker)* | **50%** | Replaces 20-year-old line diff3 with an **AST-CRDT symbol lattice**; introduces **Reverse Pull Requests** (agents ask humans for 1-click strategic direction instead of burying humans in 5,000 diff reviews); stores reasoning in **Git Notes Chain-of-Thought** (`refs/notes/agent-provenance`); features an **Autonomous Code Immune System** (fuzzes AST and auto-synthesizes runtime boundary guards). |
-| **2. Effectiveness of Multi-Agent Concurrency, Coordination, Context & Conflict Handling** | **25%** | Proved **100.0% merge success vs. 4.0% in GNU diff3** across 25 concurrent agents; **Edit-time Symbol Leases with Semantic Backpressure** (stops agents from burning LLM tokens before writing code); tested up to **100,000 agents** with verified 0% AST syntax corruption. |
-| **3. Ease of Use and Product/User Experience** | **25%** | **30-second local spin-up** (`npm run demo`); interactive 5-level proving ground quest with NOVA; **▶ Auto-Play Tour** for 60-second judge evaluation; smooth auto-spawn into the full platform dashboard with 8-pane Claude Code tmux multiplexer and interactive `conv` CLI terminal. |
-
-### 📋 Technical Compliance Checklist
-
-| Competition Requirement | Implementation in Convergence | Status |
-| :--- | :--- | :---: |
-| **Cloudflare Workers** | Hono edge router, duplex WebSocket streams, and REST API | ✅ Verified |
-| **Durable Objects + SQLite** | `RepoBrain` stateful actor with ACID transactions & SQLite WAL | ✅ Verified |
-| **Cloudflare Artifacts** | `env.ARTIFACTS` content-addressed CAS snapshot storage | ✅ Verified |
-| **Multi-Agent Concurrency** | 25+ simultaneous agent commits merged with 0 conflicts | ✅ Verified |
-| **License Requirement** | Licensed under MIT with `LICENSE` file included in root | ✅ Verified |
-| **Originality & Intellectual Property** | 100% original source code with zero third-party copyright assets | ✅ Verified |
-| **Comprehensive Test Suite** | 59 tests across 10 test suites passing (Vitest + Puppeteer) | ✅ Verified |
+- 🏗️ **[Systems Architecture & Deep Dive](docs/ARCHITECTURE.md)**: Mathematical AST-CRDT formulation, Durable Objects SQLite actor model, and why the competitor "branch-per-task" model fails.
+- 💻 **[Convergence CLI & Cloudflare MCP Server](docs/CLI-AND-MCP.md)**: Full `conv` CLI cheat sheet and triple-transport Cloudflare MCP reference for Claude Code, Cursor, and Antigravity.
+- 📊 **[Empirical Benchmarks & 100k Harness](docs/BENCHMARKS.md)**: Methodology for the GNU `diff3` duel and 100,000-agent stress test.
+- 🏆 **[Cloudflare Competition & Judges' Guide](docs/COMPETITION.md)**: Section 6 criteria scoring matrix and official compliance checklist.
 
 ---
 
@@ -382,8 +187,6 @@ npm run test:e2e
 ---
 
 ## 📦 Cloudflare Deployment
-
-Deploy to your Cloudflare account with a single command:
 
 ```bash
 npx wrangler deploy
