@@ -259,10 +259,14 @@ export class ConvEngine {
 
     for (let i = 0; i < args.length; i++) {
       if (args[i] === '--symbol' && args[i + 1]) symbolId = args[++i];
-      else if (args[i] === '--message' && args[i + 1]) message = args[++i];
+      else if ((args[i] === '--message' || args[i] === '--msg') && args[i + 1]) message = args[++i];
       else if (args[i] === '--cot' && args[i + 1]) cot = args[++i];
       else if (args[i] === '--agent' && args[i + 1]) agentId = args[++i];
       else if (args[i] === '--code' && args[i + 1]) customCode = args[++i];
+      else if (args[i] === '--file' && args[i + 1]) {
+        // Explicit filename flag (README form: conv push --file index.ts ...)
+        i++;
+      }
     }
 
     const currentState = await this.brain.getState();
@@ -564,18 +568,20 @@ export class ConvEngine {
         stdout: lines.join('\n'),
         data: prs,
       };
-    } else if (action === 'resolve') {
+    } else if (action === 'resolve' || action === 'approve') {
+      // Forms: conv rpr resolve <id> --choice "<opt>"  |  conv rpr approve <id> <choice>
       const prId = args[1];
       let choice = '';
       for (let i = 2; i < args.length; i++) {
         if (args[i] === '--choice' && args[i + 1]) choice = args[++i];
+        else if (!args[i].startsWith('-') && !choice) choice = args[i];
       }
 
       if (!prId || !choice) {
         return {
           success: false,
           stdout: '',
-          stderr: 'Usage: conv rpr resolve <prId> --choice "<option>"',
+          stderr: 'Usage: conv rpr resolve <prId> --choice "<option>"  (alias: conv rpr approve <prId> <choice>)',
         };
       }
 
@@ -591,7 +597,7 @@ export class ConvEngine {
     return {
       success: false,
       stdout: '',
-      stderr: `Unknown rpr action '${action}'. Supported: open, list, resolve`,
+      stderr: `Unknown rpr action '${action}'. Supported: open, list, resolve, approve`,
     };
   }
 
@@ -680,7 +686,7 @@ export class ConvEngine {
       '     --question <text>                   Architectural dilemma',
       '     --options <opt1,opt2>               Comma-separated choices for human',
       '  rpr list                            List all pending and resolved Reverse PRs',
-      '  rpr resolve <id> --choice <opt>     Submit human 1-click decision to unblock swarm',
+      '  rpr resolve <id> --choice <opt>     Submit human 1-click decision to unblock swarm (alias: approve <id> <choice>)',
       '  immune probe                        Execute adversarial probe to test antibody synthesis',
       '  mcp                                 Start Model Context Protocol server on stdio for Claude Code',
       '  help                                Show this help reference',

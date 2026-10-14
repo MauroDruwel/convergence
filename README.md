@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/convergence-banner.svg" alt="Convergence Banner" width="100%" />
+  <img src="assets/convergence-banner.png" alt="Convergence Banner" width="100%" />
 </p>
 
 # ⚡ CONVERGENCE (`conv`)
@@ -27,7 +27,7 @@
 
 ---
 
-## 💀 The Story: Why Git Is Having a Panic Attack in 2026
+## The Story: Why Git Is Having a Panic Attack in 2026
 
 In 2005, BitKeeper pulled the free license from Linux. Linus Torvalds locked himself in a room for two weeks, emerged with Git, and saved open-source. It was glorious.
 
