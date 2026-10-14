@@ -137,7 +137,57 @@ html = html.replace(
   '<div class="text-[10px] text-zinc-400">Target Runtime: <span class="text-emerald-400 font-semibold">${escapeHtml(spec.runtime)} · Cloudflare Workers · AST CRDT</span></div>'
 );
 
-// 10. Insert the Claude Code Swarm multiplexer & interactive conv CLI implementations
+// 10. Enhance objective-bar with Auto-launch toggle and instant spawn button
+html = html.replace(
+  '<span class="text-zinc-400">PROGRESS: <strong id="objective-count" class="text-white">0/5</strong></span>',
+  `<div class="flex items-center space-x-3">
+        <label class="hidden sm:inline-flex items-center space-x-1.5 cursor-pointer text-[10px] text-zinc-400 hover:text-zinc-200">
+          <input id="toggle-autolaunch-platform" type="checkbox" checked onchange="window.setAutoLaunchPlatform(this.checked)" class="rounded border-zinc-700 text-[#F6821F] focus:ring-0">
+          <span>Auto-launch Platform on 5/5</span>
+        </label>
+        <button id="btn-spawn-conv-dash" onclick="setView('platform')" class="hidden px-2.5 py-1 rounded bg-[#F6821F] hover:bg-orange-500 text-white text-[11px] font-bold transition flex items-center space-x-1 shadow-sm">
+          <span>⚡ Launch Convergence</span>
+        </button>
+        <span class="text-zinc-400">PROGRESS: <strong id="objective-count" class="text-white">0/5</strong></span>
+      </div>`
+);
+
+// 11. Add Return-to-Quest banner inside #platform-view
+html = html.replace(
+  '<div id="platform-view" class="hidden flex-1 flex-col bg-white min-h-[calc(100vh-3.5rem)]">',
+  `<div id="platform-view" class="hidden flex-1 flex-col bg-white min-h-[calc(100vh-3.5rem)]">
+    <!-- Top Return-to-Quest Banner -->
+    <div id="platform-quest-return-banner" class="bg-gradient-to-r from-zinc-900 to-zinc-950 border-b border-zinc-800 px-6 py-2.5 flex items-center justify-between text-xs font-mono">
+      <div class="flex items-center space-x-2.5">
+        <span class="px-2 py-0.5 rounded bg-emerald-950 border border-emerald-700 text-emerald-400 font-bold text-[10px]">ALL 5/5 VERIFIED</span>
+        <span class="text-zinc-300">Convergence Autonomous Edge Fabric is live.</span>
+      </div>
+      <button onclick="setView('quest')" class="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-[11px] font-bold transition flex items-center space-x-1.5 border border-zinc-700">
+        <span>⎇</span>
+        <span>Re-enter Proving Ground Quest</span>
+      </button>
+    </div>`
+);
+
+// 12. Update markLevelCompleted(5) to trigger auto-launch
+html = html.replace(
+  "document.getElementById('quest-next-hint').innerHTML = '<strong class=\"text-emerald-400\">ALL 5/5 VERIFIED · PLATFORM READY</strong>';",
+  `document.getElementById('quest-next-hint').innerHTML = '<strong class=\"text-emerald-400\">ALL 5/5 VERIFIED · PLATFORM READY</strong>';
+        const btnSpawn = document.getElementById('btn-spawn-conv-dash');
+        if (btnSpawn) btnSpawn.classList.remove('hidden');
+
+        if (window.__autoLaunchPlatform !== false && !window.__e2e) {
+          showToast('Proving Ground 5/5 Complete!', '⚡ Spawning into Convergence Dashboard in 1.8s...', 'info');
+          setTimeout(() => {
+            if (completedLevels.size >= 5 && !document.body.classList.contains('platform-mode')) {
+              setView('platform');
+              showToast('Convergence Platform Active', 'Autonomous Edge Code Fabric online with 8x Claude Swarm and conv CLI.', 'success');
+            }
+          }, 1800);
+        }`
+);
+
+// 13. Insert the Claude Code Swarm multiplexer & interactive conv CLI implementations
 const claudeCodeScript = `
     // =====================================================================
     // 8x CLAUDE CODE SWARM MULTIPLEXER & CONV CLI INTEGRATION ENGINE
@@ -538,6 +588,16 @@ const claudeCodeScript = `
       } catch (e) {}
     }
     window.switchActiveRepo = switchActiveRepo;
+
+    // =====================================================================
+    // AUTO-LAUNCH CONVERGENCE DASHBOARD ON 5/5 COMPLETION
+    // =====================================================================
+    window.__autoLaunchPlatform = true;
+    function setAutoLaunchPlatform(enabled) {
+      window.__autoLaunchPlatform = enabled;
+      showToast('Preference Saved', enabled ? 'Convergence will auto-launch into dashboard upon 5/5 completion.' : 'Auto-launch disabled: stay in quest on completion.', 'info');
+    }
+    window.setAutoLaunchPlatform = setAutoLaunchPlatform;
 
     // Initialize Claude Code multiplexer panes when DOM is ready
     window.addEventListener('DOMContentLoaded', () => {
